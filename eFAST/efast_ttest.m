@@ -23,8 +23,7 @@ SAefast_struct.rangeSti=rangeSti;
 g=1;
 for u=y_var
     for s=1:length(time_points)
-        z=['time = ',num2str(s)];
-        [z y_var_label(u)]
+        ['time = ',num2str(s),'  ', y_var_label(u)]
         %% Compare Si or STi of parameter j with the dummy
         for i=1:k-1
             %% Si

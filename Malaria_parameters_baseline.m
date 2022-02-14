@@ -1,4 +1,6 @@
 global P
+%%
+P.dummy = 1; P.dummy_lower = 1; P.dummy_upper = 10; % dummy parameter for global SA eFAST
 %% 
 P.verbose = 0; % turn on the warning messages. Error messages from the check routines will display regardless
 P.balance_fertility = 0; % balanced fertility or not

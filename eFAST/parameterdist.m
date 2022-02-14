@@ -15,9 +15,7 @@ switch lower(type)
             ran=rand(nsample,1);
             s=zeros(nsample,1);
             idx=randperm(nsample);
-            %pause;
             P =(idx'-ran)/nsample;
-            %pause;
             Xdist(:,k)=(X(:,k).*(pmax(k)-pmin(k)))+pmin(k);
         end
     case {'norm'}
