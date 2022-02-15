@@ -3,12 +3,8 @@ global P
 
 da = P.da;
 a = P.a;
+
 if strcmp(lQ(1:2),'EE')
-    if R0_cal()<1
-        disp('EE DNE')
-        Q_val = NaN;
-        return
-    end
     [SH,EH,DH,AH,Cac,Cm,Ctot] = steady_state('EE','numerical');
 end
 

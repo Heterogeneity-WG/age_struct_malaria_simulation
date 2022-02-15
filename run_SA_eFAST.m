@@ -37,7 +37,7 @@ for iP = 1:length(lP_list)
 end
 
 %% eFAST config
-NR = 3;    % # of search curves - Resampling
+NR = 5;    % # of search curves - Resampling
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
 NS = 65;   % # of samples per search curve
 wantedN=NS*k*NR; % wanted no. of sample points
@@ -91,9 +91,6 @@ for i=1:k % Loop over POIs, including dummy
             end
             % calculate QOI values
             Q_val = QOI_value_eFAST(lQ);
-            if isnan(Q_val)
-                % what to do to makeup the sample?
-            end
             Y(run_num,:,:,i,L) = Q_val; 
         end 
     end 
