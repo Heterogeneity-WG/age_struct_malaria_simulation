@@ -11,6 +11,8 @@ clc
 format long
 global P
 
+use_X = 0; % load pre-generated parameter samples, stored in matrix X "eFAST_samples.mat"
+
 %% numerical config
 tfinal = 100*365; % final time in days
 age_max = 80*365; % max ages in days
@@ -54,34 +56,20 @@ end
 Size_timepts = length(time_points); % # of time points to check QOI value; 
 Y(NS,Size_timepts,Size_QOI,length(pmin),NR)=0;  % For each model evaluation, the QOI has dimension [Size_timepts*Size_QOI]
 X(NS,k,k,NR) = 0;
+
+%% Generate parameter samples, stored in matrix X
+if use_X
+    load('eFAST_samples.mat','X') 
+else
+    X = efast_samples(X,OMi,MI,pmin,pmax,'unif');
+    save('eFAST_samples.mat','X')
+end
+keyboard
+
+%% model evaluations
 for i=1:k % Loop over POIs, including dummy
-    OMci = SETFREQ(k,OMi/2/MI,i);  % selecting the set of frequencies. OMci(i), i=1:k-1, contains the set of frequencies to be used by the complementary group.
-    for L=1:NR  % Loop over the NR search curves
-        % Setting the vector of frequencies OM for the k parameters
-        cj = 1;
-        for j=1:k
-            if(j==i)
-                % For the parameter (factor) of interest
-                OM(i) = OMi;
-            else
-                % For the complementary group.
-                OM(j) = OMci(cj);
-                cj = cj+1;
-            end
-        end
-        % Setting the relation between the scalar variable S and the coordinates {X(1),X(2),...X(k)} of each sample point.
-        FI = rand(1,k)*2*pi; % random phase shift
-        S_VEC = pi*(2*(1:NS)-NS-1)/NS;
-        OM_VEC = OM(1:k);
-        FI_MAT = FI(ones(NS,1),1:k)';
-        ANGLE = OM_VEC'*S_VEC+FI_MAT;
-        
-        X(:,:,i,L) = 0.5+asin(sin(ANGLE'))/pi; % between 0 and 1        
-        % Transform distributions from standard uniform to general.
-        X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,0,1,NS,'unif'); % this is what assigns 'our' values rather than 0:1 dist
-        
-        % model evaluations
-        for run_num=1:NS
+   for L=1:NR  % Loop over the NR search curves 
+        for run_num=1:NS % Loop through each parameter sample
             disp([num2str([i, run_num, L]), '//parameter run NR']) % keeps track of [parameter run NR]
             % reset parameters to baseline
             Malaria_parameters_baseline;
@@ -93,9 +81,9 @@ for i=1:k % Loop over POIs, including dummy
             Q_val = QOI_value_eFAST(lQ);
             Y(run_num,:,:,i,L) = Q_val; 
         end 
-    end 
-end 
-
+   end
+end
+        
 %% eFAST on output matrix Y
 var = 1; % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
