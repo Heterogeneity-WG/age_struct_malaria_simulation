@@ -1,4 +1,4 @@
-function X = efast_samples(X,OMi,MI,pmin,pmax,type)
+function X = efast_gensamples(X,OMi,MI,pmin,pmax,type)
 
 [NS,~,k,NR] = size(X);
 

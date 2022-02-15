@@ -61,7 +61,7 @@ X(NS,k,k,NR) = 0;
 if use_X
     load('eFAST_samples.mat','X') 
 else
-    X = efast_samples(X,OMi,MI,pmin,pmax,'unif');
+    X = efast_gensamples(X,OMi,MI,pmin,pmax,'unif');
     save('eFAST_samples.mat','X')
 end
 keyboard
