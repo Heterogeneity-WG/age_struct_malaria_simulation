@@ -39,9 +39,9 @@ for iP = 1:length(lP_list)
 end
 
 %% eFAST config
-NR = 5;    % # of search curves - Resampling
+NR = 5;    % # of search curves - Resampling - keep the value
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
-NS = 65;   % # of samples per search curve
+NS = 65;   % # of samples per search curve - may change
 wantedN=NS*k*NR; % wanted no. of sample points
 MI = 4; %: maximum number of fourier coefficients that may be retained in calculating the partial variances without interferences between the assigned frequencies
 % Computation of the frequency for the group of interest OMi and the # of sample points NS (here N=NS)
@@ -59,10 +59,10 @@ X(NS,k,k,NR) = 0;
 
 %% Generate parameter samples, stored in matrix X
 if use_X
-    load('eFAST_samples.mat','X') 
+    load(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X') 
 else
     X = efast_gensamples(X,OMi,MI,pmin,pmax,'unif');
-    save('eFAST_samples.mat','X')
+    save(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 end
 keyboard
 
@@ -89,31 +89,31 @@ var = 1; % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);
 [CVsi, CVsti] = CVmethod(Si, rangeSi,Sti,rangeSti,var); % Coeff. of Variance; See online Supplement A.5 for details
-s_HIV = efast_ttest(Si,rangeSi,Sti,rangeSti,1:length(time_points),lP_list,var,lQ,palpha); % T-test on Si and STi 
-% save('eFAST_result.mat','s_HIV','lP_list','lQ','palpha')
+s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,1:length(time_points),lP_list,var,lQ,palpha); % T-test on Si and STi 
+% save(['Results/eFAST_result_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'s_struct','lP_list','lQ','palpha')
 keyboard
 
 %% Plotting
 clear all
 close all
 clc
-load('eFAST_result.mat','s_HIV','lP_list','lQ','palpha')
+load(['Results/eFAST_result_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'s_struct','lP_list','lQ','palpha')
 figure_setups; hold on
 X = categorical(lP_list);
 X = reordercats(X,lP_list);
-model_series = [s_HIV.Si';s_HIV.Sti']';
-model_error = [std(s_HIV.rangeSi,0,3)';std(s_HIV.rangeSti,0,3)']';
+model_series = [s_struct.Si';s_struct.Sti']';
+model_error = [std(s_struct.rangeSi,0,3)';std(s_struct.rangeSti,0,3)']';
 b = bar(X,model_series);
 % mark p-values for Si
 xtips1 = b(1).XEndPoints;
 ytips1 = b(1).YEndPoints;
 labels1 = cell(1, length(lP_list)); 
-labels1(s_HIV.p_Si<palpha) = {'*'};
+labels1(s_struct.p_Si<palpha) = {'*'};
 text(xtips1,ytips1,labels1,'HorizontalAlignment','center','VerticalAlignment','bottom')
 % mark p-values for Sti
 xtips2 = b(2).XEndPoints;
 ytips2 = b(2).YEndPoints;
 labels2 = cell(1, length(lP_list)); 
-labels2(s_HIV.p_Sti<palpha) = {'*'};
+labels2(s_struct.p_Sti<palpha) = {'*'};
 text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
 legend('first-order $S_i$','total-order $S_{Ti}$','Location','nw')
