@@ -2,10 +2,10 @@ function balance_fertility
 % calculate a balanced fertility rate, given a death rate
 global P
 
-if exist('balanced_births.mat','file') % need to re-run the mat file if the death rates are updated!!
-    load('balanced_births.mat','fun_balanced_births')
-    if P.verbose==1; disp('Previously calculated balanced birth rate loaded.'); end
-else
+% if exist('balanced_births.mat','file') % need to re-run the mat file if the death rates are updated!!
+%     load('balanced_births.mat','fun_balanced_births')
+%     if P.verbose==1; disp('Previously calculated balanced birth rate loaded.'); end
+% else
     if P.verbose==1; disp('calculating new balanced fertility profile.'); end
     gH = P.gH_fun;
     muH_int = P.muH_int_fun;
@@ -17,7 +17,7 @@ else
     [balanced_births_fine,fval,exitflag,output,jacobian] = fsolve(F2,gH_fine,options); % start from current fertility
     fun_balanced_births = griddedInterpolant(a_fine,balanced_births_fine);
     save('balanced_births.mat','fun_balanced_births');
-end
+% end
 
 gH_old = P.gH;
 

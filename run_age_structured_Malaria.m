@@ -10,7 +10,7 @@ tic
 
 %% numerical config
 tfinal = 100*365; % final time in days
-age_max = 80*365; % max ages in days
+age_max = 100*365; % max ages in days
 P.age_max = age_max;
 dt = 20; % time/age step size in days, default = 5;
 da = dt;
@@ -28,21 +28,22 @@ P.t = t;
 
 % model parameters
 Malaria_parameters_baseline;
-% P.betaM = 0.008; %low aEIR
-% Malaria_parameters_transform;
+P.betaM = 0.2; %low aEIR
+% P.betaM = 0.025;
+Malaria_parameters_transform;
 
 immunity_feedback = 1;
 if immunity_feedback == 0
-    P.phi_f_0 = 0.915792480087329; % value at zero
-    P.phi_f_1 = 0.915792480087329; % value at L (function saturates to this value)
+    P.phif0 = 0.5; % value at zero
+    P.phif1 = 0.5; % value at L (function saturates to this value)
     
-    P.rho_f_0 = 0.114825053290306; % value at zero
-    P.rho_f_1 = 0.114825053290306; % value at L (function saturates to this value)  
+    P.rhof0 = 0.5; % value at zero
+    P.rhof1 = 0.5; % value at L (function saturates to this value)  
     
-    P.psi_f_0 = 0.114825053290306; % value at zero
-    P.psi_f_1 = 0.114825053290306; % value at L (function saturates to this value)   
+    P.psif0 = 0.5; % value at zero
+    P.psif1 = 0.5; % value at L (function saturates to this value)   
 end
-P.betaM = 0.025;
+
 %% initial condition 'init' 'EE'
 [SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
 %% time evolution
@@ -51,16 +52,21 @@ PH = SH+EH+DH+AH;
 PH_final = PH(:,end); % total human at age a, t = n
 NH = trapz(PH,1)*da;
 NM = SM+EM+IM;
+
+%% R0
+% tic
+% R0_cal() % R0 = 3.063427399035974 for mu_D=0;
+% R0 = R0_cal_muD() % R0 = 3.063427472080097 for mu_D=0; error = 10^-7
+% toc
+% keyboard
+
 %% EIR
-[bh,bm] = biting_rate(NH,NM);
-EIR = bh.*IM./NM*365;
-EIR_EE = EIR(end)
-tic
-R0 = R0_cal()
-toc
+% [bh,bm] = biting_rate(NH,NM);
+% EIR = bh.*IM./NM*365;
+% % EIR_EE = EIR(end)
 % figure_setups;
-% plot(t,EIR,'b-'); hold on;
-%keyboard
+% plot(t/365,EIR,'b-'); hold on;
+
 %% Population size versus time
 figure_setups;
 plot(t,trapz(SH,1)*da,'-','Color',colour_mat1); hold on;
@@ -75,47 +81,65 @@ grid on
 axis([0 tfinal 0 max(NH)+0.1]);
 % keyboard
 %% Age profiles at tfinal
-figure_setups;
-plot(a/365,SH(:,end),'-','Color',colour_mat1); hold on;
-plot(a/365,EH(:,end),':','Color',colour_mat4);
-plot(a/365,AH(:,end),'--','Color',colour_mat3);
-plot(a/365,DH(:,end),'-.','Color',colour_mat2);
-plot(a/365,PH_final,'-k');
-legend('$S_H$','$E_H$','$A_H$', '$D_H$','$P_H$','location','e');
-% title(['Final Age Dist.~~ feedback =',num2str(immunity_feedback)]);
-title(['~~~~~~Final age dist. feedback = ',num2str(immunity_feedback)]); 
-xlabel('Age (years)');
-ylabel('Population density')
-grid on
-axis([0 age_max/365 0 max(PH_final)]);
+% figure_setups;
+% plot(a/365,SH(:,end),'-','Color',colour_mat1); hold on;
+% plot(a/365,EH(:,end),':','Color',colour_mat4);
+% plot(a/365,AH(:,end),'--','Color',colour_mat3);
+% plot(a/365,DH(:,end),'-.','Color',colour_mat2);
+% plot(a/365,PH_final,'-k');
+% legend('$S_H$','$E_H$','$A_H$', '$D_H$','$P_H$','location','e');
+% % title(['Final Age Dist.~~ feedback =',num2str(immunity_feedback)]);
+% title(['~~~~~~Final age dist. feedback = ',num2str(immunity_feedback)]); 
+% xlabel('Age (years)');
+% ylabel('Population density')
+% grid on
+% axis([0 age_max/365 0 max(PH_final)]);
 %% Age proportions at tfinal prop
-figure_setups;
-plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
-plot(a/365,EH(:,end)./PH_final,':','Color',colour_mat4);
-plot(a/365,AH(:,end)./PH_final,'--','Color',colour_mat3);
-plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
-plot(a/365,PH_final./PH_final,'-k');
-legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$', '$\tilde{D}_H$','$\tilde{P}_H$','location','e');
-% title(['Final Age Dist. Proportions']); 
-title(['Final age dist. proportions, feedback = ',num2str(immunity_feedback)]); 
-xlabel('Age (years)');
-ylabel('Fraction of population')
-grid on
-axis([0 P.age_max/365 0 1.1]);
-xlim([0 30])
+% figure_setups;
+% plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
+% plot(a/365,EH(:,end)./PH_final,':','Color',colour_mat4);
+% plot(a/365,AH(:,end)./PH_final,'--','Color',colour_mat3);
+% plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
+% plot(a/365,PH_final./PH_final,'-k');
+% legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$', '$\tilde{D}_H$','$\tilde{P}_H$','location','e');
+% % title(['Tfinal = ',num2str(round(tfinal/365)),' years']); 
+% title(['Final age dist. proportions, feedback = ',num2str(immunity_feedback)]); 
+% xlabel('Age (years)');
+% ylabel('Fraction of population')
+% grid on
+% axis([0 P.age_max/365 0 1.1]);
+% xlim([0 30])
+%%
+% figure_setups;
+% for iplot = 1:200:nt
+%     plot(a/365,SH(:,iplot)./PH(:,iplot),'-','Color',colour_mat1); hold on;
+%     plot(a/365,EH(:,iplot)./PH(:,iplot),':','Color',colour_mat4);
+%     plot(a/365,AH(:,iplot)./PH(:,iplot),'--','Color',colour_mat3);
+%     plot(a/365,DH(:,iplot)./PH(:,iplot),'-.','Color',colour_mat2);
+% %     plot(a/365,PH(:,iplot)./PH(:,iplot),'-k');
+% %     legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$', '$\tilde{D}_H$','$\tilde{P}_H$','location','e');
+%     title(['Tfinal = ',num2str(round(t(iplot)/365)),' years']);
+%     % title(['Final age dist. proportions, feedback = ',num2str(immunity_feedback)]);
+%     xlabel('Age (years)');
+%     ylabel('Fraction of population')
+%     grid on
+%     axis([0 P.age_max/365 0 1.1]);
+%     xlim([0 30])
+%     pause
+% end
 %% Population proportions versus time
-figure_setups;
-plot(t,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
-plot(t,trapz(EH,1)*da./NH,':','Color',colour_mat4);
-plot(t,trapz(AH,1)*da./NH,'--','Color',colour_mat3);
-plot(t,trapz(DH,1)*da./NH,'-.','Color',colour_mat2);
-plot(t,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1))*da./NH,'-.k');
-legend('SH-age','EH-age','AH-age', 'DH-age','$N_H$');
-title('Population proportions vs time');
-axis_years(gca,tfinal); % change to x-axis to years if needed
-xlabel('time');
-grid on
-axis([0 tfinal 0 1.1]);
+% figure_setups;
+% plot(t,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
+% plot(t,trapz(EH,1)*da./NH,':','Color',colour_mat4);
+% plot(t,trapz(AH,1)*da./NH,'--','Color',colour_mat3);
+% plot(t,trapz(DH,1)*da./NH,'-.','Color',colour_mat2);
+% plot(t,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1))*da./NH,'-.k');
+% legend('SH-age','EH-age','AH-age', 'DH-age','$N_H$');
+% title('Population proportions vs time');
+% axis_years(gca,tfinal); % change to x-axis to years if needed
+% xlabel('time');
+% grid on
+% axis([0 tfinal 0 1.1]);
 %% Immunity related figures
 % figure_setups;
 % subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/4))./PH(:,floor(nt/4)));
@@ -132,14 +156,14 @@ axis([0 tfinal 0 1.1]);
 % title('$\int C_{total}(\alpha,t)d\alpha / N_H(t)$');
 % xlabel('time');
 % grid on
-%
+% 
 % subplot(2,2,3), imagesc(t/365,a/365,Ctot./PH);
 % set(gca,'YDir','normal');
 % colorbar;
 % ylabel('age');
 % xlabel('time');
 % title('$C_{total}(\alpha,t)/P_H(\alpha,t)$');
-%
+% 
 % subplot(2,2,4), plot(a/365,Ctot(:,floor(nt/4)));
 % hold on;
 % subplot(2,2,4), plot(a/365,Ctot(:,floor(nt/2)));
@@ -169,7 +193,7 @@ axis([0 tfinal 0 1.1]);
 % xlabel('Age (years)')
 % ylabel('Immunity level')
 % legend('Acquired (pp)','Maternal (pp)','Total (pp)','Location','SouthEast');
-% % title(['Per-person Immun dist.~~ feedback =',num2str(immunity_feedback)]);
+% title(['Per-person Immun dist.~~ feedback =',num2str(immunity_feedback)]);
 % title('Per-person Immun distribution');
 % axis([0 age_max/365 0 max(Ctot(:,end)./PH_final)*1.1]);
 % xlim([0 10])
@@ -185,7 +209,7 @@ axis([0 tfinal 0 1.1]);
 % axis([0 age_max/365 0 1]);
 % title(['EIR = ',num2str(EIR_EE)])
 
-rho_bar = da*trapz(sigmoid_prob(Ctot(:,end)./PH_final, 'rho').*PH_final)
+% rho_bar = da*trapz(sigmoid_prob(Ctot(:,end)./PH_final, 'rho').*PH_final)
 %% Mosquito infection dynamics
 % figure_setups;
 % plot(t,SM,'b-'); hold on;

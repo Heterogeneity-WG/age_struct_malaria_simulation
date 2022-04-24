@@ -16,12 +16,13 @@ NH = NaN(1,nt);
 SH(:,1) = SH0; EH(:,1) = EH0; DH(:,1) = DH0; AH(:,1) = AH0; 
 SM(1) = SM0; EM(1) = EM0; IM(1) = IM0;
 Cm(:,1) = Cm0; Cac(:,1) = Cac0; Ctot(:,1) = Ctot0;
-NH(1) = trapz(SH(:,1)+EH(:,1)+DH(:,1)+AH(:,1))*da;
+PH = SH(:,1)+EH(:,1)+DH(:,1)+AH(:,1);
+NH(1) = trapz(PH)*da;
 
 % update progression probability based on immunity Ctot
-P.phi = sigmoid_prob(Ctot0./P.PH_stable, 'phi'); % prob. of DH -> RH
-P.rho = sigmoid_prob(Ctot0./P.PH_stable, 'rho'); % prob. of severely infected, EH -> DH
-P.psi = sigmoid_prob(Ctot0./P.PH_stable, 'psi'); % prob. AH -> DH
+P.phi = sigmoid_prob(Ctot0./PH, 'phi'); % prob. of DH -> RH
+P.rho = sigmoid_prob(Ctot0./PH, 'rho'); % prob. of severely infected, EH -> DH
+P.psi = sigmoid_prob(Ctot0./PH, 'psi'); % prob. AH -> DH
 %% time evolution
 for n = 1:nt-1
     %     if mod(n,(nt-1)/5)==0
@@ -48,15 +49,17 @@ for n = 1:nt-1
     % adjust mosquito infection accordingly - use tn level!
     [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(DH(:,n),AH(:,n),NH(n),NM);
     
+    PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1); % total human at age a, t = n+1
+    
     % immunity gained at age = 0
     Cm(1,n+1) = P.m*trapz(P.gH.*Cac(:,n))*da;
-    Cac(1,n+1) = P.cV*P.vb(1)*P.PH_stable(1);
+    Cac(1,n+1) = P.cV*P.vb(1)*PHp1(1);
+    
     % maternal immunity
     %n0 = min(n,na-1); % comment this formula for now, use implicit scheme
     %Cm(2:n0+1,n+1) = (Cm(1,1:n0))'.*exp(-a(2:n0+1)/P.dm); % k=1:n0
     %Cm(n0+2:end,n+1) = Cm(2:end-n0,1).*exp(-t(n+1)/P.dm);  % k=n0+1:end-1
     % acquired immunity - use Qn+1
-    PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1); % total human at age a, t = n+1
     NHp1 = trapz(PHp1)*da; % total human population at t=n;
     NMp1 = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     [bHp1,~] = biting_rate(NHp1,NMp1);
@@ -72,6 +75,16 @@ for n = 1:nt-1
     P.phi = sigmoid_prob(Ctot(:,n+1)./PHp1, 'phi'); % prob. of DH -> RH
     P.rho = sigmoid_prob(Ctot(:,n+1)./PHp1, 'rho'); % prob. of severely infected, EH -> DH
     P.psi = sigmoid_prob(Ctot(:,n+1)./PHp1, 'psi'); % prob. AH -> DH
+    
+    % maintain constanct population size for calibration
+    % ajust birth
+%     num = trapz(P.muH.*PHp1+P.muD.*DH(:,n+1))*da;
+%     den = trapz(P.gH.*PHp1)*da;
+%     P.gH = P.gH*num/den;
+    % adjust mu_H
+%     num = trapz(P.gH.*PHp1)*da-trapz(P.muD.*DH(:,n+1))*da;
+%     den = trapz(P.muH.*PHp1)*da;
+%     P.muH = P.muH*num/den;
 end
 
 end

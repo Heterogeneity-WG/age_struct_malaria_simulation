@@ -2,11 +2,20 @@
 clear all
 % clc
 %% Kenya per-capita annual birth rate
-rawdata = [0 0 0 0 96 206 183 148 100 38 9 0 0 0 0 0 0 0 0]/1000/365/2;
+% IHME dataset
+rawdata1 = [0, 0, 0, 0.001377232, 0.05877363, 0.186667605, 0.1461556, 0.128485383, 0.0748373, 0.022336926, 0.00446428, 1.51E-04, 0, 0, 0, 0, 0, 0, 0]/365/2;
+% from Kenya survey
+rawdata2 = [0 0 0 0 96 206 183 148 100 38 9 0 0 0 0 0 0 0 0]/1000/365/2;
 %% years old
 % Age Group: <1 year, 1-4 years, 5-9 years, 10-14 years,..., 80-84 years and 85+ years
 alpha = [0.5 2.5 7 12 17 22 27 32 37 42 47 52 57 62 67 72 77 82 87.5].*365;
-gH = rawdata;
+% figure_setups;
+% hold on
+% plot(alpha/365,rawdata1,'-o')
+% plot(alpha/365,rawdata2,'-o')
+% legend('Kenya survey','IHME')
+% keyboard
+gH = rawdata1;
 %% estimate parameter values for the mortality rate function (2.*cc.*normpdf((age-zz)./ww).*normcdf(alpha.*(age-zz)./ww)./ww);
 modelfun = @(b,x) (2.*b(1).*normpdf((x./365-b(2))./b(4)).*normcdf(b(3).*(x./365-b(2))./b(4))./b(4))/365/2;
 

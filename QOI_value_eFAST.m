@@ -5,8 +5,12 @@ da = P.da;
 a = P.a;
 
 if strcmp(lQ(1:2),'EE')
-    [SH,EH,DH,AH,Cac,Cm,Ctot] = steady_state('EE','numerical');
-end
+%     [SH,EH,DH,AH,Cac,Cm,Ctot] = steady_state('EE','numerical');
+    [SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
+    [SH_solu, EH_solu, DH_solu, AH_solu, SM_solu, EM_solu, IM_solu, ~, ~, Ctot_solu] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
+    SH = SH_solu(:,end); EH = EH_solu(:,end); DH = DH_solu(:,end); AH = AH_solu(:,end); Ctot = Ctot_solu(:,end);
+    SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end); 
+ end
 
 switch lQ
     case 'R0'    

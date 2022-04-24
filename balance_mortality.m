@@ -2,11 +2,11 @@ function balance_mortality
 % calculate a balanced mortality rate, given a fertility rate
 global P
 
-if exist('balanced_mortality.mat','file') % need to re-run the mat file if the death rates are updated!!
-    load('balanced_mortality.mat','fun_balanced_muH_int')
-    if P.verbose==1; disp('Previously calculated balanced mortality rate loaded.'); end
-
-else
+% if exist('balanced_mortality.mat','file') % need to re-run the mat file if the death rates are updated!!
+%     load('balanced_mortality.mat','fun_balanced_muH_int')
+%     if P.verbose==1; disp('Previously calculated balanced mortality rate loaded.'); end
+% 
+% else
     if P.verbose==1; disp('calculating new balanced mortality profile.'); end    
     gH = P.gH_fun;
     da_fine = 5; % fine grid for approximating new birth
@@ -20,7 +20,7 @@ else
     balanced_M_fine = balanced_coef.*P.muH_int_fun(a_fine);
     fun_balanced_muH_int = griddedInterpolant(a_fine,balanced_M_fine);
     save('balanced_mortality.mat','fun_balanced_muH_int');
-end
+% end
 
 muH_old = P.muH;
 
@@ -42,5 +42,5 @@ P.muH(1) = P.muH(2);
 %     plot(P.a/365,P.muH,'-.r');
 %     legend('original mortality','balanced mortality');
 %     keyboard
-% %
+%
 end
