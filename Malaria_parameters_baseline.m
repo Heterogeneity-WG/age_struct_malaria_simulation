@@ -37,28 +37,16 @@ P.uc = 10; % Duration in which immunity is not boosted
 % using Tfinal = 10 years
 P.phif0 = 0.01; 
 P.phif1 = 1;
-P.phis2 = 3.741225742715598; P.phis2_lower = P.phis2*0.5; P.phis2_upper = P.phis2*1.5;
-P.phir2 = 0.100038517193148; P.phir2_lower = P.phir2*0.5; P.phir2_upper = P.phir2*1.5;
+P.phis2 = 1.748400494250446; P.phis2_lower = P.phis2*0.5; P.phis2_upper = P.phis2*1.5;
+P.phir2 = 4.089465852051163; P.phir2_lower = P.phir2*0.5; P.phir2_upper = P.phir2*1.5;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-P.rhos2 = 5.609668653723179; P.rhos2_lower = P.rhos2*0.5; P.rhos2_upper = P.rhos2*1.5;
-P.rhor2 = 2.102940450587619; P.rhor2_lower = P.rhor2*0.5; P.rhor2_upper = P.rhor2*1.5;
-
-% SIAP version
-% P.phif0 = 0.01; 
-% P.phif1 = 1;
-% P.phis2 = 2.432431947045749; P.phis2_lower = P.phis2*0.5; P.phis2_upper = P.phis2*1.5;
-% P.phir2 = 1.278072983365070; P.phir2_lower = P.phir2*0.5; P.phir2_upper = P.phir2*1.5;
-% P.rhof0 = 0.01; 
-% P.rhof1 = 1; 
-% P.rhos2 = 3.186658383357816; P.rhos2_lower = P.rhos2*0.5; P.rhos2_upper = P.rhos2*1.5;
-% P.rhor2 = 1.030263636242633; P.rhor2_lower = P.rhor2*0.5; P.rhor2_upper = P.rhor2*1.5;
-
-% psi = rho
+P.rhos2 = 2.781182708408349; P.rhos2_lower = P.rhos2*0.5; P.rhos2_upper = P.rhos2*1.5;
+P.rhor2 = 3.349185468908294; P.rhor2_lower = P.rhor2*0.5; P.rhor2_upper = P.rhor2*1.5;
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-P.psis2 = P.rhos2; P.psis2_lower = P.psis2*0.5; P.psis2_upper = P.psis2*1.5;
-P.psir2 = P.rhor2; P.psir2_lower = P.psir2*0.5; P.psir2_upper = P.psir2*1.5;
+P.psis2 = 1.267935962166972; P.psis2_lower = P.psis2*0.5; P.psis2_upper = P.psis2*1.5;
+P.psir2 = 2.767371953595199; P.psir2_lower = P.psir2*0.5; P.psir2_upper = P.psir2*1.5;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
@@ -67,9 +55,9 @@ P.betaM = 0.25; P.betaM_lower = 0.2; P.betaM_upper = 0.55; % infectivity of mosq
 P.betaD = 0.35; P.betaD_lower = 0.3; P.betaD_upper = 0.4; % infectivity of DH   P.betaD = 0.35;
 P.betaA = 0.03; P.betaA_lower = 0.015; P.betaA_upper = 0.1; % infectivity of AH    P.betaA = 0.03;
 
-P.muM = 1/10; P.muM_lower = 1/20; P.muM_upper = 1/8; % natural mortality rate of mosquitoes
+P.muM = 1/14; P.muM_lower = 1/20; P.muM_upper = 1/8; % natural mortality rate of mosquitoes 1/10
 P.gM = 0.5; % recruitment rate of mosquitoes;
-P.sigma = 1/15; P.sigma_lower = 1/20; P.sigma_upper = 1/6; % incubation rate for mosquitoes
+P.sigma = 1/10; P.sigma_lower = 1/20; P.sigma_upper = 1/6; % incubation rate for mosquitoes 1/15
 
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data

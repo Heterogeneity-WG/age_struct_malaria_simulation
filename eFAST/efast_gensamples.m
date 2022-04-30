@@ -1,4 +1,4 @@
-function X = efast_gensamples(X,OMi,MI,pmin,pmax,type)
+function X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,type)
 
 [NS,~,k,NR] = size(X);
 
@@ -23,9 +23,15 @@ for i=1:k % Loop over POIs, including dummy
         OM_VEC = OM(1:k);
         FI_MAT = FI(ones(NS,1),1:k)';
         ANGLE = OM_VEC'*S_VEC+FI_MAT;
-        X(:,:,i,L) = 0.5+asin(sin(ANGLE'))/pi; % between 0 and 1        
-        % Transform distributions from standard uniform to general.
-        X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,0,1,NS,type); % this is what assigns 'our' values rather than 0:1 dist
+        X(:,:,i,L) = 0.5+asin(sin(ANGLE'))/pi; % between 0 and 1
+        % Transform distributions from standard uniform (between 0 and 1) to general.
+        switch lower(type)
+            case {'unif'}
+                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,0,1,NS,type); % this is what assigns 'our' values rather than 0:1 dist
+            case {'norm'}
+                pvar = (pmax-pmin)/3; % std for normal distribution, approximated using range
+                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,pmean,pvar,NS,type); % this is what assigns 'our' values rather than 0:1 dist
+        end        
     end 
 end 
 end

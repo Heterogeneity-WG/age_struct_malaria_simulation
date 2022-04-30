@@ -22,10 +22,12 @@ switch lower(type)
         for k=1:length(X(1,:)) %loop through parameters
             Xdist(:,k) = norminv(X(:,k),pmean(k),pstd(k));
         end
-%     case {'lognorm'}
-%         for k=1:length(X(1,:)) %loop through parameters
-%             Xdist(:,k) = norminv(X(:,k),log(pmean(k)),pstd(k));
-%         end
+    case {'lognorm'}
+        for k=1:length(X(1,:)) %loop through parameters
+            y = logninv(X(:,k),pmean(k),pstd(k));
+            Xdist(:,k) = exp(y);
+            keyboard
+        end
     otherwise
         disp('Unknown pdf')
 end

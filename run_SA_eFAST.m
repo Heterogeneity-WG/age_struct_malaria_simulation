@@ -32,16 +32,17 @@ time_points = 1; % default time_points = 1, unless if wants to check QOI at part
 lP_list = {'rA','rD','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
-pmin = NaN(length(lP_list),1); pmax = pmin;
+pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
 for iP = 1:length(lP_list)
     pmin(iP,1) = P.([lP_list{iP},'_lower']);
     pmax(iP,1) = P.([lP_list{iP},'_upper']);
+    pmean(iP,1) = P.([lP_list{iP}]);
 end
 
 %% eFAST config
 NR = 5;    % # of search curves - Resampling - keep the value
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
-NS = 513;   % # of samples per search curve - may change
+NS = 257;   % # of samples per search curve - may change
 wantedN=NS*k*NR; % wanted no. of sample points
 MI = 4; %: maximum number of fourier coefficients that may be retained in calculating the partial variances without interferences between the assigned frequencies
 % Computation of the frequency for the group of interest OMi and the # of sample points NS (here N=NS)
@@ -60,7 +61,8 @@ X(NS,k,k,NR) = 0;
 if use_X
     load(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X') 
 else
-    X = efast_gensamples(X,OMi,MI,pmin,pmax,'unif');
+    X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'unif'); % uniform distribution for POIs
+%     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'lognorm'); % norm lognorm 
     save(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 end
 tic
