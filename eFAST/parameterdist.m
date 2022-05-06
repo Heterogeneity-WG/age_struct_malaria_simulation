@@ -18,6 +18,11 @@ switch lower(type)
             P =(idx'-ran)/nsample;
             Xdist(:,k)=(X(:,k).*(pmax(k)-pmin(k)))+pmin(k);
         end
+    case {'triangular'}
+        for k=1:length(X(1,:)) %loop through parameters
+            pd = makedist('Triangular','A',pmin(k),'B',pmean(k),'C',pmax(k));  % bound [A,C], peak at B
+            Xdist(:,k) = icdf(pd,X(:,k));
+        end
     case {'norm'}
         for k=1:length(X(1,:)) %loop through parameters
             Xdist(:,k) = norminv(X(:,k),pmean(k),pstd(k));

@@ -17,7 +17,7 @@ use_X = 0; % load pre-generated parameter samples, stored in matrix X "eFAST_sam
 tfinal = 10*365; % final time in days
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 5;
+dt = 15; % time/age step size in days, default = 5;
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -26,8 +26,8 @@ na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
 %% SA setting
-lQ = 'EE-D';  % R0 RHM RMH EE-EIR EE-EDA EE-infected EE-D-frac EE-D
-Size_QOI = 1; % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
+lQ = {'EE-D','EE-D-frac','EE-DA','EE-D-02-10','EE-D-frac-02-10','EE-DA-02-10','EE-EIR'};  % R0 RHM RMH EE-EIR EE-EDA EE-infected EE-D-frac EE-D
+Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
 time_points = 1; % default time_points = 1, unless if wants to check QOI at particular time points
 lP_list = {'rA','rD','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
@@ -37,12 +37,13 @@ for iP = 1:length(lP_list)
     pmin(iP,1) = P.([lP_list{iP},'_lower']);
     pmax(iP,1) = P.([lP_list{iP},'_upper']);
     pmean(iP,1) = P.([lP_list{iP}]);
+%     sprintf('%5s  %2f  %2f', lP_list{iP}, pmin(iP,1)./pmean(iP,1), pmax(iP,1)./pmean(iP,1))
 end
 
 %% eFAST config
 NR = 5;    % # of search curves - Resampling - keep the value
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
-NS = 257;   % # of samples per search curve - may change
+NS = 513;   % # of samples per search curve - may change
 wantedN=NS*k*NR; % wanted no. of sample points
 MI = 4; %: maximum number of fourier coefficients that may be retained in calculating the partial variances without interferences between the assigned frequencies
 % Computation of the frequency for the group of interest OMi and the # of sample points NS (here N=NS)
@@ -61,8 +62,8 @@ X(NS,k,k,NR) = 0;
 if use_X
     load(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X') 
 else
-    X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'unif'); % uniform distribution for POIs
-%     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'lognorm'); % norm lognorm 
+    X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'triangular'); % triangular distribution for POIs
+%     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'unif'); % uniform distribution for POIs
     save(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 end
 tic
@@ -117,15 +118,15 @@ for i=1:k % Loop over POIs, including dummy
                 P.(lP_list{iP}) = X(run_num,iP,i,L);
             end
             Malaria_parameters_transform_eFAST; % update dependent parameters
-            Q_val = QOI_value_eFAST(lQ); % calculate QOI values
-            if Q_val>1.1; keyboard;end % sanity check
+            Q_val = QOI_value_eFAST(lQ,time_points); % calculate QOI values
+%             if Q_val>1.1; keyboard;end % sanity check
             Y(run_num,:,:,i,L) = Q_val; 
         end 
    end
 end
         
 %% eFAST on output matrix Y
-var = 1; % index of QOIs to analyze (among Size_QOI) (default = 1)
+var = 1:length(lQ); % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);
 [CVsi, CVsti] = CVmethod(Si, rangeSi,Sti,rangeSti,var); % Coeff. of Variance; See online Supplement A.5 for details
@@ -135,22 +136,25 @@ toc
 
 %% Plotting
 % load(['Results/eFAST_result_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'s_struct','lP_list','lQ','palpha')
-figure_setups; hold on
 X = categorical(lP_list);
 X = reordercats(X,lP_list);
-model_series = [s_struct.Si';s_struct.Sti']';
-model_error = [std(s_struct.rangeSi,0,3)';std(s_struct.rangeSti,0,3)']';
-b = bar(X,model_series);
-% mark p-values for Si
-xtips1 = b(1).XEndPoints;
-ytips1 = b(1).YEndPoints;
-labels1 = cell(1, length(lP_list)); 
-labels1(s_struct.p_Si<palpha) = {'*'};
-text(xtips1,ytips1,labels1,'HorizontalAlignment','center','VerticalAlignment','bottom')
-% mark p-values for Sti
-xtips2 = b(2).XEndPoints;
-ytips2 = b(2).YEndPoints;
-labels2 = cell(1, length(lP_list)); 
-labels2(s_struct.p_Sti<palpha) = {'*'};
-text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
-legend('first-order $S_i$','total-order $S_{Ti}$','Location','nw')
+for iQ = 1:length(lQ)
+    figure_setups; hold on
+    model_series = [s_struct.Si(:,:,iQ)';s_struct.Sti(:,:,iQ)']';
+    model_error = [std(s_struct.rangeSi(:,:,:,iQ),0,3)';std(s_struct.rangeSti(:,:,:,iQ),0,3)']';
+    b = bar(X,model_series);
+    % mark p-values for Si
+    xtips1 = b(1).XEndPoints;
+    ytips1 = b(1).YEndPoints;
+    labels1 = cell(1, length(lP_list));
+    labels1(s_struct.p_Si(:,:,:,iQ)<palpha) = {'*'};
+    text(xtips1,ytips1,labels1,'HorizontalAlignment','center','VerticalAlignment','bottom')
+    % mark p-values for Sti
+    xtips2 = b(2).XEndPoints;
+    ytips2 = b(2).YEndPoints;
+    labels2 = cell(1, length(lP_list));
+    labels2(s_struct.p_Sti(:,:,:,iQ)<palpha) = {'*'};
+    text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
+    title(['QOI=',lQ{iQ}])
+    saveas(gcf,['Results/',lQ{iQ},'_',num2str(NS),'.png'])
+end

@@ -1,7 +1,7 @@
 global P
 
 %% dummy varaible for eFast SA
-P.dummy = 1; P.dummy_lower = 1; P.dummy_upper = 10; % dummy parameter for global SA eFAST - values from original code 
+P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for global SA eFAST - values from original code 
 %% 
 P.verbose = 0; % turn on the warning messages. Error messages from the check routines will display regardless
 P.balance_fertility = 0; % balanced fertility or not
@@ -21,15 +21,15 @@ P.w = 1/(0.66*365); % Waning rate for infection-protection immunity (VH) for chi
 P.e = 0.73; % Vaccine efficacy for the infection-protection immunity (VH) for children 
 
 %%
-P.rD = 1/33.5; P.rD_lower = 1/46.25; P.rD_upper = 1/21; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
-P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/26; % recovery rate for AH (clearance of parasite) 
+P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
+P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
 P.h = 1/26; % incubation rate in human
 
 %% immunity parameters/rates
-P.dac = 5*365; P.dac_lower = 365; P.dac_upper = 10*365; % half life of acquired immunity   
+P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % half life of acquired immunity   
 P.dm = 0.25*365; % half life of maternal immunity
 P.c1 = 1; % weight for acquired immunity
-P.cX = 0.1; P.cX_lower = 0.05; P.cX_upper = 0.15; % free parameter - weight for boosting
+P.cX = 0.1; P.cX_lower = 0.065; P.cX_upper = 0.21; % free parameter - weight for boosting
 P.m = 1; % fraction of new-born immunity relative to mother’s
 P.uc = 10; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
@@ -37,27 +37,27 @@ P.uc = 10; % Duration in which immunity is not boosted
 % using Tfinal = 10 years
 P.phif0 = 0.01; 
 P.phif1 = 1;
-P.phis2 = 1.748400494250446; P.phis2_lower = P.phis2*0.5; P.phis2_upper = P.phis2*1.5;
-P.phir2 = 4.089465852051163; P.phir2_lower = P.phir2*0.5; P.phir2_upper = P.phir2*1.5;
+P.phis2 = 1.748400494250446; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
+P.phir2 = 4.089465852051163; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-P.rhos2 = 2.781182708408349; P.rhos2_lower = P.rhos2*0.5; P.rhos2_upper = P.rhos2*1.5;
-P.rhor2 = 3.349185468908294; P.rhor2_lower = P.rhor2*0.5; P.rhor2_upper = P.rhor2*1.5;
+P.rhos2 = 2.781182708408349; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
+P.rhor2 = 3.349185468908294; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-P.psis2 = 1.267935962166972; P.psis2_lower = P.psis2*0.5; P.psis2_upper = P.psis2*1.5;
-P.psir2 = 2.767371953595199; P.psir2_lower = P.psir2*0.5; P.psir2_upper = P.psir2*1.5;
+P.psis2 = 1.267935962166972; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
+P.psir2 = 2.767371953595199; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
-P.betaM = 0.25; P.betaM_lower = 0.2; P.betaM_upper = 0.55; % infectivity of mosquitoes P.betaM = 0.25;
-P.betaD = 0.35; P.betaD_lower = 0.3; P.betaD_upper = 0.4; % infectivity of DH   P.betaD = 0.35;
-P.betaA = 0.03; P.betaA_lower = 0.015; P.betaA_upper = 0.1; % infectivity of AH    P.betaA = 0.03;
+P.betaM = 0.25; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
+P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
+P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 
-P.muM = 1/14; P.muM_lower = 1/20; P.muM_upper = 1/8; % natural mortality rate of mosquitoes 1/10
+P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes 1/10
 P.gM = 0.5; % recruitment rate of mosquitoes;
-P.sigma = 1/10; P.sigma_lower = 1/20; P.sigma_upper = 1/6; % incubation rate for mosquitoes 1/15
+P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes 1/15
 
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data

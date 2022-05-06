@@ -9,7 +9,7 @@ function [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var)
 
 [NS, Size_timepts, Size_QOI, NP, NR] = size(Y);
 
-for u=var
+for u=1:length(var)
     for t=1:length(time_points) %loop through time_points
         disp([num2str([t u]), '//timepoint QOI']) 
         for i=1:NP % loop through parameters
