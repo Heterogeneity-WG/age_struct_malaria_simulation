@@ -13,13 +13,12 @@ P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Ken
 P.vyear = 120000; % total # of vaccine per year
 P.vage = 9*30; % finish vaccination (three doses at 9 months old)
 %
-P.vb0 = 0; % P.vb0_lower = 0.1;  P.vb0_upper = 0.8; % vaccination rate for boosting immunity (Cv) (boosting)
+P.v0 = 0; % vaccination rate
+P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
-%
-P.vp0 = 0; % P.vp0_lower = 0.1;  P.vp0_upper = 0.8; % vaccination rate for sterilizing immunity (VH) (infection protection)
-P.w = 1/(0.66*365); % Waning rate for infection-protection immunity (VH) for children 
-P.e = 0.73; % Vaccine efficacy for the infection-protection immunity (VH) for children 
-
+P.etas = 0.73; % Vaccine efficacy for the sterlizing immunity (VH) for children 
+P.etab = 0.73; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
+P.w = 1/(0.66*365); % Waning rate for the sterlizing immunity (VH) for children 
 %%
 P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
@@ -57,6 +56,7 @@ P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH 
 
 P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes 1/10
 P.gM = 0.5; % recruitment rate of mosquitoes;
+P.MHm = P.gM/P.muM; % assume NH = 1; % mosquito/human ratio
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes 1/15
 
 %% muH: non-malaria related mortality rate parameters
@@ -94,4 +94,4 @@ P.ww = 12.603;
 % P.ww = 13.196127635937707;
 
 %%
-% Malaria_parameters_transform; % commented out for running eFAST
+Malaria_parameters_transform; % commented out for running eFAST

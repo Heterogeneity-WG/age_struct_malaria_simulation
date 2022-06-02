@@ -6,10 +6,11 @@ a = P.a;
 P.c2 = P.c1; % weight for maternal immunity
 P.c3 = P.c1; % weight for vaccine-derived immunity
 
-P.cS = 1-2.5*P.cX; % SH weight
+P.cS = (1-2.5*P.cX)/2; % SH weight
 P.cE = P.cX; % EH weight  ~~ AH
 P.cA = P.cX; % AH weight
 P.cD = 0.5*P.cX; % DH weight
+P.cU = P.cS; % UH weight ~~ SH
 P.cV = P.cS; % weight for vaccination ~~ SH
 
 P.rho = sigmoid_prob(zeros(size(a)), 'rho');
@@ -36,31 +37,27 @@ gH_fun = @(age) (2.*P.cc.*normpdf((age./365-P.zz)./P.ww).*normcdf(P.alpha.*(age.
 gH =  gH_fun(a); % human fertility rate
 
 %% vaccination functions - baseline vaccine (default = 0)
-vb_fun = @(age) P.vb0.*ones(size(age));
-vb = vb_fun(a);
-vp_fun = @(age) P.vp0.*ones(size(age));
-vp = vp_fun(a);
+v_fun = @(age) P.v0.*ones(size(age));
+v = v_fun(a);
 
 % approximation of theta at DFE - needed for analytical purpose: DFE, R0, bifurcation
-pi_fun = @(x) P.w+P.e.*vp_fun(x);
-pi_int_a = intf(pi_fun,P.a);
-pi_int_fun = @(x) interp1(P.a,pi_int_a,x);
-exp_pi_int_a = intf(@(x) P.w.*exp(pi_int_fun(x)),P.a);
-exp_pi_int = @(x) interp1(P.a,exp_pi_int_a,x);
-theta_fun = @(x) exp(-pi_int_fun(x)).*(1+exp_pi_int(x));
-theta0 = theta_fun(P.a);
+% pi_fun = @(x) P.w+P.e.*v_fun(x);
+% pi_int_a = intf(pi_fun,P.a);
+% pi_int_fun = @(x) interp1(P.a,pi_int_a,x);
+% exp_pi_int_a = intf(@(x) P.w.*exp(pi_int_fun(x)),P.a);
+% exp_pi_int = @(x) interp1(P.a,exp_pi_int_a,x);
+% theta_fun = @(x) exp(-pi_int_fun(x)).*(1+exp_pi_int(x));
+% theta0 = theta_fun(P.a);
 
 P.muH = muH;
 P.muH_fun = muH_fun;
 P.muD = muD;
 P.muD_fun = muD_fun;
 P.gH = gH;
-P.vb = vb;
-P.vb_fun = vb_fun;
-P.vp = vp;
-P.vp_fun = vp_fun;
-P.theta_fun = theta_fun;
-P.theta = theta0;
+P.v = v;
+P.v_fun = v_fun;
+% P.theta_fun = theta_fun;
+% P.theta = theta0;
 P.gH_fun = gH_fun;
 P.muH_int_fun = muH_int_fun;
 P.muH_int = muH_int_fun(a);

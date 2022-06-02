@@ -5,8 +5,12 @@ global P
 % bH = P.bm*NM/NH;
 
 % compromise model from Chitnis et al. (2006)
-b_tot = P.bm*P.bh*NH.*NM./(P.bm*NM+P.bh*NH);
-bH = b_tot./NH; % bites per human
-bM = b_tot./NM; % bites per mosquito
+% b_tot = P.bm*P.bh*NH.*NM./(P.bm*NM+P.bh*NH);
+% bH = b_tot./NH; % bites per human
+% bM = b_tot./NM; % bites per mosquito
+
+% fixed mosquito-human ratio
+bH = P.MHm*P.bm*P.bh./(P.bm*P.MHm+P.bh); % bites per human
+bM = P.bm*P.bh./(P.bm*P.MHm+P.bh); % bites per mosquito
 
 end

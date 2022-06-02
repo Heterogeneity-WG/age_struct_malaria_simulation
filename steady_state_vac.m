@@ -1,4 +1,4 @@
-function [S,E,D,A,V,Cac,Cm,Cv,Ctot] = steady_state_vac(lstate,lreturn)
+function [S,E,D,A,V,U,Cac,Cm,Cv,Ctot] = steady_state_vac(lstate,lreturn)
 % lreturn = 'handle' return function handles for 'DFE'
 % lreturn = 'numerical' return numerical values
 % all variables are pop size
@@ -48,17 +48,17 @@ switch lstate
         if strcmp(lreturn,'numerical')
             dt = 20; tfinal= 50*365;  % run for a long time; numerical EE
             da = dt; a = (0:da:P.age_max)'; na = length(a);
-            [SH0, EH0, DH0, AH0, VH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
-            [SH, EH, DH, AH, VH, ~, ~, ~, Cmt, Cact, Cvt, Ctott] = age_structured_Malaria_vac(da,na,tfinal, SH0, EH0, DH0, AH0, VH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
-            S = SH(:,end); E = EH(:,end); D = DH(:,end); A = AH(:,end); V = VH(:,end);
+            [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
+            [SH, EH, DH, AH, VH, UH, ~, ~, ~, Cmt, Cact, Cvt, Ctott] = age_structured_Malaria_vac(da,na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
+            S = SH(:,end); E = EH(:,end); D = DH(:,end); A = AH(:,end); V = VH(:,end); U = UH(:,end);
             Cac = Cact(:,end); Cm = Cmt(:,end); Cv = Cvt(:,end); Ctot = Ctott(:,end);
             
         elseif strcmp(lreturn,'fsolve')
             % use numerical simulation for an initial guess
             dt = 20; tfinal= 15*365;  % run for a few years to get closer to EE
             da = dt; a = (0:da:P.age_max)'; na = length(a);
-            [SH0, EH0, DH0, AH0, VH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
-            [SH, EH, DH, AH, VH, ~, ~, ~, ~, Cac, Cv, ~] = age_structured_Malaria_vac(da,na,tfinal, SH0, EH0, DH0, AH0, VH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
+            [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
+            [SH, EH, DH, AH, VH, UH, ~, ~, ~, ~, Cac, Cv, ~] = age_structured_Malaria_vac(da,na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
             %% run solver on a coarser grid to speed up
             da_fine = P.da; da_coarse = 80; P.da = da_coarse;
             a_fine = P.a; a_coarse = (0:da_coarse:P.age_max)'; P.a = a_coarse;
@@ -69,10 +69,11 @@ switch lstate
             DH0 = interp1(a_fine,DH(:,end),a_coarse);
             AH0 = interp1(a_fine,AH(:,end),a_coarse);
             VH0 = interp1(a_fine,VH(:,end),a_coarse);
+            UH0 = interp1(a_fine,UH(:,end),a_coarse);
             Cac0 = interp1(a_fine,Cac(:,end),a_coarse);
             Cv0 = interp1(a_fine,Cv(:,end),a_coarse);
-            PH0 = SH0 + EH0 + AH0 + DH0 + VH0;
-            x0 = [SH0./PH0; EH0./PH0; DH0./PH0; AH0./PH0; VH0./PH0; Cac0./PH0; Cv0./PH0];
+            PH0 = SH0 + EH0 + AH0 + DH0 + VH0 + UH0;
+            x0 = [SH0./PH0; EH0./PH0; DH0./PH0; AH0./PH0; VH0./PH0; UH0./PH0; Cac0./PH0; Cv0./PH0];
             options = optimoptions('fsolve','Display','none','OptimalityTolerance', 1e-25);
             F_prop = @(x) human_model_der_prop_vac(x);
             [xsol,err,~,~,~] = fsolve(F_prop,x0,options);
