@@ -1,4 +1,4 @@
-function  [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot] = age_structured_Malaria_IC_vac(state)
+function  [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_IC_vac(state)
 % define the initial condition of the simulation
 
 global P
@@ -16,6 +16,8 @@ switch state
         AH = 0.01*P.PH_stable*NH;
         VH = 0*NH/na/da*ones(na,1);
         UH = 0*NH/na/da*ones(na,1);
+        % diagnostic compartment
+        MH = 0*NH/na/da*ones(na,1);
         
         % for mosquitoes
         NH = trapz(SH+EH+DH+AH+VH+UH)*da;

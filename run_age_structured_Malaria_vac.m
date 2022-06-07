@@ -44,12 +44,12 @@ end
 % PH_final = PH(:,end); % total human at age a, t = n
 % NH = trapz(PH,1)*da;
 %% initial condition 'init' 'EE'
-[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
 %% time evolution - initial run
-tfinal = 1*365; t = (0:dt:tfinal)'; nt = length(t);
+tfinal = 100*365; t = (0:dt:tfinal)'; nt = length(t);
 P.nt = nt;  P.t = t;
-[SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot] = age_structured_Malaria_vac(da,na,tfinal,...
-    SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
+[SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal,...
+    SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
 PH_final = PH(:,end); % total human at age a, t = n
 NH = trapz(PH,1)*da;
@@ -116,7 +116,8 @@ plot(t/365,trapz(DH,1)*da,'-','Color',colour_mat7);
 plot(t/365,trapz(VH,1)*da,'-','Color',colour_mat6);
 plot(t/365,trapz(UH,1)*da,'-','Color',colour_mat4);
 plot(t/365,NH,'-.k')
-legend('SH-age','EH-age','AH-age', 'DH-age','VH-age','UH-age','$N_H$','Location','e');
+plot(t/365,trapz(MH,1)*da,'-.r'); % diagnostic
+legend('$S_H$','$E_H$','$A_H$', '$D_H$', '$V_H$','$U_H$','$N_H$','$M_H$ ($\mu_D$)', 'Location','e');
 title(['Population size vs time', '~~feedback = ',num2str(immunity_feedback)]); 
 grid on; grid minor
 axis([0 max(t)/365 0 max(NH)+0.1]);
@@ -129,7 +130,8 @@ axis([0 max(t)/365 0 max(NH)+0.1]);
 % plot(a/365,VH(:,end),':','Color',colour_mat6);
 % plot(a/365,UH(:,end),':','Color',colour_mat4);
 % plot(a/365,PH_final,'-k');
-% legend('SH','EH','DH', 'AH','VH','UH','PH');
+% plot(a/365,MH(:,end),'-r');
+% legend('$S_H$','$E_H$','$A_H$','$D_H$','$V_H$','$U_H$','$P_H$','$M_H$ ($\mu_D$)');
 % % title(['Final Age Dist.,~~ feedback =',num2str(immunity_feedback)]);
 % title(['Final Age Distribution']);
 % xlabel('age (years)');
