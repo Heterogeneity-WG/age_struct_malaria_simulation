@@ -43,6 +43,7 @@ for n = 1:nt-1
     AH(1,n+1) = 0;
     VH(1,n+1) = 0;
     UH(1,n+1) = 0;
+    % human time evolution
     SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)))...
         ./(1+(lamH+P.v(2:end)+P.muH(2:end))*dt);
     VH(2:end,n+1) = (VH(1:end-1,n)+dt*P.etas*(1-P.z)*P.v(2:end).*SH(2:end,n+1))...
@@ -57,8 +58,11 @@ for n = 1:nt-1
     temp3 = P.rho(1:end-1)*P.h.*EH(2:end,n+1)+P.psi(1:end-1).*lamH.*AH(2:end,n+1);
     DH(2:end,n+1) = ((1-dt*P.rD)*DH(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));
-    % adjust mosquito infection accordingly - use tn level!
-    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(DH(:,n),AH(:,n),NH(n),NM(n));
+    PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1)+VH(:,n+1)+UH(:,n+1); % total human at age a, t = n+1
+    NHp1 = trapz(PHp1)*da; % total human population at t=n+1;
+    % mosquito time evolution
+    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DH(:,n), AH(:,n), NH(n), NHp1, NM(n));
+    NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     
     % immunity gained at age = 0 
     Cm(1,n+1) = P.m*trapz(P.gH.*(P.c1*Cac(:,n)+P.c3*Cv(:,n)))*da;
@@ -69,9 +73,6 @@ for n = 1:nt-1
     %Cm(2:n0+1,n+1) = (Cm(1,1:n0))'.*exp(-a(2:n0+1)/P.dm); % k=1:n0
     %Cm(n0+2:end,n+1) = Cm(2:end-n0,1).*exp(-t(n+1)/P.dm);  % k=n0+1:end-1
     % acquired immunity - use Qn+1
-    PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1)+VH(:,n+1)+UH(:,n+1); % total human at age a, t = n+1
-    NHp1 = trapz(PHp1)*da; % total human population at t=n;
-    NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     [bHp1,~] = biting_rate(NHp1,NM(n+1));
     lamHp1 = FOI_H(bHp1,IM(1,n+1),NM(n+1));
     % Cm and Cac are both pooled immunity

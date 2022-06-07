@@ -17,9 +17,12 @@ switch state
         VH = 0*NH/na/da*ones(na,1);
         UH = 0*NH/na/da*ones(na,1);
         
-        % for mosquitoes - assume at equilibrium
+        % for mosquitoes
         NH = trapz(SH+EH+DH+AH+VH+UH)*da;
-        [SM,EM,IM] = mosquito_ODE(DH,AH,NH,NM);
+        SM = NM; EM = 0; IM = 0;
+        if strcmp(P.lMsystem,'ss') % adjust to steady state
+            [SM,EM,IM] = mosquito_ODE(SM, EM, IM, DH, AH, NH, NH, NM);
+        end
         
         Cm = 0*ones(na,1);
         Cac = 0*ones(na,1);
