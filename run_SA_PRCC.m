@@ -20,11 +20,11 @@ na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; P.tfinal_vac = tfinal_vac;
 
 %% SA setting
-lQ = {'EE-D','EE-DA'};  % R0 RHM RMH EE-EIR EE-D-frac EE-D EE-DA EE-death
+lQ = {'EE-D','EE-D-02-10','EE-D-09-24'};  % R0 RHM RMH EE-EIR EE-D-frac EE-D EE-DA EE-death
 % 'EE-D','EE-D-frac','EE-DA'
 Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
 time_points = 1; % default time_points = 1, unless if wants to check QOI at particular time points
-lP_list = {'muM','betaM'};
+lP_list = {'dac','cX','w','etas'}; %'v0'
 % 'rA','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2','w'
 Malaria_parameters_baseline;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -35,7 +35,7 @@ for iP = 1:length(lP_list)
 end
 
 %% PRCC config
-NS = 100; % number of samples
+NS = 10000; % number of samples
 k = length(lP_list); % # of POIs
 %% Pre-allocation
 Size_timepts = length(time_points); % # of time points to check QOI value;
@@ -43,7 +43,7 @@ Y = NaN(NS,Size_timepts,Size_QOI);  % For each model evaluation, the QOI has dim
 
 %% Generate parameter samples, stored in matrix X
 LHS_raw = lhsdesign(NS,k); % uniform random draw with LHS sampling in [0,1]
-X = parameterdist(LHS_raw,pmax,pmin,pmean,1,'unif'); % 'unif' 'triangular'
+X = parameterdist(LHS_raw,pmax,pmin,pmean,1,'triangular'); % 'unif' 'triangular'
 tic
 %% model evaluations
 % common calculations/quantities that don't be impacted by the POIs
@@ -84,7 +84,7 @@ end
 find_stable_age; % depends on gH and muH
 
 for run_num = 1:NS % Loop through each parameter sample
-    disp([num2str(run_num/NS*100,3),' %']) % display progress
+    if mod(run_num,10)==0; disp([num2str(run_num/NS*100,3),' %']); end % display progress
     Malaria_parameters_baseline; % reset parameters to baseline
     for iP = 1:length(lP_list) % update parameter with sampled values
         P.(lP_list{iP}) = X(run_num,iP);
@@ -123,6 +123,7 @@ for itime = 1:Size_timepts
 end
 
 %% PRCC bar plot
+palpha = 0.05; 
 figure_setups;
 for itime = 1:Size_timepts
     for iQOI = 1:Size_QOI
@@ -132,9 +133,11 @@ for itime = 1:Size_timepts
         ylim([-1.1 1.1])
         xtips = b.XEndPoints;
         ytips = b.YEndPoints;
-        for j = 1:k
-            labels{j} = sprintf('p = %3.1e',stat_p(j,itime,iQOI));
-        end
+        labels = cell(1, length(lP_list));
+        labels(stat_p(:,itime,iQOI)<palpha) = {'*'};
+%         for j = 1:k
+%             labels{j} = sprintf('p = %3.1e',stat_p(j,itime,iQOI));
+%         end
         text(xtips,ytips,labels,'HorizontalAlignment','center',...
             'VerticalAlignment','bottom','fontsize',14)
         title(['QOI=', lQ{iQOI}])
