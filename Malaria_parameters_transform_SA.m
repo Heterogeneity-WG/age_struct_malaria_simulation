@@ -1,4 +1,4 @@
-function Malaria_parameters_transform_eFAST
+function Malaria_parameters_transform_SA
 % reduced version of the Malaria_parameters_transform.m for running the eFAST. 
 global P
 

@@ -1,4 +1,4 @@
-function Q_val = QOI_value_eFAST(lQ,time_points)
+function Q_val = QOI_value_SA(lQ,time_points)
 global P
 
 da = P.da;
