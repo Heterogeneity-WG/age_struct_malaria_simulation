@@ -27,12 +27,12 @@ na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; P.tfinal_vac = tfinal_vac;
 
 %% SA setting
-lQ = {'EE-D-frac-09','EE-D-09'};  % R0 RHM RMH EE-EIR EE-D-frac EE-D EE-DA EE-death
+lQ = {'EE-D','EE-D-02-10','EE-D-09-24'};  % R0 RHM RMH EE-EIR EE-D-frac EE-D EE-DA EE-death
 % 'EE-D','EE-D-frac','EE-DA','EE-D-02-10','EE-D-frac-02-10','EE-DA-02-10','EE-EIR','EE-death'
 Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
 time_points = 1; % default time_points = 1, unless if wants to check QOI at particular time points
-lP_list = {'rD','etas'};
-% 'rA','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2','w'
+lP_list = {'dac','cX','w','etas','v0'};
+% 'rA','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2','w','etas'
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -46,7 +46,7 @@ end
 %% eFAST config
 NR = 5;    % # of search curves - Resampling - keep the value
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
-NS = 65;   % # of samples per search curve - keep 2^n+1
+NS = 513;   % # of samples per search curve - keep 2^n+1
 wantedN=NS*k*NR; % wanted no. of sample points
 MI = 4; %: maximum number of fourier coefficients that may be retained in calculating the partial variances without interferences between the assigned frequencies
 % Computation of the frequency for the group of interest OMi and the # of sample points NS (here N=NS)
@@ -67,7 +67,7 @@ if use_X
 else
     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'triangular'); % triangular distribution for POIs
 %     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'unif'); % uniform distribution for POIs
-    save(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
+%     save(['Results/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 end
 tic
 %% model evaluations
@@ -155,5 +155,5 @@ for iQ = 1:length(lQ)
     labels2(s_struct.p_Sti(:,:,:,iQ)<palpha) = {'*'};
     text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
     title(['QOI=',lQ{iQ}])
-    saveas(gcf,['Results/',lQ{iQ},'_',num2str(NS),'.png'])
+%     saveas(gcf,['Results/',lQ{iQ},'_',num2str(NS),'.png'])
 end

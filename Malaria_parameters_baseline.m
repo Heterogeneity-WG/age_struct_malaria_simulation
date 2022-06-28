@@ -17,7 +17,7 @@ P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Ken
 P.vyear = 120000; % total # of vaccine per year
 P.vage = 9*30; % finish vaccination (three doses at 9 months old)
 %
-P.v0 = 0; % vaccination rate
+P.v0 = 0.8; P.v0_lower = 0; P.v0_upper = 1; % vaccination rate
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
 P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 
