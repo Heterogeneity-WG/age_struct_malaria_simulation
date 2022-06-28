@@ -36,10 +36,6 @@ muD_int_fun = @(age) (age./365).*P.b0D + (P.b1D./P.b2D).*(1-exp(-P.b2D.*age./365
 gH_fun = @(age) (2.*P.cc.*normpdf((age./365-P.zz)./P.ww).*normcdf(P.alpha.*(age./365-P.zz)./P.ww)./P.ww)./365/2;
 gH =  gH_fun(a); % human fertility rate
 
-%% vaccination functions - baseline vaccine (default = 0)
-v_fun = @(age) P.v0.*ones(size(age));
-v = v_fun(a);
-
 % approximation of theta at DFE - needed for analytical purpose: DFE, R0, bifurcation
 % pi_fun = @(x) P.w+P.e.*v_fun(x);
 % pi_int_a = intf(pi_fun,P.a);
@@ -54,8 +50,6 @@ P.muH_fun = muH_fun;
 P.muD = muD;
 P.muD_fun = muD_fun;
 P.gH = gH;
-P.v = v;
-P.v_fun = v_fun;
 % P.theta_fun = theta_fun;
 % P.theta = theta0;
 P.gH_fun = gH_fun;

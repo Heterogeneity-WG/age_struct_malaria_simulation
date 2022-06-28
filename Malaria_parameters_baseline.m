@@ -2,7 +2,7 @@ global P
 
 %% system configuration
 P.lMsystem = 'ss'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
-P.lMHfix = 'off'; % 'off' or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
+P.lMHfix = 'on'; % 'off' or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
 
 %% dummy varaible for eFast SA
 P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for global SA eFAST - values from original code 
@@ -20,9 +20,9 @@ P.vage = 9*30; % finish vaccination (three doses at 9 months old)
 P.v0 = 0; % vaccination rate
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
-P.etas = 0.73; % Vaccine efficacy for the sterlizing immunity (VH) for children 
-P.etab = 0.73; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
-P.w = 1/(0.66*365); % Waning rate for the sterlizing immunity (VH) for children 
+P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 
+P.etab = 0.73; P.etab_lower = 0.4; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
+P.w = 1/(0.66*365); P.w_lower = 1/(1.0*365); P.w_upper = 1/(0.31*365); % Waning rate for the sterlizing immunity (VH) for children 
 %%
 P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
@@ -98,4 +98,4 @@ P.ww = 12.603;
 % P.ww = 13.196127635937707;
 
 %%
-Malaria_parameters_transform; % commented out for running eFAST
+% Malaria_parameters_transform; % commented out for running eFAST

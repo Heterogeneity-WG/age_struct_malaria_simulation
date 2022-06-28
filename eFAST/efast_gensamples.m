@@ -27,10 +27,10 @@ for i=1:k % Loop over POIs, including dummy
         % Transform distributions from standard uniform (between 0 and 1) to general.
         switch lower(type)
             case {'unif','triangular'}
-                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,pmean,1,NS,type); % this is what assigns 'our' values rather than 0:1 dist
+                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,pmean,1,type); % this is what assigns 'our' values rather than 0:1 dist
             case {'norm'}
                 pvar = (pmax-pmin)/3; % std for normal distribution, approximated using range
-                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,pmean,pvar,NS,type); % this is what assigns 'our' values rather than 0:1 dist
+                X(:,:,i,L) = parameterdist(X(:,:,i,L),pmax,pmin,pmean,pvar,type); % this is what assigns 'our' values rather than 0:1 dist
         end        
     end 
 end 
