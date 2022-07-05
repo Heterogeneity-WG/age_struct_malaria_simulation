@@ -1,8 +1,8 @@
-clear all;
 close all;
+clearvars;
 clc;
 format long;
-global P lP
+global P
 global F
 
 % numerical config
@@ -16,6 +16,8 @@ F = s.F;
 
 %% optimization - fit to data 
 Malaria_parameters_baseline;
+Malaria_parameters_transform;
+Malaria_parameters_transform_vac;
 options = optimset('Display','iter','TolX',10^-5,'MaxIter',30);
 % [phi_s phi_r rho_s=psi_s rho_r=psi_r]
 % x0 = [2.432473210664639   1.277554702429119   3.186642715992263   1.030298116795388 ]; % SIAP paper fitting

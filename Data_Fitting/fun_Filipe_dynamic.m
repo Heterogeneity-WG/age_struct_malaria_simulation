@@ -19,13 +19,13 @@ nsamp = 20;
 [~,ind2] = min(abs(P.a-10*365)); % end at 10 years old
 ind_a = round(linspace(ind1,ind2,nsamp)');
 
-[SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
 P.betaM = 0.025; % low EIR region ~ 25
 Malaria_parameters_transform;
-[SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
 if EIR(end)<0.5; keyboard; end
-PH = SH+EH+DH+AH;
+PH = SH+EH+DH+AH;  % no vaccine
 x1 = P.a(ind_a)/365;
 y1 = EIR(end); % aEIR
 [X1,Y1] = ndgrid(x1,y1);
@@ -33,9 +33,9 @@ Z1 = Ctot(ind_a,end)./PH(ind_a,end); % final Ctot at EE
 
 P.betaM = 0.05; % med EIR region ~ 50
 Malaria_parameters_transform;
-[SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-[SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
 if EIR(end)<1; keyboard; end
 PH = SH+EH+DH+AH;
 x2 = P.a(ind_a)/365;
@@ -45,9 +45,9 @@ Z2 = Ctot(ind_a,end)./PH(ind_a,end); % final Ctot at EE
 
 P.betaM = 0.5; % high EIR region ~ 90
 Malaria_parameters_transform;
-[SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-[SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
 if EIR(end)<1; keyboard; end
 PH = SH+EH+DH+AH;
 x3 = P.a(ind_a)/365;

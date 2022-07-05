@@ -98,4 +98,4 @@ P.ww = 12.603;
 % P.ww = 13.196127635937707;
 
 %%
-% Malaria_parameters_transform; % commented out for running eFAST
+% Malaria_parameters_transform; % commented out for running SA
