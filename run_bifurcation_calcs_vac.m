@@ -1,4 +1,4 @@
-clear all
+clearvars
 % close all
 % clc
 format long

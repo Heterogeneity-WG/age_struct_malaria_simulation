@@ -21,6 +21,7 @@ if flag_EE
     Ctot = Ctot_solu(:,end);
     SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end);
     if max(vacc)>0  % continue run if vacc is non-zero
+%         keyboard
         P.v = vacc;
         SH0 = SH_solu(:,end); EH0 = EH_solu(:,end); DH0 = DH_solu(:,end); AH0 = AH_solu(:,end);  VH0 = VH_solu(:,end); UH0 = UH_solu(:,end);
         SM0 = SM_solu(:,end); EM0 = EM_solu(:,end); IM0 = IM_solu(:,end); Cm0 = Cm_solu(:,end);  Cac0 = Cac_solu(:,end); Cv0 = Cv_solu(:,end); Ctot0 = Ctot_solu(:,end); MH0 = MH_solu(:,end);
@@ -54,6 +55,8 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(DH+AH)*da;    
         case 'EE-DA-02-10'            
             Q_val(:,iQ) = trapz(DH(ind0210y)+AH(ind0210y))*da;  
+        case 'EE-DA-09-24'
+            Q_val(:,iQ) = trapz(DH(ind0924m)+AH(ind0924m))*da;  
         case 'EE-D-frac'
             Q_val(:,iQ) = trapz(DH)/trapz(DH+AH);
         case 'EE-D-frac-02-10'
@@ -74,14 +77,6 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = bH.*IM_frac*365; % annual EIR
         case 'EE_Ctot_pp'
             Q_val(:,iQ) = Ctot./P.PH_stable;
-        case 'EE_rho'
-            Q_val(:,iQ) = sigmoid_prob(Ctot./P.PH_stable, 'rho');
-        case 'EE-D-frac-09'
-            ind = age_range_ind(a,9*30,9*30);
-            Q_val(:,iQ) = trapz(DH(ind))/trapz(DH(ind)+AH(ind));    
-        case 'EE-D-09'
-            ind = age_range_ind(a,9*30,9*30);
-            Q_val(:,iQ) = trapz(DH(ind))*da;
         otherwise
             keyboard
     end

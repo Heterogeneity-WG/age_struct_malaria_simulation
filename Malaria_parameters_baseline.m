@@ -2,7 +2,7 @@ global P
 
 %% system configuration
 P.lMsystem = 'ss'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
-P.lMHfix = 'on'; % 'off' or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
+P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
 
 %% dummy varaible for eFast SA
 P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for global SA eFAST - values from original code 

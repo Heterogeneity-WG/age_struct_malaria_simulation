@@ -1,5 +1,5 @@
 close all
-clear all
+clearvars
 % clc
 global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
 global colour_r1 colour_r2

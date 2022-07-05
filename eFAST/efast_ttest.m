@@ -1,4 +1,4 @@
-function s = efast_ttest(Si,rangeSi, Sti,rangeSti,time_points,efast_var,y_var,y_var_label,alpha) % use rangeSi or ramgeSti from efast_sd
+function S = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,efast_var,y_var,y_var_label,alpha) % use rangeSi or ramgeSti from efast_sd
 %Si=Si(:,time_points);
 %Sti=Sti(:,time_points);
 %rangeSi=rangeSi(:,time_points,:);
@@ -20,32 +20,26 @@ SAefast_struct.Si=Si;
 SAefast_struct.rangeSi=rangeSi;
 SAefast_struct.Sti=Sti;
 SAefast_struct.rangeSti=rangeSti;
-g=1;
-for u=1:length(y_var)
-    for s=1:length(time_points)
-        ['time = ',num2str(s),'  ', y_var_label(u)]
+
+for iQOI=1:length(y_var)
+    for itime=1:length(time_points)
+        ['time = ',num2str(itime),'  ', y_var_label(iQOI)]
         %% Compare Si or STi of parameter j with the dummy
-        for i=1:k-1
-            %% Si
-            [rangeSi(i,s,:,u) rangeSi(k,s,:,u)];
-            [squeeze(rangeSi(i,s,:,u)) squeeze(rangeSi(k,s,:,u))];
-            [mean(squeeze(rangeSi(i,s,:,u))) mean(squeeze(rangeSi(k,s,:,u)))];
-            [a,p_Si(i,s,u)]=ttest2(squeeze(rangeSi(i,s,:,u)),squeeze(rangeSi(k,s,:,u)),alpha,'right','unequal');
-            %% Sti
-            [rangeSti(i,s,:,u) rangeSti(k,s,:,u)];
-            [squeeze(rangeSti(i,s,:,u)) squeeze(rangeSti(k,s,:,u))];
-            [mean(squeeze(rangeSti(i,s,:,u))) mean(squeeze(rangeSti(k,s,:,u)))];
-            [a,p_Sti(i,s,u)]=ttest2(squeeze(rangeSti(i,s,:,u)),squeeze(rangeSti(k,s,:,u)),alpha,'right','unequal');
+        for iPOI=1:k-1
+            % Si
+            [a,p_Si(iPOI,itime,iQOI)]=ttest2(squeeze(rangeSi(iPOI,itime,:,iQOI)),squeeze(rangeSi(k,itime,:,iQOI)),alpha,'right','unequal');
+            % Sti
+            [a,p_Sti(iPOI,itime,iQOI)]=ttest2(squeeze(rangeSti(iPOI,itime,:,iQOI)),squeeze(rangeSti(k,itime,:,iQOI)),alpha,'right','unequal');
         end % for i
-        SAefast_struct.p_Si(:,:,s,u)=p_Si(:,s,u);
-        SAefast_struct.p_Sti(:,:,s,u)=p_Sti(:,s,u);
+        SAefast_struct.p_Si(:,:,itime,iQOI)=p_Si(:,itime,iQOI);
+        SAefast_struct.p_Sti(:,:,itime,iQOI)=p_Sti(:,itime,iQOI);
     end % for t
 end
-s=SAefast_struct;
+S=SAefast_struct;
 % output results
 efast_var  % POIs
-Si_out=squeeze(s.Si(:,:,y_var))'
-p_Si_out=squeeze(s.p_Si(:,:,:,y_var))'
-Sti_out=squeeze(s.Sti(:,:,y_var))'
-p_Sti_out=squeeze(s.p_Si(:,:,:,y_var))'
+Si_out=squeeze(S.Si(:,:,y_var))'
+p_Si_out=squeeze(S.p_Si(:,:,:,y_var))'
+Sti_out=squeeze(S.Sti(:,:,y_var))'
+p_Sti_out=squeeze(S.p_Si(:,:,:,y_var))'
 end
