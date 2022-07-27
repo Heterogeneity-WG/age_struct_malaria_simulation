@@ -13,11 +13,11 @@ switch lstate
             E = @(alpha) 0*ones(size(alpha)).*P.PH_stable_fun(alpha);
             D = @(alpha) 0*ones(size(alpha)).*P.PH_stable_fun(alpha);
             A = @(alpha) 0*ones(size(alpha)).*P.PH_stable_fun(alpha);
-            V = @(alpha) (1-P.theta_fun).*ones(size(alpha)).*P.PH_stable_fun(alpha);
+            V = @(alpha) (1-P.theta_fun(alpha)).*ones(size(alpha)).*P.PH_stable_fun(alpha);
             % Cac
             Cac_prop = @(alpha) 0*ones(size(alpha));
             % Cv exact expression obtained based on simple v(alpha)
-            Cv_prop = @(alpha) P.cV*exp(-alpha/P.dv).*(P.vb0+P.vb0*P.dv*(exp(alpha/P.dv)-1));
+            Cv_prop = @(alpha) P.cV*exp(-alpha/P.dv).*(P.vb0+P.vb0*P.dv.*P.theta_fun(alpha).*(exp(alpha/P.dv)-1));
             % Cm
             Cm0 = P.m*integral(@(alpha) gH(alpha).*exp(-muH_int(alpha)).*P.c3.*Cv_prop(alpha), 0, P.age_max);
             Cm_prop = @(alpha) Cm0.*exp(-alpha./P.dm);
@@ -36,7 +36,7 @@ switch lstate
             % Cac
             Cac_prop = 0*ones(size(a));
             % Cv exact expression obtained based on simple v(alpha)
-            Cv_prop = P.cV*exp(-a./P.dv).*(P.vb0+P.vb0*P.dv*(exp(a./P.dv)-1));
+            Cv_prop = P.cV*exp(-a./P.dv).*(P.vb0+P.vb0*P.dv.*P.theta.*(exp(a./P.dv)-1));
             % Cm
             Cm0 = P.m*trapz(P.gH.*exp(-P.muH_int).*P.c3.*Cv_prop)*P.da;
             Cm = Cm0.*exp(-a./P.dm).*P.PH_stable;
