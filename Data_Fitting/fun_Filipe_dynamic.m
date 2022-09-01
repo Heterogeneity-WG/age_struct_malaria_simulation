@@ -15,15 +15,17 @@ P.psir2 = x(6);
 
 Malaria_parameters_transform;
 nsamp = 20;
-[~,ind1] = min(abs(P.a-0.5*365)); % start from 0.5 years old
+[~,ind1] = min(abs(P.a-0.3*365)); % start from 0.5 years old
+[~,ind0] = min(abs(P.a-3*365)); % start from 0.5 years old
 [~,ind2] = min(abs(P.a-10*365)); % end at 10 years old
-ind_a = round(linspace(ind1,ind2,nsamp)');
+ind_a = [round(linspace(ind1,ind0,15)'); round(linspace(ind0+1,ind2,nsamp-15)')];
 
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
-P.betaM = 0.025; % low EIR region ~ 25
+P.betaM = 0.02; % low EIR region ~ 25
 Malaria_parameters_transform;
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
+EIR1 = EIR(end);
 if EIR(end)<0.5; keyboard; end
 PH = SH+EH+DH+AH;  % no vaccine
 x1 = P.a(ind_a)/365;
@@ -31,11 +33,12 @@ y1 = EIR(end); % aEIR
 [X1,Y1] = ndgrid(x1,y1);
 Z1 = Ctot(ind_a,end)./PH(ind_a,end); % final Ctot at EE
 
-P.betaM = 0.05; % med EIR region ~ 50
+P.betaM = 0.03; % med EIR region ~ 50
 Malaria_parameters_transform;
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
+EIR2 = EIR(end);
 if EIR(end)<1; keyboard; end
 PH = SH+EH+DH+AH;
 x2 = P.a(ind_a)/365;
@@ -48,6 +51,7 @@ Malaria_parameters_transform;
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM);
+EIR3 = EIR(end);
 if EIR(end)<1; keyboard; end
 PH = SH+EH+DH+AH;
 x3 = P.a(ind_a)/365;
@@ -63,10 +67,11 @@ Z1_samp = sigmoid_prob(Z1, 'rho'); % rho from samples
 Z2_samp = sigmoid_prob(Z2, 'rho'); % rho from samples
 Z3_samp = sigmoid_prob(Z3, 'rho'); % rho from samples
 
-res = abs([(Z1_data(:)-Z1_samp(:))./Z1_data(:); (Z2_data(:)-Z2_samp(:))./Z2_data(:); (Z3_data(:)-Z3_samp(:))./Z3_data(:)]);
+% res = abs([(Z1_data(:)-Z1_samp(:))./Z1_data(:); (Z2_data(:)-Z2_samp(:))./Z2_data(:); (Z3_data(:)-Z3_samp(:))./Z3_data(:)]);
+res = abs([Z1_data(:)-Z1_samp(:); Z2_data(:)-Z2_samp(:); Z3_data(:)-Z3_samp(:)]);
 w = ones(size(res));%./(res+eps);
 err = sum(w.*(res.^2));
-
+disp(round([EIR1,EIR2,EIR3,err]',3))
 % [y1, y2, y3]
 end
 

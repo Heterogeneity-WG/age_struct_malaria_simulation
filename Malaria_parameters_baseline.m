@@ -40,16 +40,16 @@ P.uc = 10; % Duration in which immunity is not boosted
 % using Tfinal = 10 years
 P.phif0 = 0.01; 
 P.phif1 = 1;
-P.phis2 = 1.748400494250446; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
-P.phir2 = 4.089465852051163; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
+P.phis2 = 4.988291588990569; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
+P.phir2 = 2.493769945649229; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-P.rhos2 = 2.781182708408349; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
-P.rhor2 = 3.349185468908294; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
+P.rhos2 = 3.682573000812414; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
+P.rhor2 = 2.520124591290541; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-P.psis2 = 1.267935962166972; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
-P.psir2 = 2.767371953595199; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
+P.psis2 = 4.143564601288833; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
+P.psir2 = 1.363574026818044; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
