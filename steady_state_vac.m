@@ -14,6 +14,7 @@ switch lstate
             D = @(alpha) 0*ones(size(alpha)).*P.PH_stable_fun(alpha);
             A = @(alpha) 0*ones(size(alpha)).*P.PH_stable_fun(alpha);
             V = @(alpha) (1-P.theta_fun(alpha)).*ones(size(alpha)).*P.PH_stable_fun(alpha);
+            U = @(alpha) (1-P.theta_fun(alpha)).*ones(size(alpha)).*P.PH_stable_fun(alpha);
             % Cac
             Cac_prop = @(alpha) 0*ones(size(alpha));
             % Cv exact expression obtained based on simple v(alpha)
@@ -28,11 +29,17 @@ switch lstate
             Ctot = @(alpha) P.c1*Cac(alpha)+P.c2*Cm(alpha)+P.c3*Cv(alpha);
         elseif strcmp(lreturn,'numerical')
             a = P.a;
-            S = P.theta.*ones(size(a)).*P.PH_stable;
+            S = 0*ones(size(a)).*P.PH_stable; V=S; U=S;
             E = 0*ones(size(a)).*P.PH_stable;
             D = 0*ones(size(a)).*P.PH_stable;
             A = 0*ones(size(a)).*P.PH_stable;
-            V = (1-P.theta).*ones(size(a)).*P.PH_stable;
+            for i = 1:length(a)
+                S(i) = trapz(P.a(1:i), P.v(1:i));
+                int1 = trapz(a(1:i),exp(P.w*a(1:i)).*P.etas.*(1-P.z).*P.v(1:i).*S(1:i));
+                V(i) = exp(-P.w*P.a(i))*int1;
+                P.z*P.v(1:i).*S(1:i)
+            end
+            S = S.*P.PH_stable;
             % Cac
             Cac_prop = 0*ones(size(a));
             % Cv exact expression obtained based on simple v(alpha)

@@ -17,7 +17,7 @@ P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Ken
 P.vyear = 120000; % total # of vaccine per year
 P.vage = 9*30; % finish vaccination (three doses at 9 months old)
 %
-P.v0 = 0.8; P.v0_lower = 0; P.v0_upper = 1; % vaccination rate
+P.v0 = 0; P.v0_lower = 0; P.v0_upper = 1; % vaccination rate
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
 P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 
@@ -40,16 +40,16 @@ P.uc = 10; % Duration in which immunity is not boosted
 % using Tfinal = 10 years
 P.phif0 = 0.01; 
 P.phif1 = 1;
-P.phis2 = 4.988291588990569; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
-P.phir2 = 2.493769945649229; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
+P.phis2 = 3.266020807401758; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
+P.phir2 = 3.248827198899857; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-P.rhos2 = 3.682573000812414; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
-P.rhor2 = 2.520124591290541; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
+P.rhos2 = 1.594701633752857; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
+P.rhor2 = 0.837465044857498; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-P.psis2 = 4.143564601288833; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
-P.psir2 = 1.363574026818044; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
+P.psis2 = 4.664942886501461; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
+P.psir2 = 4.300057715509009; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human

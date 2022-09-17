@@ -32,13 +32,14 @@ xx = [0.1:0.05:20];
 yy = [0:0.05:120];
 [XX,YY] = meshgrid(xx,yy);
 vq = F(XX,YY); 
+%%
 figure_setups; hold on;
 % plot3(x,y,v,'.')
-imagesc(xx,yy,vq)
-set(gca,'YDir','normal');
+surf(XX,YY,vq); shading interp; view(2)
 colormap jet
 colorbar('Ticks',0:0.1:1);
 axis([0 20 0 120])
+caxis([0 1])
 % contourf(XX,YY,vq)
 % surf(xq,yq,vq)
 % axis([0 50 0 100])
