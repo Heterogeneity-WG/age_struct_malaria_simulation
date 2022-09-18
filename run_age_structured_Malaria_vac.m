@@ -26,10 +26,6 @@ Malaria_parameters_baseline;
 Malaria_parameters_transform; 
 Malaria_parameters_transform_vac;
 
-% [SH, EH, DH, AH, VH, SM, EM, IM, Cm, Cac, Cv, Ctot] = age_structured_Malaria_IC_vac('EE');
-% PH = SH+EH+DH+AH+VH;
-% PH_final = PH(:,end); % total human at age a, t = n
-% NH = trapz(PH,1)*da;
 %% initial condition 'EE' - numerical EE
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE');
 NN_S = trapz(SH0)*P.da;
@@ -69,6 +65,20 @@ PH_final = PH(:,end); % total human at age a, t = n
 NH = [NH, NH2]; 
 vacc_sterile = [vacc_sterile, vacc_sterile2];
 vacc_blood = [vacc_blood, vacc_blood2];
+%% vaccine efficacy - reduction in incidence with or w/o vaccine
+% vaccinated group
+P.v0 = 15;
+Malaria_parameters_transform_vac; 
+[~,ind1] = min(abs(P.a-7*30));
+[~,ind2] = min(abs(P.a-19*30));
+tfinal_conti = 365;
+[Incidence_vacc,vacc] = incidence_cal(da,na,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,'DH');
+% control group
+P.v0 = 0;
+Malaria_parameters_transform_vac; 
+Incidence_control = incidence_cal(da,na,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,'DH');
+(Incidence_control-Incidence_vacc)/vacc
+keyboard
 %% output data to .mat file for analysis
 % SH_EE = SH(:,end); EH_EE = EH(:,end); AH_EE = AH(:,end); DH_EE = DH(:,end); VH_EE = VH(:,end); UH_EE = UH(:,end); PH_EE = PH(:,end); v = P.v;
 % Cm_EE = Cm(:,end); Cac_EE = Cac(:,end); Ctot_EE = Ctot(:,end);
