@@ -5,9 +5,8 @@ global P
 
 na = P.na;
 da = P.da;
+NH = P.NN;
 NM = P.gM/P.muM;
-NH = 1;
-
 switch state
     case 'init' %
         SH = 0.97*P.PH_stable*NH; %0.9*NH/na/da*ones(na,1); % cell averages; %
@@ -20,22 +19,22 @@ switch state
         MH = 0*NH/na/da*ones(na,1);
         
         % for mosquitoes
-        NH = trapz(SH+EH+DH+AH+VH+UH)*da;
         SM = NM; EM = 0; IM = 0;
-        if strcmp(P.lMsystem,'ss') % adjust to steady state
-            [SM,EM,IM] = mosquito_ODE(SM, EM, IM, DH, AH, NH, NH, NM);
-        end
         
+%         NH = trapz(SH+EH+DH+AH+VH+UH)*da;
+%         temp = P.lMsystem;
+%         P.lMsystem = 'ss';
+%         [SM,EM,IM] = mosquito_ODE(SM, EM, IM, DH, AH, NH, NH, NM);
+%         P.lMsystem = temp;
+
         Cm = 0*ones(na,1);
         Cac = 0*ones(na,1);
         Cv = 0*ones(na,1);
         Ctot = P.c1*Cac+P.c2*Cm+P.c3*Cv;
         
     case 'EE' % start from EE    
-        [SH, EH, DH, AH, VH, UH, Cac, Cm, Cv, Ctot] = steady_state_vac('EE','numerical');
-        NH = trapz(SH+EH+DH+AH+VH+UH)*da;
-        [SM,EM,IM] = mosquito_ODE(DH,AH,NH,NM);        
-
+        [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
+        
     otherwise
         keyboard
 end

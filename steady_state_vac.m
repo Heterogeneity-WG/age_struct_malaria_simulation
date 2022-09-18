@@ -1,4 +1,4 @@
-function [S,E,D,A,V,U,Cac,Cm,Cv,Ctot] = steady_state_vac(lstate,lreturn)
+function [S,E,D,A,V,U,SM, EM, IM,Cac,Cm,Cv,Ctot, M] = steady_state_vac(lstate,lreturn)
 % lreturn = 'handle' return function handles for 'DFE'
 % lreturn = 'numerical' return numerical values
 % all variables are pop size
@@ -33,11 +33,11 @@ switch lstate
             E = 0*ones(size(a)).*P.PH_stable;
             D = 0*ones(size(a)).*P.PH_stable;
             A = 0*ones(size(a)).*P.PH_stable;
+            keyboard
             for i = 1:length(a)
                 S(i) = trapz(P.a(1:i), P.v(1:i));
                 int1 = trapz(a(1:i),exp(P.w*a(1:i)).*P.etas.*(1-P.z).*P.v(1:i).*S(1:i));
-                V(i) = exp(-P.w*P.a(i))*int1;
-                P.z*P.v(1:i).*S(1:i)
+                V(i) = 0;
             end
             S = S.*P.PH_stable;
             % Cac
@@ -53,13 +53,13 @@ switch lstate
         end
     case 'EE'
         if strcmp(lreturn,'numerical')
-            dt = 20; tfinal= 50*365;  % run for a long time; numerical EE
-            da = dt; a = (0:da:P.age_max)'; na = length(a);
-            [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0] = age_structured_Malaria_IC_vac('init');
-            [SH, EH, DH, AH, VH, UH, ~, ~, ~, Cmt, Cact, Cvt, Ctott] = age_structured_Malaria_vac(da,na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
-            S = SH(:,end); E = EH(:,end); D = DH(:,end); A = AH(:,end); V = VH(:,end); U = UH(:,end);
-            Cac = Cact(:,end); Cm = Cmt(:,end); Cv = Cvt(:,end); Ctot = Ctott(:,end);
-            
+            [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+            tfinal= 30*365;  % run for a long time; numerical EE
+            [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da,P.na,tfinal,...
+                SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+            S = SH(:,end); E = EH(:,end); D = DH(:,end); A = AH(:,end);  U = UH(:,end);  V = VH(:,end); M = MH(:,end); 
+            SM = SM(end); EM = EM(end);  IM = IM(end); 
+            Cac = Cac(:,end); Cm = Cm(:,end); Cv = Cv(:,end); Ctot = Ctot(:,end);
         elseif strcmp(lreturn,'fsolve')
             % use numerical simulation for an initial guess
             dt = 20; tfinal= 15*365;  % run for a few years to get closer to EE
