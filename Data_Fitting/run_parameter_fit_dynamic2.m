@@ -43,8 +43,8 @@ for irun = 1:nrun
 end
 keyboard
 %%
-% load('Data_Fitting/Filipe_paper/Xmat.mat','Xmat','irun','x_lhs')
-% for irun = 1
+load('Data_Fitting/Filipe_paper/Xmat.mat','Xmat','irun','x_lhs')
+% for irun = 1:60
 %     x = Xmat(irun,2:end);
 %     Malaria_parameters_baseline;
 %     P.phis2 = x(1);
@@ -87,13 +87,14 @@ keyboard
 tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
 dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
+x = Xmat(55,2:end);
 % [~,ind1] = min(abs(P.a-0.3*365)); 
 % [~,ind0] = min(abs(P.a-3*365)); 
 % [~,ind2] = min(abs(P.a-20*365)); 
 % ind_a = [round(linspace(ind1,ind0,15)'); round(linspace(ind0+1,ind2,nsamp-15)')];
 % x = [1.174354913102552   3.865058149466797   1.551219543369452   0.787630781652653   4.279593577031902   3.994787277041905];
 % fine EIR mesh
-x = [3.266020807401758   3.248827198899857   1.594701633752857   0.837465044857498   4.664942886501461   4.300057715509009];
+% x = [3.266020807401758   3.248827198899857   1.594701633752857   0.837465044857498   4.664942886501461   4.300057715509009];
 % [~,ind1] = min(abs(P.a-0.3*365)); 
 % [~,ind0] = min(abs(P.a-10*365)); 
 % [~,ind2] = min(abs(P.a-20*365)); 
@@ -104,7 +105,6 @@ x = [3.266020807401758   3.248827198899857   1.594701633752857   0.8374650448574
 % [~,ind2] = min(abs(P.a-50*365)); 
 % ind_a = [round(linspace(ind1,ind0,20)'); round(linspace(ind0+1,ind2,nsamp-20)')];
 % x = [1.457776066263742   4.097149381426517   1.314712272979270   0.796127082004893   2.874959267261557   4.173818846106313];
-% x = [1.457776066263742   4.097149381426517   1.314712272979270   0.796127082004893   2.874959267261557   4.173818846106313];
 Malaria_parameters_baseline;
 P.phis2 = x(1);
 P.phir2 = x(2); 
@@ -113,8 +113,8 @@ P.rhor2 = x(4);
 P.psis2 = x(5);
 P.psir2 = x(6);
 Malaria_parameters_transform;
-[SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-[SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH(:,end)+EH(:,end)+DH(:,end)+AH(:,end);
 NH = trapz(PH)*P.da;
 % EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);   
@@ -147,7 +147,7 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt;    P.da = da; P.t = t; P.tfinal = tfin
 
 Malaria_parameters_baseline;
 Malaria_parameters_transform;
-Malaria_parameters_transform_vac;
+% Malaria_parameters_transform_vac;
 P.phis2 = x(1);
 P.phir2 = x(2); 
 P.rhos2 = x(3);
@@ -172,6 +172,8 @@ else
 end
 xx = P.a/365;
 yy = zeros(1,length(var_list));
+yys = zeros(na,length(var_list));
+xxs = zeros(na,length(var_list));
 zz = zeros(na,length(var_list));
 for jj = 1:length(var_list)
     P.betaM = var_list(jj);
@@ -181,6 +183,8 @@ for jj = 1:length(var_list)
     EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);   
     PH = SH+EH+DH+AH;    
     yy(1,jj) = EIR(end); % aEIR
+    xxs(:,jj) = xx;
+    yys(:,jj) = EIR(end)*ones(size(yys(:,jj)));
     zz(:,jj) = Ctot(:,end)./PH(:,end); % final Ctot at EE    
 end
 figure_setups;
@@ -189,16 +193,13 @@ plot(var_list,yy)
 % [yy,ind] = sort(yy);
 % zz = zz(:,ind);
 %% plotting heatmap (age, EIR, immunity) 
-% figure_setups;
+figure_setups; imagesc(xx,yy,zz')
 % plot(var_list,y,'-o');
-% keyboard
-% imagesc(xx,yy,zz')
-figure_setups; grid off
-[XX,YY] = meshgrid(xx,yy); surf(XX,YY,zz'); shading interp; view(2)
+figure_setups; grid off; [XX,YY] = meshgrid(xx,yy); surf(XX,YY,zz'); shading interp; view(2)
+figure_setups; grid off; scatter3(xxs(:),yys(:),zz(:))
 axis([0 20 0 190])
 xlabel('Age (years)')
 ylabel('aEIR')
-% title(['Immunity levels, feedback = ',num2str(immunity_feedback)]);
 title('Immunity level per person');
 set(gca,'YDir','normal');
 colormap jet

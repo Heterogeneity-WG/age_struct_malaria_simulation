@@ -1,5 +1,5 @@
 clearvars
-close all
+% close all
 clc
 format long
 global P
@@ -65,20 +65,29 @@ PH_final = PH(:,end); % total human at age a, t = n
 NH = [NH, NH2]; 
 vacc_sterile = [vacc_sterile, vacc_sterile2];
 vacc_blood = [vacc_blood, vacc_blood2];
-%% vaccine efficacy - reduction in incidence with or w/o vaccine
-% vaccinated group
-P.v0 = 15;
-Malaria_parameters_transform_vac; 
-[~,ind1] = min(abs(P.a-7*30));
-[~,ind2] = min(abs(P.a-19*30));
-tfinal_conti = 365;
-[Incidence_vacc,vacc] = incidence_cal(da,na,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,'DH');
-% control group
-P.v0 = 0;
-Malaria_parameters_transform_vac; 
-Incidence_control = incidence_cal(da,na,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,'DH');
-(Incidence_control-Incidence_vacc)/vacc
-keyboard
+%% vaccine efficacy - reduction in incidence with or w/o vaccine (on population level)
+% % initial condition = at the end of initial run
+% %---- vaccinated group -----
+% lgroup = 'DH'; tfinal_vacc = 10; tfinal_count = 3650;  % -> counting incidence for one year
+% P.v0 = 100; % turn on vaccination
+% Malaria_parameters_transform_vac; 
+% [~,ind1] = min(abs(P.a-7*30));
+% [~,ind2] = min(abs(P.a-19*30));
+% [~,vacc,~,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv] = incidence_cal(da,na,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+% P.v0 = 0; % turn off vaccination
+% Malaria_parameters_transform_vac; 
+% Incidence_vacc = incidence_cal_time(da,na,tfinal_count,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv,ind1,ind2,lgroup);
+% %---- control group -----
+% P.v0 = 0;
+% Malaria_parameters_transform_vac; 
+% [~,~,~,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc] = incidence_cal(da,na,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+% Incidence_control = incidence_cal_time(da,na,tfinal_count,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc,ind1,ind2,lgroup);
+% eff = (Incidence_control-Incid ence_vacc)./vacc
+% figure_setups;
+% plot(0:P.dt:tfinal_count,eff)
+% figure_setups;
+% plot(0:P.dt:tfinal_count,Incidence_control,0:P.dt:tfinal_count,Incidence_vacc)
+% keyboard
 %% output data to .mat file for analysis
 % SH_EE = SH(:,end); EH_EE = EH(:,end); AH_EE = AH(:,end); DH_EE = DH(:,end); VH_EE = VH(:,end); UH_EE = UH(:,end); PH_EE = PH(:,end); v = P.v;
 % Cm_EE = Cm(:,end); Cac_EE = Cac(:,end); Ctot_EE = Ctot(:,end);
@@ -101,13 +110,13 @@ yyaxis left
 plot(t/365,cumsum(vacc_blood)*dt/NN_S,t/365,cumsum(vacc_sterile)*dt/NN_S)
 legend('Blood-stage','Sterile')
 ylabel('fraction')
-axis([0 max(t)/365 0 0.6]);
+axis([0 max(t)/365 0 1]);
 xlabel('years')
 title('cumulative vaccinated')
 yyaxis right
 plot(t/365,cumsum(vacc_blood)*dt,t/365,cumsum(vacc_sterile)*dt)
 ylabel('count')
-axis([0 max(t)/365 0 0.6*NN_S]);
+axis([0 max(t)/365 0 1*NN_S]);
 subplot(1,2,2)
 plot(P.a/30,P.v)
 xlim([0 25])
@@ -160,22 +169,23 @@ title('$\nu(\alpha)$ daily per-capita vacc. rate')
 % grid on
 % axis([0 age_max/365 0 max(PH_final)]);
 %% Age proportions at tfinal
-% figure_setups;
-% plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
-% plot(a/365,EH(:,end)./PH_final,'--','Color',colour_mat6);
-% plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
-% plot(a/365,AH(:,end)./PH_final,':','Color',colour_mat3);
-% plot(a/365,VH(:,end)./PH_final,':','Color',colour_mat5);
-% plot(a/365,UH(:,end)./PH_final,':','Color',colour_mat4);
-% plot(a/365,(AH(:,end)+DH(:,end))./PH_final,'r-.');
-% plot(a/365,PH_final./PH_final,'-k');
-% legend('SH/PH','EH/PH','DH/PH', 'AH/PH', 'VH/PH','UH/PH','(AH+DH)/PH');
-% title(['Final Age Dist. Proportions']); 
-% % title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]); 
-% xlabel('age (years)');
-% grid on
-% axis([0 P.age_max/365 0 1.1]);
-% xlim([0 15])
+figure_setups;
+plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
+plot(a/365,EH(:,end)./PH_final,'--','Color',colour_mat6);
+plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
+plot(a/365,AH(:,end)./PH_final,':','Color',colour_mat3);
+plot(a/365,VH(:,end)./PH_final,':','Color',colour_mat5);
+plot(a/365,UH(:,end)./PH_final,':','Color',colour_mat4);
+plot(a/365,MH(:,end)./PH_final,'r-');
+plot(a/365,(AH(:,end)+DH(:,end))./PH_final,'r-.');
+plot(a/365,PH_final./PH_final,'-k');
+legend('SH/PH','EH/PH','DH/PH', 'AH/PH', 'VH/PH','UH/PH','$M_H$ ($\mu_D$)','(AH+DH)/PH');
+title(['Final Age Dist. Proportions']); 
+% title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]); 
+xlabel('age (years)');
+grid on
+axis([0 P.age_max/365 0 1.1]);
+xlim([0 15])
 %% Age proportions in time - movie
 % figure_setups;
 % for iplot = 1:10:length(t)
@@ -275,7 +285,6 @@ title('$\nu(\alpha)$ daily per-capita vacc. rate')
 % title('mosquito population size by stages')
 % grid on
 % xlim([0 tfinal/365])
-% toc
 %% Mosquito population proportion
 % figure_setups;
 % plot(t/365,SM./NM,'b-'); hold on;
