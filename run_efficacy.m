@@ -54,6 +54,7 @@ figure_setups;
 plot(t/365,eff)
 xlabel('Year')
 ylabel('Efficacy')
+title('w/o immunity')
 keyboard
 %% turn off vaccine
 % P.v0 = 0;
