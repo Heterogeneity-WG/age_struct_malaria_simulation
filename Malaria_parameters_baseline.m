@@ -19,7 +19,7 @@ P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and bl
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
 P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 
 P.etab = 0.73; P.etab_lower = 0.4; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
-P.w = 1/(0.66*365); P.w_lower = 1/(1.0*365); P.w_upper = 1/(0.31*365); % Waning rate for the sterlizing immunity (VH) for children 
+P.w = 1/(0.66*365);%1/(2*365); P.w_lower = 1/(1.0*365); P.w_upper = 1/(0.31*365); % Waning rate for the sterlizing immunity (VH) for children 
 %%
 P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 

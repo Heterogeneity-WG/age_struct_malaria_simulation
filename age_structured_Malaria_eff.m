@@ -1,5 +1,8 @@
 function [SHr, EHr, DHr, AHr, Cmr, Cacr, Ctotr, SHv, EHv, DHv, AHv, VHv, UHv, Cmv, Cacv, Ctotv, SHc, EHc, DHc, AHc, Cmc, Cacc, Ctotc, SM, EM, IM] = ...
-    age_structured_Malaria_eff3(da, na, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0)
+    age_structured_Malaria_eff(da, na, tfinal, SHr0, EHr0, DHr0, AHr0, Cmr0, Cacr0, Ctotr0, ...
+    SHv0, EHv0, DHv0, AHv0, VHv0, UHv0, Cmv0, Cacv0, Ctotv0, ...
+    SHc0, EHc0, DHc0, AHc0, Cmc0, Cacc0, Ctotc0, SM0, EM0, IM0)
+
 global P
 
 dt = da;
@@ -12,35 +15,43 @@ SM(1) = SM0; EM(1) = EM0; IM(1) = IM0;
 
 NH = NaN(1,nt); NM = NaN(nt);
 NM(1) = SM(1)+EM(1)+IM(1);
-NH(1) = trapz(SH0(:,1)+EH0(:,1)+DH0(:,1)+AH0(:,1)+VH0(:,1)+UH0(:,1))*da;
 
 % Rest group
 SHr = NaN(na,nt); EHr = NaN(na,nt); DHr = NaN(na,nt); AHr = NaN(na,nt);
 Cmr = NaN(na,nt); Cacr = NaN(na,nt); Cvr = NaN(na,nt);  Ctotr = NaN(na,nt);
-SHr(:,1) = SH0; EHr(:,1) = EH0; DHr(:,1) = DH0; AHr(:,1) = AH0; 
-Cmr(:,1) = Cm0; Cacr(:,1) = Cac0; Cvr(:,1) = Cv0; Ctotr(:,1) = Ctot0;
+SHr(:,1) = SHr0; EHr(:,1) = EHr0; DHr(:,1) = DHr0; AHr(:,1) = AHr0; 
+Cmr(:,1) = Cmr0; Cacr(:,1) = Cacr0; Cvr(:,1) = 0; Ctotr(:,1) = Ctotr0;
 
 % vaccinated group
 SHv = NaN(na,nt); EHv = NaN(na,nt); DHv = NaN(na,nt); AHv = NaN(na,nt); VHv = NaN(na,nt); UHv = NaN(na,nt);
 Cmv = NaN(na,nt); Cacv = NaN(na,nt); Cvv = NaN(na,nt); Ctotv = NaN(na,nt);
-SHv(:,1) = 0; EHv(:,1) = 0; DHv(:,1) = 0; AHv(:,1) = 0; VHv(:,1) = 0; UHv(:,1) = 0; 
-Cmv(:,1) = 0; Cacv(:,1) = 0; Cvv(:,1) = 0; Ctotv(:,1) = 0;
+SHv(:,1) = SHv0; EHv(:,1) = EHv0; DHv(:,1) = DHv0; AHv(:,1) = AHv0; VHv(:,1) = VHv0; UHv(:,1) = UHv0; 
+Cmv(:,1) = Cmv0; Cacv(:,1) = Cacv0; Cvv(:,1) = 0; Ctotv(:,1) = Ctotv0;
 
 % control group
 SHc = NaN(na,nt); EHc = NaN(na,nt); DHc = NaN(na,nt); AHc = NaN(na,nt); 
 Cmc = NaN(na,nt); Cacc = NaN(na,nt); Cvc = NaN(na,nt); Ctotc = NaN(na,nt);
-SHc(:,1) = 0; EHc(:,1) = 0; DHc(:,1) = 0; AHc(:,1) = 0; 
-Cmc(:,1) = 0; Cacc(:,1) = 0; Cvc(:,1) = 0; Ctotc(:,1) = 0;
+SHc(:,1) = SHc0; EHc(:,1) = EHc0; DHc(:,1) = DHc0; AHc(:,1) = AHc0; 
+Cmc(:,1) = Cmc0; Cacc(:,1) = Cacc0; Cvc(:,1) = 0; Ctotc(:,1) = Ctotc0;
+
+PHr = SHr0+EHr0+DHr0+AHr0;
+PHc = SHc0+EHc0+DHc0+AHc0;
+PHv = SHv0+EHv0+DHv0+AHv0+VHv0+UHv0;
 
 % update progression probability based on immunity Ctot
-PHr = SHr(:,1)+EHr(:,1)+DHr(:,1)+AHr(:,1);
 P.phir = sigmoid_prob(Ctotr(:,1)./PHr, 'phi'); % prob. of DH -> RH
 P.rhor = sigmoid_prob(Ctotr(:,1)./PHr, 'rho'); % prob. of severely infected, EH -> DH
 P.psir = sigmoid_prob(Ctotr(:,1)./PHr, 'psi'); % prob. AH -> DH
-            
-P.phiv = P.phir; P.rhov = P.rhor; P.psiv = P.psir;
-P.phic = P.phir; P.rhoc = P.rhor; P.psic = P.psir;
 
+P.phiv = sigmoid_prob(Ctotv(:,1)./PHv, 'phi'); % prob. of DH -> RH
+P.rhov = sigmoid_prob(Ctotv(:,1)./PHv, 'rho'); % prob. of severely infected, EH -> DH
+P.psiv = sigmoid_prob(Ctotv(:,1)./PHv, 'psi'); % prob. AH -> DH
+P.phiv(PHv==0) = P.phir(PHv==0); P.rhov(PHv==0) = P.rhor(PHv==0); P.psiv(PHv==0) = P.psir(PHv==0);
+
+P.phic = sigmoid_prob(Ctotc(:,1)./PHc, 'phi'); % prob. of DH -> RH
+P.rhoc = sigmoid_prob(Ctotc(:,1)./PHc, 'rho'); % prob. of severely infected, EH -> DH
+P.psic = sigmoid_prob(Ctotc(:,1)./PHc, 'psi'); % prob. AH -> DH
+P.phic(PHc==0) = P.phir(PHv==0); P.rhoc(PHc==0) = P.rhor(PHv==0); P.psic(PHc==0) = P.psir(PHv==0);
 
 %% time evolution
 for n = 1:nt-1
