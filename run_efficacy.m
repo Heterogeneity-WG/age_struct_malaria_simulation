@@ -5,7 +5,7 @@ clc
 format long
 global P
 global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
-
+global colour_r1 colour_r2
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
@@ -38,20 +38,20 @@ temp0 = zeros(size(SH0));
     temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, SM0, EM0, IM0);
 
 %% simulation using three-group model - vaccine off
-% tfinal_conti = 0*365; total_vacc = 0;
-% P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
-% Malaria_parameters_transform_vac;
-% t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)'; 
-% [SHr2, EHr2, DHr2, AHr2, Cmr2, Cacr2, Ctotr2, SHv2, EHv2, DHv2, AHv2, VHv2, UHv2, Cmv2, Cacv2, Ctotv2, SHc2, EHc2, DHc2, AHc2, Cmc2, Cacc2, Ctotc2, SM2, EM2, IM2] = ...
-%     age_structured_Malaria_eff(da, na, tfinal_conti, SHr(:,end), EHr(:,end), DHr(:,end), AHr(:,end), Cmr(:,end), Cacr(:,end), Ctotr(:,end), ...
-%     SHv(:,end), EHv(:,end), DHv(:,end), AHv(:,end), VHv(:,end), UHv(:,end), Cmv(:,end), Cacv(:,end), Ctotv(:,end), ...
-%     SHc(:,end), EHc(:,end), DHc(:,end), AHc(:,end), Cmc(:,end), Cacc(:,end), Ctotc(:,end), SM(end), EM(end), IM(end));
-% % combine results
-% SHr = [SHr,SHr2]; EHr = [EHr,EHr2]; DHr = [DHr, DHr2]; AHr = [AHr, AHr2]; Cmr = [Cmr, Cmr2]; Cacr = [Cacr, Cacr2]; Ctotr = [Ctotr,Ctotr2];
-% SHc = [SHc,SHc2]; EHc = [EHc,EHc2]; DHc = [DHc, DHc2]; AHc = [AHc, AHc2]; Cmc = [Cmc, Cmc2]; Cacc = [Cacc, Cacc2]; Ctotc = [Ctotc,Ctotc2];
-% SHv = [SHv,SHv2]; EHv = [EHv,EHv2]; DHv = [DHv, DHv2]; AHv = [AHv, AHv2]; VHv = [VHv, VHv2]; UHv = [UHv, UHv2]; Cmv = [Cmv, Cmv2]; Cacv = [Cacv, Cacv2]; Ctotv = [Ctotv,Ctotv2];
-% SM = [SM, SM2]; EM = [EM, EM2]; IM = [IM, IM2]; 
-% t = [t;t2];
+tfinal_conti = 5*365; total_vacc = 0;
+P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
+Malaria_parameters_transform_vac;
+t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)'; 
+[SHr2, EHr2, DHr2, AHr2, Cmr2, Cacr2, Ctotr2, SHv2, EHv2, DHv2, AHv2, VHv2, UHv2, Cmv2, Cacv2, Ctotv2, SHc2, EHc2, DHc2, AHc2, Cmc2, Cacc2, Ctotc2, SM2, EM2, IM2] = ...
+    age_structured_Malaria_eff(da, na, tfinal_conti, SHr(:,end), EHr(:,end), DHr(:,end), AHr(:,end), Cmr(:,end), Cacr(:,end), Ctotr(:,end), ...
+    SHv(:,end), EHv(:,end), DHv(:,end), AHv(:,end), VHv(:,end), UHv(:,end), Cmv(:,end), Cacv(:,end), Ctotv(:,end), ...
+    SHc(:,end), EHc(:,end), DHc(:,end), AHc(:,end), Cmc(:,end), Cacc(:,end), Ctotc(:,end), SM(end), EM(end), IM(end));
+% combine results
+SHr = [SHr,SHr2]; EHr = [EHr,EHr2]; DHr = [DHr, DHr2]; AHr = [AHr, AHr2]; Cmr = [Cmr, Cmr2]; Cacr = [Cacr, Cacr2]; Ctotr = [Ctotr,Ctotr2];
+SHc = [SHc,SHc2]; EHc = [EHc,EHc2]; DHc = [DHc, DHc2]; AHc = [AHc, AHc2]; Cmc = [Cmc, Cmc2]; Cacc = [Cacc, Cacc2]; Ctotc = [Ctotc,Ctotc2];
+SHv = [SHv,SHv2]; EHv = [EHv,EHv2]; DHv = [DHv, DHv2]; AHv = [AHv, AHv2]; VHv = [VHv, VHv2]; UHv = [UHv, UHv2]; Cmv = [Cmv, Cmv2]; Cacv = [Cacv, Cacv2]; Ctotv = [Ctotv,Ctotv2];
+SM = [SM, SM2]; EM = [EM, EM2]; IM = [IM, IM2]; 
+t = [t;t2];
 
 %% calculate incidences
 PHr = SHr+EHr+DHr+AHr;
@@ -136,31 +136,41 @@ PH_final = PH(:,end);
 % % axis([0 P.age_max/365 0 1.1]);
 % xlim([0 15])
 %% Immunity breakdown
-figure_setups;
-subplot(1,2,1); hold on
-plot(a/365,Cacv(:,end)./PHv(:,end),'-.r');
-hold on;
-plot(a/365,Cmv(:,end)./PHv(:,end),'-.b');
-xlabel('age (years)')
-legend('Acquired','Maternal','Location','SouthEast');
-title('vaccinated group');
-axis([0 5 0 11]);
-grid on
-subplot(1,2,2); hold on
-plot(a/365,Cacc(:,end)./PHc(:,end),'-.r');
-hold on;
-plot(a/365,Cmc(:,end)./PHc(:,end),'-.b');
-xlabel('age (years)')
-legend('Acquired','Maternal','Location','SouthEast');
-title('control group');
-axis([0 5 0 11]);
-grid on
-figure_setups;
-plot(a/365,Cacr(:,end)./PHr(:,end),'-.r');
-hold on;
-plot(a/365,Cmr(:,end)./PHr(:,end),'-.b');
-xlabel('age (years)')
-legend('Acquired','Maternal','Location','SouthEast');
-title('rest group');
-axis([0 5 0 11]);
-grid on
+% figure_setups;
+% subplot(1,2,1); hold on
+% plot(a/365,Cacv(:,end)./PHv(:,end),'-.r');
+% hold on;
+% plot(a/365,Cmv(:,end)./PHv(:,end),'-.b');
+% xlabel('age (years)')
+% legend('Acquired','Maternal','Location','SouthEast');
+% title('vaccinated group');
+% axis([0 5 0 11]);
+% grid on
+% subplot(1,2,2); hold on
+% plot(a/365,Cacc(:,end)./PHc(:,end),'-.r');
+% hold on;
+% plot(a/365,Cmc(:,end)./PHc(:,end),'-.b');
+% xlabel('age (years)')
+% legend('Acquired','Maternal','Location','SouthEast');
+% title('control group');
+% axis([0 5 0 11]);
+% grid on
+% figure_setups;
+% plot(a/365,Cacr(:,end)./PHr(:,end),'-.r');
+% hold on;
+% plot(a/365,Cmr(:,end)./PHr(:,end),'-.b');
+% xlabel('age (years)')
+% legend('Acquired','Maternal','Location','SouthEast');
+% title('rest group');
+% axis([0 5 0 11]);
+% grid on
+%% Mosquito population proportion
+% figure_setups;
+% plot(t/365,SM./NM,'b-'); hold on;
+% plot(t/365,EM./NM,'-','Color',colour_r1);
+% plot(t/365,IM./NM,'r-.');
+% plot(t/365,(SM+EM+IM)./NM,'-.')
+% legend('$S_M$','$E_M$','$I_M$','$N_M$');
+% title('mosquito population prop by stages')
+% grid on
+% xlim([0 tfinal/365])
