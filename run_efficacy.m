@@ -1,5 +1,5 @@
 clearvars
-close all
+% close all
 clc
 
 format long
@@ -21,6 +21,9 @@ P.da = da;
 
 % model parameters
 Malaria_parameters_baseline;
+% using fitted value
+P.etas = 0.659553156743644;
+P.w = 0.004566152172269;
 Malaria_parameters_transform; 
 P.v0s = 0; P.v0c = 0;
 Malaria_parameters_transform_vac;
@@ -75,7 +78,7 @@ rhoc(PHc==0)=0; psic(PHc==0)=0;
 temp2 = rhoc.*P.h.*EHc+psic.*lamH.*AHc; % incidence of DH
 Incidence_control = trapz(temp2,1)*P.da; 
 
-%% calculate efficacy
+%% calculate efficacy - using instantaneous incidence 
 eff = (Incidence_control'-Incidence_vacc')./Incidence_control';
 figure_setups;
 plot(t/365,eff)
@@ -83,13 +86,38 @@ xlabel('Year')
 ylabel('Efficacy')
 title(['$\eta_s=$',num2str(P.etas), ',   $w=$',num2str(1/P.w/365),'years'])
 axis([0 max(t/365) -0.2 1])
+
+%% calculate efficacy - using aggregated incidence (within three month period) 
+time_period = 30*3;
+Incidence_vacc_agg = NaN(size(t));
+Incidence_control_agg = NaN(size(t));
+for it = 1:length(t)
+    period_end = t(it);
+    period_beg = t(it)-time_period;
+    if period_beg<0; continue; end
+    [~,ind_beg] = min(abs(t-period_beg)); ind_beg = ind_beg+1;
+    [~,ind_end] = min(abs(t-period_end)); 
+    Incidence_vacc_agg(it) = trapz(Incidence_vacc(ind_beg:ind_end))*P.dt;
+    Incidence_control_agg(it) = trapz(Incidence_control(ind_beg:ind_end))*P.dt;
+end
+eff_agg = (Incidence_control_agg'-Incidence_vacc_agg')./Incidence_control_agg';
+s =  load('Penny_ve_Siaya_fig2.mat','Penny_ve_Siaya_fig2'); Data = s.Penny_ve_Siaya_fig2; % Penny point data in figure 2
+figure_setups; hold on
+grid on
+scatter(Data(:,1)/12, Data(:,2),'filled')
+plot(t/365,eff,t/365,eff_agg)
+xlabel('Year')
+ylabel('Efficacy')
+title(['$\eta_s=$',num2str(P.etas), ',   $w=$',num2str(1/P.w/365),'years'])
+axis([0 max(t/365) -0.2 1])
+legend('Penny data fig2','efficacy (instant cases)','efficacy (three-monthly cases)')
 %% plots for debugging
-SH = SHr+SHv+SHc;
-EH = EHr+EHv+EHc;
-AH = AHr+AHv+AHc;
-DH = DHr+DHv+DHc;
-VH = VHv; UH = UHv;
-PH_final = PH(:,end);
+% SH = SHr+SHv+SHc;
+% EH = EHr+EHv+EHc;
+% AH = AHr+AHv+AHc;
+% DH = DHr+DHv+DHc;
+% VH = VHv; UH = UHv;
+% PH_final = PH(:,end);
 %% Population proportions versus time
 % figure_setups;
 % plot(t/365,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;

@@ -13,7 +13,6 @@ tfinal_vacc = 2*365; total_vacc = 2000;
 P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
 Malaria_parameters_transform_vac;
 t = (0:dt:tfinal_vacc)';
-t_index = length(t);
 temp0 = zeros(size(SH0));
 [SHr, EHr, DHr, AHr, Cmr, Cacr, Ctotr, SHv, EHv, DHv, AHv, VHv, UHv, Cmv, Cacv, Ctotv, SHc, EHc, DHc, AHc, Cmc, Cacc, Ctotc, SM, EM, IM] = ...
     age_structured_Malaria_eff(da, na, tfinal_vacc, SH0, EH0, DH0, AH0, Cm0, Cac0, Ctot0, ...
@@ -29,12 +28,11 @@ t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)';
     SHv(:,end), EHv(:,end), DHv(:,end), AHv(:,end), VHv(:,end), UHv(:,end), Cmv(:,end), Cacv(:,end), Ctotv(:,end), ...
     SHc(:,end), EHc(:,end), DHc(:,end), AHc(:,end), Cmc(:,end), Cacc(:,end), Ctotc(:,end), SM(end), EM(end), IM(end));
 % combine results
-SHr = [SHr,SHr2]; EHr = [EHr,EHr2]; DHr = [DHr, DHr2]; AHr = [AHr, AHr2]; Cmr = [Cmr, Cmr2]; Cacr = [Cacr, Cacr2]; Ctotr = [Ctotr,Ctotr2];
-SHc = [SHc,SHc2]; EHc = [EHc,EHc2]; DHc = [DHc, DHc2]; AHc = [AHc, AHc2]; Cmc = [Cmc, Cmc2]; Cacc = [Cacc, Cacc2]; Ctotc = [Ctotc,Ctotc2];
-SHv = [SHv,SHv2]; EHv = [EHv,EHv2]; DHv = [DHv, DHv2]; AHv = [AHv, AHv2]; VHv = [VHv, VHv2]; UHv = [UHv, UHv2]; Cmv = [Cmv, Cmv2]; Cacv = [Cacv, Cacv2]; Ctotv = [Ctotv,Ctotv2];
-SM = [SM, SM2]; EM = [EM, EM2]; IM = [IM, IM2];
-t = [t;t2];
-
+SHr = [SHr,SHr2(:,2:end)]; EHr = [EHr,EHr2(:,2:end)]; DHr = [DHr, DHr2(:,2:end)]; AHr = [AHr, AHr2(:,2:end)]; Cmr = [Cmr, Cmr2(:,2:end)]; Cacr = [Cacr, Cacr2(:,2:end)]; Ctotr = [Ctotr,Ctotr2(:,2:end)];
+SHc = [SHc,SHc2(:,2:end)]; EHc = [EHc,EHc2(:,2:end)]; DHc = [DHc, DHc2(:,2:end)]; AHc = [AHc, AHc2(:,2:end)]; Cmc = [Cmc, Cmc2(:,2:end)]; Cacc = [Cacc, Cacc2(:,2:end)]; Ctotc = [Ctotc,Ctotc2(:,2:end)];
+SHv = [SHv,SHv2(:,2:end)]; EHv = [EHv,EHv2(:,2:end)]; DHv = [DHv, DHv2(:,2:end)]; AHv = [AHv, AHv2(:,2:end)]; VHv = [VHv, VHv2(:,2:end)]; UHv = [UHv, UHv2(:,2:end)]; Cmv = [Cmv, Cmv2(:,2:end)]; Cacv = [Cacv, Cacv2(:,2:end)]; Ctotv = [Ctotv,Ctotv2(:,2:end)];
+SM = [SM, SM2(2:end)]; EM = [EM, EM2(2:end)]; IM = [IM, IM2(2:end)];
+t = [t;t2(2:end)];
 %% calculate incidences
 PHr = SHr+EHr+DHr+AHr;
 PHc = SHc+EHc+DHc+AHc;
@@ -56,22 +54,31 @@ psic = sigmoid_prob(Ctotc./PHc, 'psi'); % prob. AH -> DH
 rhoc(PHc==0)=0; psic(PHc==0)=0;
 temp2 = rhoc.*P.h.*EHc+psic.*lamH.*AHc; % incidence of DH
 Incidence_control = trapz(temp2,1)*P.da; 
-
 %% calculate efficacy
-eff = (Incidence_control'-Incidence_vacc')./Incidence_control';
+xdata = Data(:,1)*365; % time in years -> days
+ydata = Data(:,2);
 
-t(t_index) = []; % remove duplication
-eff(t_index) = []; % remove duplication
+%% using aggregated incidence (within three month period) for residual calculation
+Incidence_vacc_3mon = NaN(size(ydata));
+Incidence_control_3mon = NaN(size(ydata));
+for i = 1:length(xdata)
+    period_end = xdata(i);
+    period_beg = xdata(i)-30*3;
+    [~,ind_beg] = min(abs(t-period_beg)); ind_beg = ind_beg+1;
+    [~,ind_end] = min(abs(t-period_end)); 
+    Incidence_vacc_3mon(i) = trapz(Incidence_vacc(ind_beg:ind_end))*P.dt;
+    Incidence_control_3mon(i) = trapz(Incidence_control(ind_beg:ind_end))*P.dt;
+end
+eff_3mon = (Incidence_control_3mon'-Incidence_vacc_3mon')./Incidence_control_3mon';
+ydata(isnan(eff_3mon))=[];
+eff_3mon(isnan(eff_3mon))=[];
+yrun = eff_3mon';
 
-eff(1)= []; % remove day 1 
-t(1) = [];
-
-ind = Data(:,1)>0;
-
-xdata = Data(ind,1)*365; % time in years -> days
-ydata = Data(ind,2);
-
-yrun = interp1(t,eff,xdata); 
+%% using instantaneous incidence for residual calculation
+% eff = (Incidence_control'-Incidence_vacc')./Incidence_control';
+% t(isnan(eff))=[]; % remove day 1 if needed
+% eff(isnan(eff))=[];
+% yrun = interp1(t,eff,xdata,'pchip'); 
 
 err = norm(ydata-yrun);
 
