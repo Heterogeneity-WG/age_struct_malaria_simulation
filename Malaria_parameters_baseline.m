@@ -15,6 +15,7 @@ P.balance_mortality = 0; % balanced mortality or not
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
 P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47564296
 P.v0 = 0; P.v0_lower = 0; P.v0_upper = 1; % vaccination rate
+P.v0s = P.v0; P.v0c = P.v0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
 P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 

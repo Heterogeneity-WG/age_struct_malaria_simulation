@@ -13,11 +13,11 @@ switch lP
         P.(lP) = P_base-delta_P; % p_lower 
         Malaria_parameters_transform;
         if flag_disp; disp('P-dp run ---'); end
-        Q_lower = QOI_value(lQ);
+        Q_lower = QOI_value_SA(lQ,1);
         P.(lP) = P_base+delta_P; % p_upper
         Malaria_parameters_transform;    
         if flag_disp; disp('P+dp run ---'); end
-        Q_upper = QOI_value(lQ);
+        Q_upper = QOI_value_SA(lQ,1);
         Qp_val = (Q_upper-Q_lower)/(2*delta_P); 
     otherwise
         keyboard

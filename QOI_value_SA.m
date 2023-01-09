@@ -14,9 +14,12 @@ end
 if flag_EE
     vacc = P.v; % record vaccination rate
     P.v0 = 0;  Malaria_parameters_transform_vac; % run till EE w/o vaccination Cm, Cac, Cv, Ctot, MH] 
-    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE');
     [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
         age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+%     [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
+%     PH = SH+EH+DH+AH+VH+UH;
+   
     SH = SH_solu(:,end); EH = EH_solu(:,end); DH = DH_solu(:,end); AH = AH_solu(:,end); MH = MH_solu(:,end);
     Ctot = Ctot_solu(:,end);
     SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end);
