@@ -18,10 +18,10 @@ if flag_EE
     [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
         age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 %     [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
-%     PH = SH+EH+DH+AH+VH+UH;
    
     SH = SH_solu(:,end); EH = EH_solu(:,end); DH = DH_solu(:,end); AH = AH_solu(:,end); MH = MH_solu(:,end);
     Ctot = Ctot_solu(:,end);
+    PH = SH+EH+DH+AH+VH+UH;
     SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end);
     if max(vacc)>0  % continue run if vacc is non-zero
 %         keyboard
@@ -66,20 +66,24 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(DH(ind0210y))/trapz(DH(ind0210y)+AH(ind0210y));
         case 'EE-D-frac-09-24'
             Q_val(:,iQ) = trapz(DH(ind0924m))/trapz(DH(ind0924m)+AH(ind0924m));
-        case 'EE-death' % disease-induced mortality, diagnostic eqn MH
+        case 'EE-death' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH)*da;
-        case 'EE-death-02-10' % disease-induced mortality, diagnostic eqn MH
+        case 'EE-death-02-10' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0210y))*da;
-        case 'EE-death-09-24' % disease-induced mortality, diagnostic eqn MH
+        case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0924m))*da;
         case 'EE-EIR'
-            NH = trapz(SH+EH+DH+AH)*P.da;
+            NH = trapz(PH)*da;
             NM = SM+EM+IM;
             [bH,~] = biting_rate(NH,NM);
             IM_frac = IM./NM;
             Q_val(:,iQ) = bH.*IM_frac*365; % annual EIR
-        case 'EE_Ctot_pp'
-            Q_val(:,iQ) = Ctot./P.PH_stable;
+        case 'EE-Ctot-pp'
+            Q_val(:,iQ) = trapz(Ctot)/trapz(PH);
+        case 'EE-Ctot-pp-02-10'
+            Q_val(:,iQ) = trapz(Ctot(ind0210y))/trapz(PH(ind0210y));
+        case 'EE-Ctot-pp-09-24'
+            Q_val(:,iQ) = trapz(Ctot(ind0924m))/trapz(PH(ind0924m));
         otherwise
             keyboard
     end
