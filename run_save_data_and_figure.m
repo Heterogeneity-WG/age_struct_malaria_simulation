@@ -44,16 +44,16 @@ Malaria_parameters_transform_vac;
 % initial condition 'EE' - numerical EE
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 
-initial.SH=SH(:,1); initial.EH=EH(:,1); initial.DH=DH(:,1); initial.AH=AH(:,1); initial.VH=VH(:,1); initial.UH=UH(:,1);
-initial.SM=SM(:,1); initial.EM=EM(:,1); initial.IM=IM(:,1);
-initial.Cm=Cm(:,1); initial.Cac=Cac(:,1); initial.Cv=Cv(:,1); initial.Ctot=Ctot(:,1);
-initial.MH=MH(:,1);
-
 % time evolution - initial run
 tfinal = P.years*365; t = (0:dt:tfinal)'; nt = length(t);
 P.nt = nt;  P.t = t;
 [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+
+initial.SH=SH(:,1); initial.EH=EH(:,1); initial.DH=DH(:,1); initial.AH=AH(:,1); initial.VH=VH(:,1); initial.UH=UH(:,1);
+initial.SM=SM(:,1); initial.EM=EM(:,1); initial.IM=IM(:,1);
+initial.Cm=Cm(:,1); initial.Cac=Cac(:,1); initial.Cv=Cv(:,1); initial.Ctot=Ctot(:,1);
+initial.MH=MH(:,1);
 
 % lQ = 'EE-D-frac';  % R0 RHM RMH EE-EIR EE-EDA EE-infected EE-D-frac
 lQ = {'EE-D','EE-DA'};%,'EE-D-frac','EE-EIR',...
@@ -106,7 +106,7 @@ end
 
 
 %Delete any previous copies
-filename = ['Output_etas_',param1_value_print,'_etab_',param2_value_print,'.mat'];
+filename = ['Output/Output_etas_',param1_value_print,'_etab_',param2_value_print,'.mat'];
 if exist(filename, 'file')==2
   delete(filename);
 end

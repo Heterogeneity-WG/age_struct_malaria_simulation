@@ -1,7 +1,6 @@
-Results/*
+Output/*.mat
 Results/*
 *.tex
 *.svg
 *.pdf
-Figures/*
 Auxiliary/R0_calculation_checks.nb
