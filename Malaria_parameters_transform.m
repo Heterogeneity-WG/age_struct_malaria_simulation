@@ -27,11 +27,15 @@ muH_int_fun = @(age) (age./365).*P.b0 + (P.b1./P.b2).*(1-exp(-P.b2.*age./365)) +
 % muD = 0*ones(size(a)); 
 % muD_fun = @(age) 0*ones(size(age));
 % muD_int_fun = @(age) 0*ones(size(age));
-muD =  P.b0D + P.b1D*exp(-P.b2D*a/365) + P.b3D*exp(P.b4D*a/365); 
-muD_fun = @(age) P.b0D + P.b1D*exp(-P.b2D*age/365) + P.b3D*exp(P.b4D*age/365); 
+a74 = 74*365;
+temp_muD = P.b0D + P.b1D*exp(-P.b2D*a74/365) + P.b3D*exp(P.b4D*a74/365);
+muD =  (P.b0D + P.b1D*exp(-P.b2D*a/365) + P.b3D*exp(P.b4D*a/365)).*(a/365<=74)...
+    + temp_muD.*(exp(-P.c0D*(a-74*365)./365)).*(a/365>74); 
+muD_fun = @(age) (P.b0D + P.b1D*exp(-P.b2D*age/365) + P.b3D*exp(P.b4D*age/365)).*(age/365<=74)...
+    + temp_muD.*(exp(-P.c0D*(age/365-74))).*(age/365>74); 
 muD = muD/365;
-muD_int_fun = @(age) (age./365).*P.b0D + (P.b1D./P.b2D).*(1-exp(-P.b2D.*age./365)) + (P.b3D./P.b4D).*(-1+exp(P.b4D.*age./365));
-
+%muD_int_fun = @(age) (age./365).*P.b0D + (P.b1D./P.b2D).*(1-exp(-P.b2D.*age./365)) + (P.b3D./P.b4D).*(-1+exp(P.b4D.*age./365));
+% not correct, commented out for now
 %% fertility rate
 gH_fun = @(age) (2.*P.cc.*normpdf((age./365-P.zz)./P.ww).*normcdf(P.alpha.*(age./365-P.zz)./P.ww)./P.ww)./365/2;
 gH =  gH_fun(a); % human fertility rate
@@ -55,8 +59,8 @@ P.gH = gH;
 P.gH_fun = gH_fun;
 P.muH_int_fun = muH_int_fun;
 P.muH_int = muH_int_fun(a);
-P.muD_int_fun = muD_int_fun;
-P.muD_int = muD_int_fun(a);
+%P.muD_int_fun = muD_int_fun;
+%P.muD_int = muD_int_fun(a);
 
 % Update the fertility and stable age dist. if balanced option is selected
 if P.balance_fertility == 1

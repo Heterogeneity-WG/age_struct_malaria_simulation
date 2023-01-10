@@ -42,7 +42,6 @@ for n = 1:nt-1
     AH(1,n+1) = 0;
     VH(1,n+1) = 0;
     UH(1,n+1) = 0;
-    MH(1,n+1) = 0; % diagnostic, disease-induced mortality
     % human time evolution
     SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)))...
         ./(1+(lamH+P.v(2:end)+P.muH(2:end))*dt); 
@@ -59,7 +58,7 @@ for n = 1:nt-1
     DH(2:end,n+1) = ((1-dt*P.rD)*DH(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));
     % diagnostic, disease-induced mortality counts
-    MH(2:end,n+1) = MH(1:end-1,n)+dt*P.muD(2:end).*DH(2:end,n+1);
+    MH(:,n+1) = MH(:,n)+dt*P.muD.*DH(:,n);
     
     PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1)+VH(:,n+1)+UH(:,n+1); % total human at age a, t = n+1
     NHp1 = trapz(PHp1)*da; % total human population at t=n+1;

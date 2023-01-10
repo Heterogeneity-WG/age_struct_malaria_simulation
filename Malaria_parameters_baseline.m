@@ -82,6 +82,7 @@ P.b1D = 0.055085;
 P.b2D = 1.0282;
 P.b3D = 0.00012962;
 P.b4D = 0.064575;
+P.c0D = 0.181055030942671;
 
 %% fertility rate parameters
 % use IHME data fit
