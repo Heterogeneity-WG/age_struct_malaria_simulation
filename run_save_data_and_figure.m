@@ -4,7 +4,30 @@ close all
 
 %Load Parameters
 
+format long
+global P
+global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
+global colour_r1 colour_r2
 
+tic
+
+%% numerical config
+age_max = 100*365; % max ages in days
+P.age_max = age_max;
+dt = 10; % time/age step size in days, default = 5;
+da = dt;
+a = (0:da:age_max)';
+na = length(a);
+
+P.dt = dt; 
+P.a = a;
+P.na = na;
+P.da = da;
+
+% model parameters
+Malaria_parameters_baseline;
+Malaria_parameters_transform; 
+Malaria_parameters_transform_vac;
 
 %Parameters to Vary
 
