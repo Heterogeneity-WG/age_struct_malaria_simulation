@@ -14,15 +14,17 @@ SM=soln.SM; EM=soln.EM; IM=soln.IM;
 Cm=soln.Cm; Cac=soln.Cac; Cv=soln.Cv; Ctot=soln.Ctot;
 MH=soln.MH;
 
-% Unpack final time solution
+PH = SH + EH + DH + AH + VH + UH;
+NH = trapz(PH,1)*da;
+NM = SM + EM + IM;
+
+% Unpack final time solution - for EE-related QOIs
 SHend=SH(:,end); EHend=EH(:,end); DHend=DH(:,end); AHend=AH(:,end); VHend=VH(:,end); UHend=UH(:,end);
 SMend=SM(:,end); EMend=EM(:,end); IMend=IM(:,end);
 Cmend=Cm(:,end); Cacend=Cac(:,end); Cvend=Cv(:,end); Ctotend=Ctot(:,end);
 MHend=MH(:,end);
 
-PH = SH + EH + DH + AH + VH + UH;
-NH = trapz(PH,1)*da;
-NM = SM + EM + IM;
+PHend = SHend+EHend+DHend+AHend+VHend+UHend;
 
 for iQ = 1:length(lQ)
     switch lQ{iQ}    
@@ -57,24 +59,23 @@ for iQ = 1:length(lQ)
         case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val.EE_death_09_24 = trapz(MHend(ind0924m))*da;
         case 'EE-EIR'
-            NH = trapz(PH)*da;
-            NM = SMend+EMend+IMend;
-            [bH,~] = biting_rate(NH,NM);
-            IM_frac = IMend./NM;
+            NHend = trapz(PHend)*da;
+            NMend = SMend+EMend+IMend;
+            [bH,~] = biting_rate(NHend,NMend);
+            IM_frac = IMend./NMend;
             Q_val.EE_EIR = bH.*IM_frac*365; % annual EIR
         case 'EE-Ctot-pp'
-            Q_val.EE_Ctot_pp = trapz(Ctotend)/trapz(PH);
+            Q_val.EE_Ctot_pp = trapz(Ctotend)/trapz(PHend);
         case 'EE-Ctot-pp-02-10'
-            Q_val.EE_Ctot_pp_02_10 = trapz(Ctotend(ind0210y))/trapz(PH(ind0210y));
+            Q_val.EE_Ctot_pp_02_10 = trapz(Ctotend(ind0210y))/trapz(PHend(ind0210y));
         case 'EE-Ctot-pp-09-24'
-            Q_val.EE_Ctot_pp_09_24 = trapz(Ctotend(ind0924m))/trapz(PH(ind0924m));
+            Q_val.EE_Ctot_pp_09_24 = trapz(Ctotend(ind0924m))/trapz(PHend(ind0924m));
         case 'DH_Incidence' % Incidence of epidsodes (like cases)
             [bH,~] = biting_rate(NH,NM);
             lamH = FOI_H(bH,IM,NM);
             
             rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
             psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH
-            rho(PH==0)=0; psi(PH==0)=0;
             temp1 = rho.*h.*EH+psi.*lamH.*AH; % incidence of DH
             Q_val.DH_Incidence = trapz(temp1,1)*da;
         case 'Vaccines'
@@ -85,6 +86,7 @@ for iQ = 1:length(lQ)
             Q_val.Vaccines_blood = vacc_blood;
         case 'DALY' % instantaneous (time series) DALY based on daily cases
             [DALY,~,~] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot); 
+            
             Q_val.DALY = DALY; 
         otherwise
             keyboard
