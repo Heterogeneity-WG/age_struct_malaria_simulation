@@ -83,6 +83,9 @@ for iQ = 1:length(lQ)
 
             Q_val.Vaccines_sterile = vacc_sterile;
             Q_val.Vaccines_blood = vacc_blood;
+        case 'DALY' % instantaneous (time series) DALY based on daily cases
+            [DALY,~,~] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot); 
+            Q_val.DALY = DALY; 
         otherwise
             keyboard
     end
