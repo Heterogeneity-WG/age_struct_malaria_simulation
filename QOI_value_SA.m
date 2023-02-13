@@ -12,28 +12,14 @@ for iQ = 1:length(lQ)
 end
 
 if flag_EE
-    vacc = P.v; % record vaccination rate
-    P.v0 = 0;  Malaria_parameters_transform_vac; % run till EE w/o vaccination Cm, Cac, Cv, Ctot, MH] 
-    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE');
+    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
     [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
-        age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
-%     [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
-   
+        age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);   
     SH = SH_solu(:,end); EH = EH_solu(:,end); DH = DH_solu(:,end); AH = AH_solu(:,end); MH = MH_solu(:,end);
-    Ctot = Ctot_solu(:,end);
+    VH = VH_solu(:,end); UH = UH_solu(:,end); Cm = Cm_solu(:,end); Cac = Cac_solu(:,end); Cv = Cv_solu(:,end);
+    Ctot = Ctot_solu(:,end); 
     PH = SH+EH+DH+AH+VH+UH;
     SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end);
-    if max(vacc)>0  % continue run if vacc is non-zero
-%         keyboard
-        P.v = vacc;
-        SH0 = SH_solu(:,end); EH0 = EH_solu(:,end); DH0 = DH_solu(:,end); AH0 = AH_solu(:,end);  VH0 = VH_solu(:,end); UH0 = UH_solu(:,end);
-        SM0 = SM_solu(:,end); EM0 = EM_solu(:,end); IM0 = IM_solu(:,end); Cm0 = Cm_solu(:,end);  Cac0 = Cac_solu(:,end); Cv0 = Cv_solu(:,end); Ctot0 = Ctot_solu(:,end); MH0 = MH_solu(:,end);
-        [SH2_solu, EH2_solu, DH2_solu, AH2_solu, ~, ~, SM2_solu, EM2_solu, IM2_solu, ~, ~, ~, Ctot2_solu, MH2_solu] = ...
-            age_structured_Malaria_vac(P.da,P.na,P.tfinal_vac,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
-        SH = SH2_solu(:,end); EH = EH2_solu(:,end); DH = DH2_solu(:,end); AH = AH2_solu(:,end); MH = MH2_solu(:,end);
-        Ctot = Ctot2_solu(:,end);
-        SM = SM2_solu(:,end); EM = EM2_solu(:,end); IM = IM2_solu(:,end);
-    end
 end
 
 Q_val = NaN(length(time_points),length(lQ));
@@ -84,6 +70,12 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(Ctot(ind0210y))/trapz(PH(ind0210y));
         case 'EE-Ctot-pp-09-24'
             Q_val(:,iQ) = trapz(Ctot(ind0924m))/trapz(PH(ind0924m));
+        case 'year5-D'
+            tfinal = 5*365;
+            [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
+                age_structured_Malaria_vac(P.da,P.na,tfinal,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH);   
+            DH = DH_solu(:,end);
+            Q_val(:,iQ) = trapz(DH)*da;
         otherwise
             keyboard
     end

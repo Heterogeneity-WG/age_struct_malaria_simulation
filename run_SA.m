@@ -26,11 +26,11 @@ P.tfinal = tfinal;
 
 %% SA setting
 % lQ = 'EE-D-frac';  % R0 RHM RMH EE-EIR EE-EDA EE-infected EE-D-frac
-lQ = {'EE-D','EE-DA'};%,'EE-D-frac','EE-EIR',...
+lQ = {'EE-D'};%,'EE-D-frac','EE-EIR',...
 %     'EE-D-02-10','EE-DA-02-10','EE-D-frac-02-10',...
 %     'EE-D-09-24','EE-DA-09-24','EE-D-frac-09-24',...
 %     'EE-death','EE-death-02-10','EE-death-09-24'};  
-lP_list = {'betaM'};%{'bh', 'bm', 'betaM', 'betaD', 'betaA', 'muM', 'sigma'}; 
+lP_list = {'etas'};%{'bh', 'bm', 'betaM', 'betaD', 'betaA', 'muM', 'sigma'}; 
 % 'bh', 'bm', 'betaM', 'betaD', 'betaA', 'muM', 'MHr', 'sigma'
 % 'rho0','psi0','phi0'
 SA_index = 0;
