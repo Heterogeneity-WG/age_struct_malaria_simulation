@@ -7,7 +7,7 @@ global P lP
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
@@ -35,7 +35,7 @@ Malaria_parameters_transform_vac;
 
 %% baseline run
 disp('baseline run ---');
-P.z = 0; % RTS,S only
+P.z = 0; % RTS,S only (z=0)
 P.v0 = 15; 
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
@@ -49,9 +49,9 @@ end
 Q_baseline = QOI_save(lQ,soln);
 
 %% comparison runs
-P.z = 1; % blood stage only
-P.v0_lower = 1;
-P.v0_upper = 100;
+P.z = 1; % blood stage only (z=1)
+P.v0_lower = 0;
+P.v0_upper = 1000;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
@@ -62,7 +62,18 @@ for iP = 1:length(lP_list)
     %% extended SA
     P_lower = P.([lP,'_lower']);
     P_upper = P.([lP,'_upper']);
-    ngrid = 5;
+    ngrid = 11; % total number of grid points
+    
+    PH_temp = zeros(1,ngrid);
+    IM_temp = zeros(1,ngrid);
+    save_sol_UH = zeros(na,ngrid);
+    save_sol_Cac = zeros(na,ngrid);
+    save_sol_Cv = zeros(na,ngrid);
+    save_sol_VH = zeros(na,ngrid);
+    save_sol_SH = zeros(na,ngrid);
+    save_sol_AH = zeros(na,ngrid);
+    save_sol_DH = zeros(na,ngrid);
+    save_sol_Ctot = zeros(na,ngrid);
     
     % allocation
     P_vals = linspace(P_lower,P_upper,ngrid)';
@@ -78,13 +89,102 @@ for iP = 1:length(lP_list)
                 age_structured_Malaria_vac(P.da,P.na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
             soln = solution_pack(SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH);
         end
+        PH_temp(i) = sum(SH(:,end) + EH(:,end) + DH(:,end) + AH(:,end) + VH(:,end) + UH(:,end));
+        IM_temp(i) = IM(end);
+        save_sol_UH(:,i) = UH(:,end);
+        save_sol_VH(:,i) = VH(:,end);
+        save_sol_SH(:,i) = SH(:,end);
+        save_sol_AH(:,i) = AH(:,end);
+        save_sol_DH(:,i) = DH(:,end);
+        save_sol_Cac(:,i) = Cac(:,end);
+        save_sol_Cv(:,i) = Cv(:,end);
+        save_sol_Ctot(:,i) = Ctot(:,end);
+        
         Q_vals(i,:) = QOI_save(lQ,soln);
     end
     
 end
 toc
+%% heatmap plot of final population distributions
+figure;
+imagesc(save_sol_Cac./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{C}_{ac}$ final distributions');
 
-%% plotting
+figure;
+imagesc(save_sol_Cv./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{C}_v$ final distributions');
+
+figure;
+imagesc(save_sol_Ctot./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{C}_{tot}$ final distributions');
+
+
+figure;
+imagesc(save_sol_VH./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{V}_H$ final distributions');
+
+figure;
+imagesc(save_sol_SH./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{S}_H$ final distributions');
+
+figure;
+imagesc(save_sol_AH./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{A}_H$ final distributions');
+
+figure;
+imagesc(save_sol_DH./PH_temp);
+set(gca,'YDir','normal')
+xlabel(lP);
+ylabel('age');
+set(gca,'xtickLabel',compose('%d',P_vals(xticks)));
+set(gca,'ytickLabel',compose('%d',round(yticks/(365/da))));
+colormap(jetwhite);
+colorbar;
+title('$\tilde{D}_H$ final distributions');
+
+%% plotting the quantity of interest
 figure_setups; hold on
 t = (0:dt:tfinal)';
 plot(t/365,Q_vals);
