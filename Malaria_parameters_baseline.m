@@ -1,5 +1,16 @@
 global P
 
+%% seasonality parameters - White et al 2015 supp Table S6
+P.ss_c = 0.02;
+P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+P.ss_k1 = 6.73;
+P.ss_k2 = 1.68;
+P.ss_u1 = 0.656;
+P.ss_u2 = 0.841;
+P.ss_S0 = 3.19;
+% turn off seasonlity
+% P.ss_c = 1; P.ss_S0 = 1;
+
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
 P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
@@ -60,7 +71,6 @@ P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rat
 P.gM = 0.5*P.NN; % recruitment rate of mosquitoes;
 P.MHm = P.gM/P.muM/P.NN; % assume NH = 1; % mosquito/human ratio
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes 1/15
-
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data
 % P.b0 = 0.0024214446844162;
@@ -98,3 +108,4 @@ P.ww = 12.603;
 
 %%
 % Malaria_parameters_transform; % commented out for running SA
+

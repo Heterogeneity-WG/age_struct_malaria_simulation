@@ -3,6 +3,11 @@ global P
 
 a = P.a;
 
+%% seasonality function
+P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*(t/365-P.ss_u1)))./2).^P.ss_k1+...
+    (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*(t/365-P.ss_u2)))./2).^P.ss_k2);
+P.gM0 = P.gM;
+%%
 P.c2 = P.c1; % weight for maternal immunity
 P.c3 = P.c1; % weight for vaccine-derived immunity
 
