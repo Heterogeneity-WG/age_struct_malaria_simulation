@@ -30,7 +30,7 @@ Malaria_parameters_transform_vac;
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 NN_S = trapz(SH0)*P.da;
 %% time evolution - initial run
-tfinal = 10*365; t = (0:dt:tfinal)'; nt = length(t);
+tfinal = 3*365; t = (0:dt:tfinal)'; nt = length(t);
 P.nt = nt;  P.t = t;
 [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
@@ -103,15 +103,42 @@ vacc_blood = [vacc_blood, vacc_blood2];
 % save(['Results/Vaccine/v0_',num2str(P.v0*100),'.mat'],'t','a','v','vacc_sterile','vacc_blood','SH_EE','EH_EE','AH_EE','DH_EE','VH_EE','UH_EE','PH_EE',...
 %     'Cm_EE','Cac_EE','Ctot_EE');
 %% EIR
-[bh,bm] = biting_rate(NH,NM);
-EIR = bh.*IM./NM*365;
-EIR_EE = EIR(end)
+[bH,~] = biting_rate(NH,NM);
+EIR = bH.*IM./NM*365;
+EIR_EE = EIR(end);
 tic
 % R0 = R0_cal();
 % keyboard
 toc
+%% seasonlity plots
 figure_setups;
-plot(t,EIR,'b-'); hold on;
+plot(t/365,EIR,'b-'); 
+xlabel('Year')
+title('EIR')
+figure_setups;
+lamH = FOI_H(bH,IM,NM);
+rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
+psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH
+temp = rho.*P.h.*EH+psi.*lamH.*AH;
+[~,ind1] = min(abs(P.a-5*30));
+[~,ind2] = min(abs(P.a-17*30));
+cases = trapz(temp(ind1:ind2,:),1)*P.da; % symptomatic cases for the age cohort
+pop = trapz(PH(ind1:ind2,:),1)*P.da;
+% two approaches for calculating incidence per 200 pop per year
+trapz(cases./pop)*P.dt/t(end)*200*365
+trapz(cases)*P.dt/(pop(end))/t(end)*365*200
+figure_setups;
+cases_nanoro = cases./pop*200*365; % Table 1 Per-protocol cohort (White et al 2015)
+ind11 = length(t);
+[~,ind22] = min(abs(t-(t(end)-365)));
+ave_cases = mean(cases_nanoro(ind22:ind11)); % should be around ~3 for Nanoro seasonlity study
+plot(t/365, cases_nanoro)
+title(['Incidence, ave = ', num2str(ave_cases)])
+ylabel('cases/year, age 5-17 months')
+xlabel('Year')
+figure_setups;
+plot(t/365,NM./NH,t/365,bH) % mosquito/human population ratio
+legend('ratio','biting')
 %% vaccine #
 % figure_setups; hold on
 % subplot(1,2,1)
