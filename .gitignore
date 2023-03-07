@@ -5,3 +5,4 @@ Results/*
 *.pdf
 Auxiliary/R0_calculation_checks.nb
 .DS_Store
+*.asv

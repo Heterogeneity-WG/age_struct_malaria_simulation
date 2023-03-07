@@ -36,7 +36,6 @@ Malaria_parameters_transform_vac;
 % soln = solution_pack(SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 % QOI_initial = QOI_save(lQ,soln);
 figure;
-title('Initial Conditions');
 PH0 = SH0 + EH0 + DH0 + AH0 + VH0 + UH0;
 subplot(1,2,1), plot(a/365,SH0./PH0);
 hold on;
@@ -44,10 +43,9 @@ plot(a/365,EH0./PH0);
 plot(a/365,AH0./PH0);
 plot(a/365,DH0./PH0);
 legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$','$\tilde{D}_H$');
+title('Initial Conditions');
 axis tight;
 xlabel('age (years)');
-grid on;
-subplot(1,2,2), bar(categorical({'$\tilde{S}_M$','$\tilde{E}_M$','$\tilde{I}_M$'}),[SM0/(SM0+EM0+IM0) EM0/(SM0+EM0+IM0) IM0/(SM0+EM0+IM0)]);
 %keyboard;
 
 %% baseline run
