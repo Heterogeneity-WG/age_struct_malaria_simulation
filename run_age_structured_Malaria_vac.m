@@ -65,15 +65,15 @@ NM2 = SM2+EM2+IM2;
 vacc_sterile2 = trapz(P.v*(1-P.z).*SH2,1)*P.da;
 vacc_blood2 = trapz(P.v*P.z.*SH2,1)*P.da;
 
-t = [t;t2];
-SH = [SH,SH2]; EH = [EH,EH2]; DH = [DH, DH2]; AH = [AH, AH2]; VH = [VH, VH2]; UH = [UH, UH2]; MH = [MH, MH2];
-SM = [SM, SM2]; EM = [EM, EM2]; IM = [IM, IM2]; NM = [NM, NM2];
-Cm = [Cm, Cm2]; Cac = [Cac, Cac2]; Cv = [Cv, Cv2]; Ctot = [Ctot,Ctot2];
+t = [t;t2(2:end)];
+SH = [SH,SH2(:,2:end)]; EH = [EH,EH2(:,2:end)]; DH = [DH, DH2(:,2:end)]; AH = [AH, AH2(:,2:end)]; VH = [VH, VH2(:,2:end)]; UH = [UH, UH2(:,2:end)]; MH = [MH, MH2(:,2:end)];
+SM = [SM, SM2(2:end)]; EM = [EM, EM2(2:end)]; IM = [IM, IM2(2:end)]; NM = [NM, NM2(2:end)];
+Cm = [Cm, Cm2(:,2:end)]; Cac = [Cac, Cac2(:,2:end)]; Cv = [Cv, Cv2(:,2:end)]; Ctot = [Ctot,Ctot2(:,2:end)];
 PH = SH+EH+DH+AH+VH+UH;
 PH_final = PH(:,end); % total human at age a, t = n
-NH = [NH, NH2]; 
-vacc_sterile = [vacc_sterile, vacc_sterile2];
-vacc_blood = [vacc_blood, vacc_blood2];
+NH = [NH, NH2(2:end)]; 
+vacc_sterile = [vacc_sterile, vacc_sterile2(2:end)];
+vacc_blood = [vacc_blood, vacc_blood2(2:end)];
 %% vaccine efficacy - reduction in incidence with or w/o vaccine (on population level)
 % % initial condition = at the end of initial run
 % %---- vaccinated group -----
@@ -120,40 +120,35 @@ temp1 = psi.*lamH.*AH; % AH -> DH
 temp2 = rho.*P.h.*EH;% EH -> DH, number of new cases at each time step
 [~,ind1] = min(abs(P.a-5*30));
 [~,ind2] = min(abs(P.a-17*30));
-cases1 = trapz(temp1(ind1:ind2,:),1)*P.da;
-cases2 = trapz(temp2(ind1:ind2,:),1)*P.da;% symptomatic cases for the age cohort
+cases_rate1 = trapz(temp1(ind1:ind2,:),1)*P.da;
+cases_rate2 = trapz(temp2(ind1:ind2,:),1)*P.da;% symptomatic cases for the age cohort
+%% calculate incidence per person per year
+cases = cases_rate1+cases_rate2;
 pop = trapz(PH(ind1:ind2,:),1)*P.da;
-
-daily_cases_pp_py1 = (cases1);
-daily_cases_pp_py2 = (cases2);
-figure;
-plot(t/365,cumsum(daily_cases_pp_py1)*dt);
-hold on;
-plot(t/365,cumsum(daily_cases_pp_py2)*dt);
+ind11 = length(t);
+[~,ind22] = min(abs(t-(t(end)-365)));
+cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));% should be around ~3 for Nanoro seasonlity study
+%trapz(cases./pop)*P.dt/t(end)*365
+%trapz(cases)*P.dt/(pop(end))/t(end)*365
+%%
+figure_setups; hold on;
+plot(t/365,cumsum(cases_rate1)*dt);
+plot(t/365,cumsum(cases_rate2)*dt);
 title('Cumulative new (cohort) cases');
 legend('AH to DH','EH to DH');
 
 %%
-figure;
-bar((cases1+cases2).*30); % corresponding to Figure S1 in White et al. (2015)
-title('Total new cases');
+figure_setups;
+bar(t'/365,(cases_rate1+cases_rate2).*30); % corresponding to Figure S1 in White et al. (2015)
+xlabel('year')
+ylabel('incidence (5-17 months)')
+title(['Incidence pp per year = ', num2str(cases_pp_py)]);
 
 %%
-% two approaches for calculating incidence per 200 pop per year
-cases = cases1+cases2;
-%trapz(cases./pop)*P.dt/t(end)*200*365
-%trapz(cases)*P.dt/(pop(end))/t(end)*365*200
-cases_nanoro = cases./pop*200*365; % Table 1 Per-protocol cohort (White et al 2015)
-ind11 = length(t);
-[~,ind22] = min(abs(t-(t(end)-365)));
-ave_cases = mean(cases_nanoro(ind22:ind11)); % should be around ~3 for Nanoro seasonlity study
-plot(t/365, cases_nanoro)
-title(['Incidence, ave = ', num2str(ave_cases)])
-ylabel('cases/year, age 5-17 months')
-xlabel('Year')
 figure_setups;
 plot(t/365,NM./NH,t/365,bH) % mosquito/human population ratio
 legend('$N_M/N_H$ ratio','biting')
+
 %% vaccine #
 % figure_setups; hold on
 % subplot(1,2,1)

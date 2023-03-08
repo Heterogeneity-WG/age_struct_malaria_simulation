@@ -50,12 +50,6 @@ t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)';
     SHv(:,end), EHv(:,end), DHv(:,end), AHv(:,end), VHv(:,end), UHv(:,end), Cmv(:,end), Cacv(:,end), Ctotv(:,end), ...
     SHc(:,end), EHc(:,end), DHc(:,end), AHc(:,end), Cmc(:,end), Cacc(:,end), Ctotc(:,end), SM(end), EM(end), IM(end));
 % combine results
-% SHr = [SHr,SHr2]; EHr = [EHr,EHr2]; DHr = [DHr, DHr2]; AHr = [AHr, AHr2]; Cmr = [Cmr, Cmr2]; Cacr = [Cacr, Cacr2]; Ctotr = [Ctotr,Ctotr2];
-% SHc = [SHc,SHc2]; EHc = [EHc,EHc2]; DHc = [DHc, DHc2]; AHc = [AHc, AHc2]; Cmc = [Cmc, Cmc2]; Cacc = [Cacc, Cacc2]; Ctotc = [Ctotc,Ctotc2];
-% SHv = [SHv,SHv2]; EHv = [EHv,EHv2]; DHv = [DHv, DHv2]; AHv = [AHv, AHv2]; VHv = [VHv, VHv2]; UHv = [UHv, UHv2]; Cmv = [Cmv, Cmv2]; Cacv = [Cacv, Cacv2]; Ctotv = [Ctotv,Ctotv2];
-% SM = [SM, SM2]; EM = [EM, EM2]; IM = [IM, IM2]; 
-% t = [t;t2];
-% combine results -- double check
 SHr = [SHr,SHr2(:,2:end)]; EHr = [EHr,EHr2(:,2:end)]; DHr = [DHr, DHr2(:,2:end)]; AHr = [AHr, AHr2(:,2:end)]; Cmr = [Cmr, Cmr2(:,2:end)]; Cacr = [Cacr, Cacr2(:,2:end)]; Ctotr = [Ctotr,Ctotr2(:,2:end)];
 SHc = [SHc,SHc2(:,2:end)]; EHc = [EHc,EHc2(:,2:end)]; DHc = [DHc, DHc2(:,2:end)]; AHc = [AHc, AHc2(:,2:end)]; Cmc = [Cmc, Cmc2(:,2:end)]; Cacc = [Cacc, Cacc2(:,2:end)]; Ctotc = [Ctotc,Ctotc2(:,2:end)];
 SHv = [SHv,SHv2(:,2:end)]; EHv = [EHv,EHv2(:,2:end)]; DHv = [DHv, DHv2(:,2:end)]; AHv = [AHv, AHv2(:,2:end)]; VHv = [VHv, VHv2(:,2:end)]; UHv = [UHv, UHv2(:,2:end)]; Cmv = [Cmv, Cmv2(:,2:end)]; Cacv = [Cacv, Cacv2(:,2:end)]; Ctotv = [Ctotv,Ctotv2(:,2:end)];
