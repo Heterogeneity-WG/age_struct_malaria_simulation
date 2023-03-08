@@ -9,7 +9,7 @@ global colour_r1 colour_r2
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 10; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);

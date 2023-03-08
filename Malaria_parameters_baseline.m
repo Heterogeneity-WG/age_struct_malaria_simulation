@@ -7,9 +7,9 @@ P.ss_k1 = 6.73;
 P.ss_k2 = 1.68;
 P.ss_u1 = 0.656;
 P.ss_u2 = 0.841;
-P.ss_S0 = 2;% 3.19; % magnitude of seasonlity profile
+P.ss_S0 = 3.19/12; % magnitude of seasonlity profile
 % turn off seasonlity
-% P.ss_c = 1; P.ss_S0 = 1;
+%P.ss_c = 1; P.ss_S0 = 1;
 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
@@ -24,7 +24,7 @@ P.balance_mortality = 0; % balanced mortality or not
 
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
-P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986
+P.NN = 8500;%1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986
 P.v0 = 0; % vaccination rate
 P.v0s = P.v0; P.v0c = P.v0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)

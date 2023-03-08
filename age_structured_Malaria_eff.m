@@ -127,6 +127,7 @@ for n = 1:nt-1
     NHp1 = trapz(PHp1)*da; % total human population at t=n+1;
     
     % mosquito time evolution
+    P.gM = P.gM0*P.ss_S(t(n+1)); % incorporate seasonlity
     [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DHr(:,n)+DHc(:,n)+DHv(:,n), AHr(:,n)+AHc(:,n)+AHv(:,n), NH(n), NHp1, NM(n));
     NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     

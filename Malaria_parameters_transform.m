@@ -8,9 +8,9 @@ P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*(t/365-P.ss_u1)))./
     (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*(t/365-P.ss_u2)))./2).^P.ss_k2);
 P.gM0 = P.gM;
 
-figure_setups;
-plot(P.t/365,P.ss_S(P.t))
-title('seasonlity curve')
+%figure_setups;
+%plot(P.t/365,P.ss_S(P.t))
+%title('seasonlity curve')
 
 %%
 P.c2 = P.c1; % weight for maternal immunity

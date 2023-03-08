@@ -1,4 +1,3 @@
-clearvars
 close all
 clc
 format long
@@ -11,7 +10,7 @@ tic
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 10; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
@@ -20,6 +19,9 @@ P.dt = dt;
 P.a = a;
 P.na = na;
 P.da = da;
+
+tfinal = 3*365; t = (0:dt:tfinal)'; nt = length(t);
+P.nt = nt;  P.t = t;
 
 % model parameters
 Malaria_parameters_baseline;
@@ -30,8 +32,6 @@ Malaria_parameters_transform_vac;
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 NN_S = trapz(SH0)*P.da;
 %% time evolution - initial run
-tfinal = 3*365; t = (0:dt:tfinal)'; nt = length(t);
-P.nt = nt;  P.t = t;
 [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
@@ -106,28 +106,43 @@ vacc_blood = [vacc_blood, vacc_blood2];
 [bH,~] = biting_rate(NH,NM);
 EIR = bH.*IM./NM*365;
 EIR_EE = EIR(end);
-tic
-% R0 = R0_cal();
-% keyboard
-toc
+
+
 %% seasonlity plots
-figure_setups;
+figure;
 plot(t/365,EIR,'b-'); 
 xlabel('Year')
 title('EIR')
-figure_setups;
 lamH = FOI_H(bH,IM,NM);
 rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
 psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH
-temp = rho.*P.h.*EH+psi.*lamH.*AH;
+temp1 = psi.*lamH.*AH; % AH -> DH
+temp2 = rho.*P.h.*EH;% EH -> DH, number of new cases at each time step
 [~,ind1] = min(abs(P.a-5*30));
 [~,ind2] = min(abs(P.a-17*30));
-cases = trapz(temp(ind1:ind2,:),1)*P.da; % symptomatic cases for the age cohort
+cases1 = trapz(temp1(ind1:ind2,:),1)*P.da;
+cases2 = trapz(temp2(ind1:ind2,:),1)*P.da;% symptomatic cases for the age cohort
 pop = trapz(PH(ind1:ind2,:),1)*P.da;
+
+daily_cases_pp_py1 = (cases1);
+daily_cases_pp_py2 = (cases2);
+figure;
+plot(t/365,cumsum(daily_cases_pp_py1)*dt);
+hold on;
+plot(t/365,cumsum(daily_cases_pp_py2)*dt);
+title('Cumulative new (cohort) cases');
+legend('AH to DH','EH to DH');
+
+%%
+figure;
+bar((cases1+cases2).*30); % corresponding to Figure S1 in White et al. (2015)
+title('Total new cases');
+
+%%
 % two approaches for calculating incidence per 200 pop per year
-trapz(cases./pop)*P.dt/t(end)*200*365
-trapz(cases)*P.dt/(pop(end))/t(end)*365*200
-figure_setups;
+cases = cases1+cases2;
+%trapz(cases./pop)*P.dt/t(end)*200*365
+%trapz(cases)*P.dt/(pop(end))/t(end)*365*200
 cases_nanoro = cases./pop*200*365; % Table 1 Per-protocol cohort (White et al 2015)
 ind11 = length(t);
 [~,ind22] = min(abs(t-(t(end)-365)));
@@ -138,7 +153,7 @@ ylabel('cases/year, age 5-17 months')
 xlabel('Year')
 figure_setups;
 plot(t/365,NM./NH,t/365,bH) % mosquito/human population ratio
-legend('ratio','biting')
+legend('$N_M/N_H$ ratio','biting')
 %% vaccine #
 % figure_setups; hold on
 % subplot(1,2,1)
