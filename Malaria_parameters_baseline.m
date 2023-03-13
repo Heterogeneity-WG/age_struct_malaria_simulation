@@ -1,13 +1,26 @@
 global P
 
-%% seasonality parameters - White et al 2015 supp Table S6
+%% seasonality parameters  - White et al 2015 supp Table S6
+% for Nanoro (Burkina Faso)
 P.ss_c = 0.02;
 P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
 P.ss_k1 = 6.73;
 P.ss_k2 = 1.68;
 P.ss_u1 = 0.656;
 P.ss_u2 = 0.841;
-P.ss_S0 = 3.19/12; % magnitude of seasonlity profile
+P.ss_S0 = 0.66; % magnitude of seasonlity profile, aim for 2.69 incidence rate
+P.ss_t0 = 100; % time shift to incoporate delay 
+
+% for Siaya (Kenya)
+% P.ss_c = 0.31;
+% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+% P.ss_k1 = 4.08;
+% P.ss_k2 = 3.66;
+% P.ss_u1 = 0.003;
+% P.ss_u2 = 0.456;
+% P.ss_S0 = 0.31; % magnitude of seasonlity profile, aim for 3.15 incidence rate
+% P.ss_t0 = 50; % time shift to incoporate delay 
+
 % turn off seasonlity
 %P.ss_c = 1; P.ss_S0 = 1;
 
@@ -24,7 +37,7 @@ P.balance_mortality = 0; % balanced mortality or not
 
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
-P.NN = 8500;%1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986
+P.NN = 8500;%1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; cohort 8500
 P.v0 = 0; % vaccination rate
 P.v0s = P.v0; P.v0c = P.v0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)

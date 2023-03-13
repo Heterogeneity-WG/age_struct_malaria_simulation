@@ -20,7 +20,7 @@ P.a = a;
 P.na = na;
 P.da = da;
 
-tfinal = 3*365; t = (0:dt:tfinal)'; nt = length(t);
+tfinal = 6*365; t = (0:dt:tfinal)'; nt = length(t);
 P.nt = nt;  P.t = t;
 
 % model parameters
@@ -52,7 +52,7 @@ vacc_blood = trapz(P.v*P.z.*SH,1)*P.da*365*P.NN/1000;
 P.v0 = 0;
 P.z = 1;
 Malaria_parameters_transform_vac; 
-tfinal_conti = 5*365; t2 = (tfinal:dt:tfinal+tfinal_conti)'; nt = length(t2);
+tfinal_conti = 0*365; t2 = (tfinal:dt:tfinal+tfinal_conti)'; nt = length(t2);
 P.nt = nt;  P.t = t2;
 SH0 = SH(:,end); EH0 = EH(:,end); DH0 = DH(:,end); AH0 = AH(:,end); VH0 = VH(:,end); UH0 = UH(:,end); MH0 = MH(:,end);
 SM0 = SM(end); EM0 = EM(end); IM0 = IM(end); 
@@ -107,21 +107,23 @@ vacc_blood = [vacc_blood, vacc_blood2(2:end)];
 EIR = bH.*IM./NM*365;
 EIR_EE = EIR(end);
 
-
 %% seasonlity plots
-figure;
-plot(t/365,EIR,'b-'); 
+figure_setups;
+yyaxis left
+plot(t/365,EIR,'b-');
+yyaxis right
+plot(t/365, P.ss_S(t))
 xlabel('Year')
-title('EIR')
+legend('EIR','seasonal profile')
 lamH = FOI_H(bH,IM,NM);
 rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
 psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH
 temp1 = psi.*lamH.*AH; % AH -> DH
-temp2 = rho.*P.h.*EH;% EH -> DH, number of new cases at each time step
+temp2 = rho.*P.h.*EH;% EH -> DH, number of new cases - rate
 [~,ind1] = min(abs(P.a-5*30));
 [~,ind2] = min(abs(P.a-17*30));
 cases_rate1 = trapz(temp1(ind1:ind2,:),1)*P.da;
-cases_rate2 = trapz(temp2(ind1:ind2,:),1)*P.da;% symptomatic cases for the age cohort
+cases_rate2 = trapz(temp2(ind1:ind2,:),1)*P.da;
 %% calculate incidence per person per year
 cases = cases_rate1+cases_rate2;
 pop = trapz(PH(ind1:ind2,:),1)*P.da;
@@ -131,23 +133,29 @@ cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));% should be 
 %trapz(cases./pop)*P.dt/t(end)*365
 %trapz(cases)*P.dt/(pop(end))/t(end)*365
 %%
-figure_setups; hold on;
-plot(t/365,cumsum(cases_rate1)*dt);
-plot(t/365,cumsum(cases_rate2)*dt);
-title('Cumulative new (cohort) cases');
-legend('AH to DH','EH to DH');
+% figure_setups; hold on;
+% plot(t/365,cumsum(cases_rate1)*dt);
+% plot(t/365,cumsum(cases_rate2)*dt);
+% title('Cumulative new (cohort) cases');
+% legend('AH to DH','EH to DH');
 
 %%
 figure_setups;
 bar(t'/365,(cases_rate1+cases_rate2).*30); % corresponding to Figure S1 in White et al. (2015)
 xlabel('year')
-ylabel('incidence (5-17 months)')
+ylabel('total cases (per 30days)')
+title('for entire people cohort')
+figure_setups;
+plot(t/365,cases./pop*365)
+ylim([0, 8])
+xlabel('year')
+ylabel('Incidence pp per year')
 title(['Incidence pp per year = ', num2str(cases_pp_py)]);
 
 %%
-figure_setups;
-plot(t/365,NM./NH,t/365,bH) % mosquito/human population ratio
-legend('$N_M/N_H$ ratio','biting')
+% figure_setups;
+% plot(t/365,NM./NH,t/365,bH) % mosquito/human population ratio
+% legend('$N_M/N_H$ ratio','biting')
 
 %% vaccine #
 % figure_setups; hold on
@@ -183,19 +191,19 @@ legend('$N_M/N_H$ ratio','biting')
 % grid on; grid minor
 % axis([0 max(t)/365 0 max(NH)+0.1]);
 %% Population proportions versus time
-figure_setups;
-plot(t/365,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
-plot(t/365,trapz(EH,1)*da./NH,'--','Color',colour_mat3);
-plot(t/365,trapz(AH,1)*da./NH,'-.','Color',colour_mat2);
-plot(t/365,trapz(DH,1)*da./NH,'-','Color',colour_mat7);
-plot(t/365,trapz(VH,1)*da./NH,'-','Color',colour_mat6);
-plot(t/365,trapz(UH,1)*da./NH,'-','Color',colour_mat4);
-plot(t/365,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1)+trapz(VH,1)+trapz(UH,1))*da./NH,'-.k');
-legend('SH-age','EH-age','AH-age', 'DH-age', 'VH-age','UH-age','$N_H$');
-title('Population proportions vs time');
-xlabel('years');
-grid on
-axis([0 max(t)/365 0 1.1]);
+% figure_setups;
+% plot(t/365,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
+% plot(t/365,trapz(EH,1)*da./NH,'--','Color',colour_mat3);
+% plot(t/365,trapz(AH,1)*da./NH,'-.','Color',colour_mat2);
+% plot(t/365,trapz(DH,1)*da./NH,'-','Color',colour_mat7);
+% plot(t/365,trapz(VH,1)*da./NH,'-','Color',colour_mat6);
+% plot(t/365,trapz(UH,1)*da./NH,'-','Color',colour_mat4);
+% plot(t/365,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1)+trapz(VH,1)+trapz(UH,1))*da./NH,'-.k');
+% legend('SH-age','EH-age','AH-age', 'DH-age', 'VH-age','UH-age','$N_H$');
+% title('Population proportions vs time');
+% xlabel('years');
+% grid on
+% axis([0 max(t)/365 0 1.1]);
 %% Age profiles at tfinal
 % figure_setups;
 % plot(a/365,SH(:,end),'-','Color',colour_mat1); hold on;
