@@ -20,9 +20,6 @@ P.a = a;
 P.na = na;
 P.da = da;
 
-tfinal = 6*365; t = (0:dt:tfinal)'; nt = length(t);
-P.nt = nt;  P.t = t;
-
 % model parameters
 Malaria_parameters_baseline;
 Malaria_parameters_transform; 
@@ -31,8 +28,11 @@ Malaria_parameters_transform_vac;
 %% initial condition 'EE' - numerical EE
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 NN_S = trapz(SH0)*P.da;
+        
 %% time evolution - initial run
-[SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal,...
+tfinal = 6*365; t = (0:dt:tfinal)'; nt = length(t);
+P.nt = nt;  P.t = t;
+[~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,0,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
 PH_final = PH(:,end); % total human at age a, t = n
@@ -57,7 +57,7 @@ P.nt = nt;  P.t = t2;
 SH0 = SH(:,end); EH0 = EH(:,end); DH0 = DH(:,end); AH0 = AH(:,end); VH0 = VH(:,end); UH0 = UH(:,end); MH0 = MH(:,end);
 SM0 = SM(end); EM0 = EM(end); IM0 = IM(end); 
 Cac0 = Cac(:,end); Cm0 = Cm(:,end); Cv0 = Cv(:,end); Ctot0 = Ctot(:,end);
-[SH2, EH2, DH2, AH2, VH2, UH2, SM2, EM2, IM2, Cm2, Cac2, Cv2, Ctot2, MH2] = age_structured_Malaria_vac(da,na,tfinal_conti,...
+[~,SH2, EH2, DH2, AH2, VH2, UH2, SM2, EM2, IM2, Cm2, Cac2, Cv2, Ctot2, MH2] = age_structured_Malaria_vac(da,na,0,tfinal_conti,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH2 = SH2+EH2+DH2+AH2+VH2+UH2;
 NH2 = trapz(PH2,1)*da;

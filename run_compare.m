@@ -58,8 +58,8 @@ Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
 if strcmp(lQ{1}(1:5),'year5')
-    [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = ...
-        age_structured_Malaria_vac(P.da,P.na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+    [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = ...
+        age_structured_Malaria_vac(P.da,P.na,0, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
     soln = solution_pack(SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH);
 end
 % P_baseline = P.(lP);
@@ -102,8 +102,8 @@ for iP = 1:length(lP_list)
         Malaria_parameters_transform;
         Malaria_parameters_transform_vac;
         if strcmp(lQ{1}(1:5),'year5')
-            [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = ...
-                age_structured_Malaria_vac(P.da,P.na,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+            [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = ...
+                age_structured_Malaria_vac(P.da,P.na,0,tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
             soln = solution_pack(SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH);
         end
         if i == 1

@@ -55,7 +55,7 @@ switch lstate
         if strcmp(lreturn,'numerical')
             [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
             tfinal= 30*365;  % run for a long time; numerical EE
-            [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da,P.na,tfinal,...
+            [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da,P.na,0,tfinal,...
                 SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
             S = SH(:,end); E = EH(:,end); D = DH(:,end); A = AH(:,end);  U = UH(:,end);  V = VH(:,end); M = MH(:,end); 
             SM = SM(end); EM = EM(end);  IM = IM(end); 
