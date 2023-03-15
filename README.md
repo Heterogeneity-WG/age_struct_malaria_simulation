@@ -24,17 +24,19 @@ Start by running _set_workspace.m_
 2. Compare different vaccination schemes or vary other parameters systematically -> _run_compare.m_
 3. Run simulations and save results (quantities of interest and solutions) to text files -> _run_save_data_and_figure.m_
 4. Calculate the efficacy of vaccination -> _run_efficacy.m_
-5. Run sensitivity analysis on the model -> local and extended SA: _run_SA.m_  global SA: _run_SA_PRCC.m_ _run_SA_eFAST.m_
+5. Run sensitivity analysis on the model 
+  -> local and extended SA: _run_SA.m_  
+  -> global SA: _run_SA_PRCC.m_ _run_SA_eFAST.m_
 6. Calibrate sigmoids (immunity response functions) -> _run_parameter_search.m_ -> _Data_Fitting/run_parameter_fit.m_
 
 **NB** Some results are saved to named directories so the codebase folder should be downloaded in full.
 
 # Summary of key files and dependecies
 
-_run_age_structured_Malaria_vac.m_ (script) -> Calls _age_structured_Malaria.m_ for time-stepping algorithm to solve the ODE-PDE system. 
+_run_age_structured_Malaria_vac.m_ (script) 
  - Calls _Malaria_parameters_baseline.m_ _Malaria_parameters_transform.m_ and _Malaria_parameters_transform_vac.m_ to set parameters.
  - Calls _age_structured_Malaria_IC_vac.m_ and _steady_state_vac.m_ for initial condition
- - Calls _age_structured_Malaria_vac.m_ for time evolution
+ - Calls _age_structured_Malaria_vac.m_ for time evolution of the ODE-PDE system.
 
 _Malaria_parameters_baseline.m_ (script) -> sets the basic model parameters as global variables. This file is often run together with
  - _Malaria_parameters_transform.m_  
