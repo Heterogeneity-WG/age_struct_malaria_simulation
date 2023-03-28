@@ -2,7 +2,7 @@
 
 This repository is comprised of codes related to the project "Modeling Immunity to Malaria with an Age-Structured PDE Framework" arising from the American Mathematical Society's Mathematical Research Community on infectious diseases (2020-2022). The team members on this project are:
 
-Lauren Childs (Virginia Tech), Christina Edholm (Scripps College), Denis Patterson (Princeton University), Joan Ponce (Arizona State University), Olivia Propser (University of Tennessee, Knoxville), Zhuolin Qu (University of Texas at San Antonio) and Lihong Zhao (University of California Merced)
+Lauren Childs (Virginia Tech), Christina Edholm (Scripps College), Denis Patterson (Princeton University), Joan Ponce (Arizona State University), Olivia Prosper (University of Tennessee, Knoxville), Zhuolin Qu (University of Texas at San Antonio) and Lihong Zhao (University of California Merced)
 
 # Codebase functionality and user guide
 
@@ -13,8 +13,8 @@ Start by running _set_workspace.m_
 - _Malaria_parameters_baseline.m_ sets all demographic parameters (fertility/mortality rates), disease progression rates, immunity parameters, and parameters for mosquito fertility/mortality (including seasonality),
   - the user can switch between sterilizing immunity and "blood stage-type vaccination" by adjusting the parameter P.z (0 for sterilizing, 1 for blood stage),
   - the user specifies the default vaccination rate with variable P.v0.
-  - the user can turn off the seasonlity by uncommenting the line "P.ss_c = 1; P.ss_S0 = 1;".
-- _Malaria_parameters_transform.m_ sets the functional form for the time-dependent seasonlity, age-dependent demographics, and immunity functions.
+  - the user can turn off the seasonality by uncommenting the line "P.ss_c = 1; P.ss_S0 = 1;".
+- _Malaria_parameters_transform.m_ sets the functional form for the time-dependent seasonality, age-dependent demographics, and immunity functions.
 - _Malaria_parameters_transform_vac.m_ sets the vaccination scheme by specifying the age range for which vaccination is applied.
 
 **I want to:**
@@ -31,7 +31,7 @@ Start by running _set_workspace.m_
 
 **NB** Some results are saved to named directories so the codebase folder should be downloaded in full.
 
-# Summary of key files and dependecies
+# Summary of key files and dependencies
 
 _run_age_structured_Malaria_vac.m_ (script) 
  - Calls _Malaria_parameters_baseline.m_ _Malaria_parameters_transform.m_ and _Malaria_parameters_transform_vac.m_ to set parameters.
@@ -44,7 +44,7 @@ _Malaria_parameters_baseline.m_ (script) -> sets the basic model parameters as g
 
 _age_structured_Malaria_vac.m_ (function) -> time-stepping algorithm for solving the ODE-PDE system
  - Calls _mosquito_ODE.m_ for mosquito ODE subsystem
- - Calls _biting_rate.m_ for commpromised biting rates bewteen humans and mosquitoes; 
+ - Calls _biting_rate.m_ for compromised biting rates between humans and mosquitoes; 
  - Calls _FOI_H.m_ and _FOI_M.m_ for force of infections
  - Calls _sigmoid_prob.m_ for immunity linking functions
 
