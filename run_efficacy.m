@@ -27,7 +27,7 @@ P.w = 0.004566152172269;
 P.v0s = 0; P.v0c = 0;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
-t0_list=[1,5,8,11];
+t0_list=[1,5,8,11]; % the start time of the vaccination programv (1=Jan, 2=Feb, etc..)
 %% initial condition 'EE' - numerical EE
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 for it = 1:length(t0_list)
@@ -38,7 +38,7 @@ for it = 1:length(t0_list)
     SM0 = SM(end); EM0 = EM(end); IM0 = IM(end);
     Cac0 = Cac(:,end); Cm0 = Cm(:,end); Cv0 = Cv(:,end); Ctot0 = Ctot(:,end);
     %% simulation using three-group model - vaccine on
-    tfinal_vacc = 3*30; total_vacc = 2.4*10^5;
+    tfinal_vacc = 3*30; total_vacc = 2.4*10^5; % vacc for three months
     P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
     Malaria_parameters_transform_vac;
     temp0 = zeros(size(SH0));
