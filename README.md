@@ -17,6 +17,8 @@ Start by running _set_workspace.m_
 - _Malaria_parameters_transform.m_ sets the functional form for the time-dependent seasonality, age-dependent demographics, and immunity functions.
 - _Malaria_parameters_transform_vac.m_ sets the vaccination scheme by specifying the age range for which vaccination is applied.
 
+The parameter files are called by the run_* functions (below). 
+
 **I want to:**
 
 1. Run a single simulation of the model -> _run_age_structured_Malaria_vac.m_
@@ -29,7 +31,7 @@ Start by running _set_workspace.m_
   -> global SA: _run_SA_PRCC.m_ _run_SA_eFAST.m_
 6. Calibrate sigmoids (immunity response functions) -> _run_parameter_search.m_ -> _Data_Fitting/run_parameter_fit.m_
 
-**NB** Some results are saved to named directories so the codebase folder should be downloaded in full.
+**NB** Some results are saved to named directories (e.g. Results/) so the codebase folder should be downloaded in full.
 
 # Summary of key files and dependencies
 

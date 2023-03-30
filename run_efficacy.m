@@ -38,6 +38,7 @@ for it = 1:length(t0_list)
     SM0 = SM(end); EM0 = EM(end); IM0 = IM(end);
     Cac0 = Cac(:,end); Cm0 = Cm(:,end); Cv0 = Cv(:,end); Ctot0 = Ctot(:,end);
     %% simulation using three-group model - vaccine on
+    % set vacc strategy to be consistent with trial
     tfinal_vacc = 3*30; total_vacc = 2.4*10^5; % vacc for three months
     P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
     Malaria_parameters_transform_vac;
