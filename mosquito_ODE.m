@@ -1,10 +1,11 @@
-function [SMp1,EMp1,IMp1] = mosquito_ODE(SM, EM, IM, DH, AH, NH, NHp1, NM)
+function [SMp1,EMp1,IMp1] = mosquito_ODE(SM, EM, IM, DH, AH, PH, NHp1, NM)
 % evolve mosquito quantities
 
 global P
 dt = P.dt;
+NH = trapz(PH)*P.da;
 
-[~,bM] = biting_rate(NH,NM); % at t=n
+[~,bM] = biting_rate(PH,NM); % at t=n
 lamM = FOI_M(bM,DH,AH,NH); % at t=n
 
 if strcmp(P.lMHfix,'on') % if the assumption is on: mosquito/human ratio is fixed

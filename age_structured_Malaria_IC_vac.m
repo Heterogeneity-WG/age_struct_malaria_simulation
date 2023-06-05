@@ -9,10 +9,10 @@ NH = P.NN;
 NM = P.gM/P.muM;
 switch state
     case 'init' %
-        SH = 0.97*P.PH_stable*NH; %0.9*NH/na/da*ones(na,1); % cell averages; %
-        EH = 0.01*P.PH_stable*NH; %0.1*NH/na/da*ones(na,1); %
-        DH = 0.01*P.PH_stable*NH;
-        AH = 0.01*P.PH_stable*NH;
+        SH = 0.4*P.PH_stable*NH; %0.9*NH/na/da*ones(na,1); % cell averages; %
+        EH = 0.1*P.PH_stable*NH; %0.1*NH/na/da*ones(na,1); %
+        DH = 0.25*P.PH_stable*NH;
+        AH = 0.25*P.PH_stable*NH;
         VH = 0*NH/na/da*ones(na,1);
         UH = 0*NH/na/da*ones(na,1);
         % diagnostic compartment

@@ -31,9 +31,9 @@ P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed 
 %% dummy varaible for eFast SA
 P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for global SA eFAST - values from original code 
 %% 
-P.verbose = 0; % turn on the warning messages. Error messages from the check routines will display regardless
+P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
 P.balance_fertility = 0; % balanced fertility or not
-P.balance_mortality = 0; % balanced mortality or not
+P.balance_mortality = 1; % balanced mortality or not
 
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
@@ -76,7 +76,7 @@ P.psir2 = 4.300057715509009; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psi
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
-P.betaM = 0.25; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
+P.betaM = 0.3; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
 P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
 P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 

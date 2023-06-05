@@ -3,6 +3,11 @@ global P
 
 a = P.a;
 
+%% age-dependent biting
+
+P.zeta_fun = @(a) 1-0.85*exp(-a/8/365); %ones(size(a));
+P.zeta = P.zeta_fun(a);
+
 %% seasonality function
 
 P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u1)))./2).^P.ss_k1+...
@@ -35,18 +40,21 @@ muH = muH/365;
 muH_int_fun = @(age) (age./365).*P.b0 + (P.b1./P.b2).*(1-exp(-P.b2.*age./365)) + (P.b3./P.b4).*(-1+exp(P.b4.*age./365));
 
 %% malaria mortality functions
-% muD = 0*ones(size(a)); 
-% muD_fun = @(age) 0*ones(size(age));
-% muD_int_fun = @(age) 0*ones(size(age));
-a74 = 74*365;
-temp_muD = P.b0D + P.b1D*exp(-P.b2D*a74/365) + P.b3D*exp(P.b4D*a74/365);
-muD =  (P.b0D + P.b1D*exp(-P.b2D*a/365) + P.b3D*exp(P.b4D*a/365)).*(a/365<=74)...
-    + temp_muD.*(exp(-P.c0D*(a-74*365)./365)).*(a/365>74); 
-muD_fun = @(age) (P.b0D + P.b1D*exp(-P.b2D*age/365) + P.b3D*exp(P.b4D*age/365)).*(age/365<=74)...
-    + temp_muD.*(exp(-P.c0D*(age/365-74))).*(age/365>74); 
-muD = muD/365;
-%muD_int_fun = @(age) (age./365).*P.b0D + (P.b1D./P.b2D).*(1-exp(-P.b2D.*age./365)) + (P.b3D./P.b4D).*(-1+exp(P.b4D.*age./365));
-% not correct, commented out for now
+if P.disease_mortality
+    a74 = 74*365;
+    temp_muD = P.b0D + P.b1D*exp(-P.b2D*a74/365) + P.b3D*exp(P.b4D*a74/365);
+    muD =  (P.b0D + P.b1D*exp(-P.b2D*a/365) + P.b3D*exp(P.b4D*a/365)).*(a/365<=74)...
+        + temp_muD.*(exp(-P.c0D*(a-74*365)./365)).*(a/365>74);
+    muD_fun = @(age) (P.b0D + P.b1D*exp(-P.b2D*age/365) + P.b3D*exp(P.b4D*age/365)).*(age/365<=74)...
+        + temp_muD.*(exp(-P.c0D*(age/365-74))).*(age/365>74);
+    muD = muD/365;
+    %muD_int_fun = @(age) (age./365).*P.b0D + (P.b1D./P.b2D).*(1-exp(-P.b2D.*age./365)) + (P.b3D./P.b4D).*(-1+exp(P.b4D.*age./365));
+    % not correct, commented out for now
+else
+    muD = 0*ones(size(a));
+    muD_fun = @(age) 0*ones(size(age));
+end
+
 %% fertility rate
 gH_fun = @(age) (2.*P.cc.*normpdf((age./365-P.zz)./P.ww).*normcdf(P.alpha.*(age./365-P.zz)./P.ww)./P.ww)./365/2;
 gH =  gH_fun(a); % human fertility rate
