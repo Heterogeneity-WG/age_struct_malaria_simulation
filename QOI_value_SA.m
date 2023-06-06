@@ -12,14 +12,27 @@ for iQ = 1:length(lQ)
 end
 
 if flag_EE
-    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
-    [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
-        age_structured_Malaria_vac(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);   
-    SH = SH_solu(:,end); EH = EH_solu(:,end); DH = DH_solu(:,end); AH = AH_solu(:,end); MH = MH_solu(:,end);
-    VH = VH_solu(:,end); UH = UH_solu(:,end); Cm = Cm_solu(:,end); Cac = Cac_solu(:,end); Cv = Cv_solu(:,end);
-    Ctot = Ctot_solu(:,end); 
+    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');   
+    [t, SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
+        age_structured_Malaria_vac(P.da,P.na, 0, P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);   
+    SH = SH_solu(:,time_points); EH = EH_solu(:,time_points); DH = DH_solu(:,time_points); AH = AH_solu(:,time_points); MH = MH_solu(:,time_points);
+    VH = VH_solu(:,time_points); UH = UH_solu(:,time_points); 
+    Cm = Cm_solu(:,time_points); Cac = Cac_solu(:,time_points); Cv = Cv_solu(:,time_points);
+    Ctot = Ctot_solu(:,time_points); 
     PH = SH+EH+DH+AH+VH+UH;
-    SM = SM_solu(:,end); EM = EM_solu(:,end); IM = IM_solu(:,end);
+    SM = SM_solu(:,time_points); EM = EM_solu(:,time_points); IM = IM_solu(:,time_points);
+    % keyboard
+    % figure_setups;
+    % plot(t/365,trapz(SH_solu,1)*da); hold on;
+    % plot(t/365,trapz(EH_solu,1)*da);
+    % plot(t/365,trapz(AH_solu,1)*da);
+    % plot(t/365,trapz(DH_solu,1)*da);
+    % plot(t/365,trapz(VH_solu,1)*da);
+    % plot(t/365,trapz(UH_solu,1)*da);
+    % plot(t/365,trapz(MH_solu,1)*da,'-.r'); % diagnostic
+    % title(['Population size vs time']);
+    % grid on; grid minor
+    % keyboard
 end
 
 Q_val = NaN(length(time_points),length(lQ));
@@ -35,47 +48,41 @@ for iQ = 1:length(lQ)
         case 'RMH'
             [~,~,Q_val(:,iQ)]  = R0_cal();     
         case 'EE-D'
-            Q_val(:,iQ) = trapz(DH)*da;
+            Q_val(:,iQ) = trapz(DH,1)*da;
         case 'EE-D-02-10'
-            Q_val(:,iQ) = trapz(DH(ind0210y))*da;
+            Q_val(:,iQ) = trapz(DH(ind0210y,:),1)*da;
         case 'EE-D-09-24'
-            Q_val(:,iQ) = trapz(DH(ind0924m))*da;
+            Q_val(:,iQ) = trapz(DH(ind0924m,:),1)*da;
         case 'EE-DA'
-            Q_val(:,iQ) = trapz(DH+AH)*da;    
+            Q_val(:,iQ) = trapz(DH+AH,1)*da;    
         case 'EE-DA-02-10'            
-            Q_val(:,iQ) = trapz(DH(ind0210y)+AH(ind0210y))*da;  
+            Q_val(:,iQ) = trapz(DH(ind0210y,:)+AH(ind0210y,:),1)*da;  
         case 'EE-DA-09-24'
-            Q_val(:,iQ) = trapz(DH(ind0924m)+AH(ind0924m))*da;  
+            Q_val(:,iQ) = trapz(DH(ind0924m,:)+AH(ind0924m,:),1)*da;  
         case 'EE-D-frac'
-            Q_val(:,iQ) = trapz(DH)/trapz(DH+AH);
+            Q_val(:,iQ) = trapz(DH,1)/trapz(DH+AH,1);
         case 'EE-D-frac-02-10'
-            Q_val(:,iQ) = trapz(DH(ind0210y))/trapz(DH(ind0210y)+AH(ind0210y));
+            Q_val(:,iQ) = trapz(DH(ind0210y,:),1)./trapz(DH(ind0210y,:)+AH(ind0210y,:),1);
         case 'EE-D-frac-09-24'
-            Q_val(:,iQ) = trapz(DH(ind0924m))/trapz(DH(ind0924m)+AH(ind0924m));
+            Q_val(:,iQ) = trapz(DH(ind0924m,:),1)./trapz(DH(ind0924m,:)+AH(ind0924m,:),1);
         case 'EE-death' % Cumulative disease-induced mortality, diagnostic eqn MH
-            Q_val(:,iQ) = trapz(MH)*da;
+            Q_val(:,iQ) = trapz(MH,1)*da;
         case 'EE-death-02-10' % Cumulative disease-induced mortality, diagnostic eqn MH
-            Q_val(:,iQ) = trapz(MH(ind0210y))*da;
+            Q_val(:,iQ) = trapz(MH(ind0210y,:),1)*da;
         case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
-            Q_val(:,iQ) = trapz(MH(ind0924m))*da;
+            Q_val(:,iQ) = trapz(MH(ind0924m,:),1)*da;
         case 'EE-EIR'
-            NH = trapz(PH)*da;
+            NH = trapz(PH,1)*da;
             NM = SM+EM+IM;
             [bH,~] = biting_rate(NH,NM);
             IM_frac = IM./NM;
             Q_val(:,iQ) = bH.*IM_frac*365; % annual EIR
         case 'EE-Ctot-pp'
-            Q_val(:,iQ) = trapz(Ctot)/trapz(PH);
+            Q_val(:,iQ) = trapz(Ctot,1)./trapz(PH,1);
         case 'EE-Ctot-pp-02-10'
-            Q_val(:,iQ) = trapz(Ctot(ind0210y))/trapz(PH(ind0210y));
+            Q_val(:,iQ) = trapz(Ctot(ind0210y,:),1)./trapz(PH(ind0210y,:),1);
         case 'EE-Ctot-pp-09-24'
-            Q_val(:,iQ) = trapz(Ctot(ind0924m))/trapz(PH(ind0924m));
-        case 'year5-D'
-            tfinal = 5*365;
-            [SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, Cm_solu, Cac_solu, Cv_solu, Ctot_solu, MH_solu] = ...
-                age_structured_Malaria_vac(P.da,P.na,tfinal,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH);   
-            DH = DH_solu(:,end);
-            Q_val(:,iQ) = trapz(DH)*da;
+            Q_val(:,iQ) = trapz(Ctot(ind0924m,:),1)./trapz(PH(ind0924m,:),1);
         otherwise
             keyboard
     end
