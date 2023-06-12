@@ -2,24 +2,24 @@ global P
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Nanoro (Burkina Faso), EIR peaks at August
-% P.ss_c = 0.02;
-% P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-% P.ss_k1 = 6.73;
-% P.ss_k2 = 1.68;
-% P.ss_u1 = 0.656;
-% P.ss_u2 = 0.841;
-% P.ss_S0 = 0.68; % magnitude of seasonlity profile, aim for 2.69 incidence rate
-% P.ss_t0 = 100; % time shift to incoporate delay 
+P.ss_c = 0.02;
+P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+P.ss_k1 = 6.73;
+P.ss_k2 = 1.68;
+P.ss_u1 = 0.656;
+P.ss_u2 = 0.841;
+P.ss_S0 = 0.68; % magnitude of seasonlity profile, aim for 2.69 incidence rate
+P.ss_t0 = 100; % time shift to incoporate delay 
 
 % for Siaya (Kenya), EIR has modes at May and November
-P.ss_c = 0.31;
-P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-P.ss_k1 = 4.08;
-P.ss_k2 = 3.66;
-P.ss_u1 = 0.003;
-P.ss_u2 = 0.456;
-P.ss_S0 = 0.32; % magnitude of seasonlity profile, aim for 3.15 incidence rate
-P.ss_t0 = 50; % time shift to incoporate delay 
+% P.ss_c = 0.31;
+% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+% P.ss_k1 = 4.08;
+% P.ss_k2 = 3.66;
+% P.ss_u1 = 0.003;
+% P.ss_u2 = 0.456;
+% P.ss_S0 = 0.32; % magnitude of seasonlity profile, aim for 3.15 incidence rate
+% P.ss_t0 = 50; % time shift to incoporate delay 
 
 % turn off seasonlity
 % P.ss_c = 1; P.ss_S0 = 1;
