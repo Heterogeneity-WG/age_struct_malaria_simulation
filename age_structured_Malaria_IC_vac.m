@@ -35,7 +35,7 @@ switch state
     case 'EE' % start from EE
         [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
     case 'EE_reset' % start from EE
-        [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, Ctot, MH] = steady_state_vac('EE','numerical');
+        [SH, EH, DH, AH, VH, UH, SM, EM, IM, Cac, Cm, Cv, ~, ~] = steady_state_vac('EE','numerical');
         PH = SH + EH + DH + AH + VH + UH;
         SH0 = (SH./PH).*P.PH_stable*NH; %0.9*NH/na/da*ones(na,1); % cell averages; %
         EH0 = (EH./PH).*P.PH_stable*NH; %0.1*NH/na/da*ones(na,1); %

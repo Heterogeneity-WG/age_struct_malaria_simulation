@@ -10,7 +10,7 @@ tic
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 4; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
@@ -27,23 +27,23 @@ Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
 %% initial condition 'EE' - numerical EE
-[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+[SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 NN_S = trapz(SH0)*P.da;
 %keyboard;
 
-%% time evolution - initial run (no vacc)
+%% time evolution
 P.v0 = 0;
 P.z = 0; % z=0 sterile, z=1 blood-stage
 Malaria_parameters_transform_vac; % resetting vaccination distribution
-tfinal = 15*365;
+tfinal = 365;
 [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,0,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
 PH_final = PH(:,end); % total human at age a, t = n
 NH = trapz(PH,1)*da;
 NM = SM+IM+EM;
-%vacc_sterile = trapz(P.v*(1-P.z).*SH,1)*P.da*365*P.NN/1000;
-%vacc_blood = trapz(P.v*P.z.*SH,1)*P.da*365*P.NN/1000;
+vacc_sterile = trapz(P.v*(1-P.z).*SH,1)*P.da*365*P.NN/1000;
+vacc_blood = trapz(P.v*P.z.*SH,1)*P.da*365*P.NN/1000;
 
 %% Population proportions & EIR versus time
 [bH,~] = biting_rate(PH,NM); % NB bH varies by age and time
@@ -120,15 +120,15 @@ xlabel('Time (years)');
 
 
 %% DALY calculation
-% [DALY,YLL,YLD] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot);
-% figure_setups;
-% plot(t/365,DALY,t/365,YLL,t/365,YLD)
-% grid on
-% xlabel('Year')
-% legend('DALY','YLL (death)','YLD (disability)')
+[DALY,YLL,YLD] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot);
+figure_setups;
+plot(t/365,DALY,t/365,YLL,t/365,YLD)
+grid on
+xlabel('Year')
+legend('DALY','YLL (death)','YLD (disability)')
 
 %% vac control
-% P.v0 = 20;
+% P.v0 = 0;
 % P.z = 0; % z=0 sterile, z=1 blood-stage
 % Malaria_parameters_transform_vac;
 % vacc_fun = P.v;
@@ -143,7 +143,7 @@ xlabel('Time (years)');
 % NM2 = SM2+EM2+IM2;
 % vacc_sterile2 = trapz(P.v*(1-P.z).*SH2,1)*P.da;
 % vacc_blood2 = trapz(P.v*P.z.*SH2,1)*P.da;
-%
+% 
 % t = [t;t2(2:end)];
 % SH = [SH, SH2(:,2:end)]; EH = [EH,EH2(:,2:end)]; DH = [DH, DH2(:,2:end)]; AH = [AH, AH2(:,2:end)]; VH = [VH, VH2(:,2:end)]; UH = [UH, UH2(:,2:end)]; MH = [MH, MH2(:,2:end)];
 % SM = [SM, SM2(2:end)]; EM = [EM, EM2(2:end)]; IM = [IM, IM2(2:end)]; NM = [NM, NM2(2:end)];
@@ -169,7 +169,7 @@ xlabel('Time (years)');
 % NM2 = SM2+EM2+IM2;
 % vacc_sterile2 = trapz(P.v*(1-P.z).*SH2,1)*P.da;
 % vacc_blood2 = trapz(P.v*P.z.*SH2,1)*P.da;
-%
+% 
 % t = [t;t2(2:end)];
 % SH = [SH,SH2(:,2:end)]; EH = [EH,EH2(:,2:end)]; DH = [DH, DH2(:,2:end)]; AH = [AH, AH2(:,2:end)]; VH = [VH, VH2(:,2:end)]; UH = [UH, UH2(:,2:end)]; MH = [MH, MH2(:,2:end)];
 % SM = [SM, SM2(2:end)]; EM = [EM, EM2(2:end)]; IM = [IM, IM2(2:end)]; NM = [NM, NM2(2:end)];
@@ -181,28 +181,35 @@ xlabel('Time (years)');
 % vacc_blood = [vacc_blood, vacc_blood2(2:end)];
 
 %% vaccine efficacy - reduction in incidence with or w/o vaccine (on population level)
-% % initial condition = at the end of initial run
-% %---- vaccinated group -----
-% lgroup = 'DH'; tfinal_vacc = 10; tfinal_count = 3650;  % -> counting incidence for one year
-% P.v0 = 100; % turn on vaccination
-% Malaria_parameters_transform_vac;
-% [~,ind1] = min(abs(P.a-7*30));
-% [~,ind2] = min(abs(P.a-19*30));
-% [~,vacc,~,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv] = incidence_cal(da,na,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
-% P.v0 = 0; % turn off vaccination
-% Malaria_parameters_transform_vac;
-% Incidence_vacc = incidence_cal_time(da,na,tfinal_count,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv,ind1,ind2,lgroup);
-% %---- control group -----
-% P.v0 = 0;
-% Malaria_parameters_transform_vac;
-% [~,~,~,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc] = incidence_cal(da,na,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
-% Incidence_control = incidence_cal_time(da,na,tfinal_count,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc,ind1,ind2,lgroup);
-% eff = (Incidence_control-Incid ence_vacc)./vacc
-% figure_setups;
-% plot(0:P.dt:tfinal_count,eff)
-% figure_setups;
-% plot(0:P.dt:tfinal_count,Incidence_control,0:P.dt:tfinal_count,Incidence_vacc)
-% keyboard
+% initial condition = at the end of initial run
+%---- vaccinated group -----
+lgroup = 'DH'; tfinal_vacc = 365; tfinal_count = 3650;  % -> counting incidence for one year
+P.v0 = 100; % turn on vaccination
+Malaria_parameters_transform_vac;
+[~,ind1] = min(abs(P.a-7*30));
+[~,ind2] = min(abs(P.a-19*30));
+[~,vacc,~,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+P.v0 = 0; % turn off vaccination
+Malaria_parameters_transform_vac;
+Incidence_vacc = incidence_cal_time(da,na,0,tfinal_count,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv,ind1,ind2,lgroup);
+%---- control group -----
+P.v0 = 0;
+Malaria_parameters_transform_vac;
+[~,~,~,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+Incidence_control = incidence_cal_time(da,na,0,tfinal_count,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc,ind1,ind2,lgroup);
+eff = (Incidence_control-Incidence_vacc)./vacc;
+
+%% vaccine efficacy plots
+figure_setups;
+plot(0:P.dt:tfinal_count,eff)
+title('Incidence reduction per vaccine');
+
+figure_setups;
+plot(0:P.dt:tfinal_count,Incidence_control,0:P.dt:tfinal_count,Incidence_vacc)
+title('Incidence with/without vaccination');
+legend('Control','With vaccination');
+
+
 %% output data to .mat file for analysis
 % SH_EE = SH(:,end); EH_EE = EH(:,end); AH_EE = AH(:,end); DH_EE = DH(:,end); VH_EE = VH(:,end); UH_EE = UH(:,end); PH_EE = PH(:,end); v = P.v;
 % Cm_EE = Cm(:,end); Cac_EE = Cac(:,end); Ctot_EE = Ctot(:,end);

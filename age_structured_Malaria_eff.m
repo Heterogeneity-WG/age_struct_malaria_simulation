@@ -61,7 +61,7 @@ for n = 1:nt-1
     PH = PHr+PHc+PHv;
     NH(n) = trapz(PH)*da;
     NM(n) = SM(1,n)+EM(1,n)+IM(1,n);
-    [bH,~] = biting_rate(NH(n),NM(n));
+    [bH,~] = biting_rate(PH,NM(n));
     lamH = FOI_H(bH,IM(1,n),NM(n));
     
     % human birth terms
@@ -84,38 +84,38 @@ for n = 1:nt-1
     
     %% rest group
     SHr(2:end,n+1) = (SHr(1:end-1,n)+dt*(P.phir(1:end-1)*P.rD.*DHr(1:end-1,n)+P.rA*AHr(1:end-1,n))-(P.vc(2:end)+P.vs(2:end))*dt)...
-        ./(1+(lamH+P.muH(2:end))*dt); 
-    EHr(2:end,n+1) = (EHr(1:end-1,n)+dt*lamH*SHr(2:end,n+1))...
+        ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
+    EHr(2:end,n+1) = (EHr(1:end-1,n)+dt*lamH(1:end-1).*SHr(2:end,n+1))...
         ./(1+(P.h+P.muH(2:end))*dt);
     temp2 = (1-P.rhor(1:end-1))*P.h.*EHr(2:end,n+1)+(1-P.phir(1:end-1)).*P.rD.*DHr(1:end-1,n);
     AHr(2:end,n+1) = ((1-dt*P.rA)*AHr(1:end-1,n)+dt*temp2)...
-        ./(1+dt*(P.psir(1:end-1)*lamH+P.muH(2:end)));
-    temp3 = P.rhor(1:end-1)*P.h.*EHr(2:end,n+1)+P.psir(1:end-1).*lamH.*AHr(2:end,n+1);
+        ./(1+dt*(P.psir(1:end-1).*lamH(1:end-1)+P.muH(2:end)));
+    temp3 = P.rhor(1:end-1)*P.h.*EHr(2:end,n+1)+P.psir(1:end-1).*lamH(1:end-1).*AHr(2:end,n+1);
     DHr(2:end,n+1) = ((1-dt*P.rD)*DHr(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));  
     
     %% vaccinated group
     SHv(2:end,n+1) = (SHv(1:end-1,n)+dt*(P.phiv(1:end-1)*P.rD.*DHv(1:end-1,n)+P.rA*AHv(1:end-1,n)))...
-        ./(1+(lamH+P.muH(2:end))*dt); 
+        ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
     VHv(2:end,n+1) = (VHv(1:end-1,n)+dt*P.etas*P.vs(2:end))./(1+(P.muH(2:end)+P.w)*dt);
     temp1 = (1-P.etas)*P.vs(2:end)+P.w*VHv(2:end,n+1);
-    UHv(2:end,n+1) = (UHv(1:end-1,n)+dt*temp1)./(1+(lamH+P.muH(2:end))*dt);
-    EHv(2:end,n+1) = (EHv(1:end-1,n)+dt*lamH*(SHv(2:end,n+1)+UHv(2:end,n+1)))...
+    UHv(2:end,n+1) = (UHv(1:end-1,n)+dt*temp1)./(1+(lamH(1:end-1)+P.muH(2:end))*dt);
+    EHv(2:end,n+1) = (EHv(1:end-1,n)+dt*lamH(1:end-1).*(SHv(2:end,n+1)+UHv(2:end,n+1)))...
         ./(1+(P.h+P.muH(2:end))*dt);
     temp2 = (1-P.rhov(1:end-1))*P.h.*EHv(2:end,n+1)+(1-P.phiv(1:end-1)).*P.rD.*DHv(1:end-1,n);
     AHv(2:end,n+1) = ((1-dt*P.rA)*AHv(1:end-1,n)+dt*temp2)...
-        ./(1+dt*(P.psiv(1:end-1)*lamH+P.muH(2:end)));
-    temp3 = P.rhov(1:end-1)*P.h.*EHv(2:end,n+1)+P.psiv(1:end-1).*lamH.*AHv(2:end,n+1);
+        ./(1+dt*(P.psiv(1:end-1).*lamH(1:end-1)+P.muH(2:end)));
+    temp3 = P.rhov(1:end-1)*P.h.*EHv(2:end,n+1)+P.psiv(1:end-1).*lamH(1:end-1).*AHv(2:end,n+1);
     DHv(2:end,n+1) = ((1-dt*P.rD)*DHv(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));
     %% control group
     SHc(2:end,n+1) = (SHc(1:end-1,n)+dt*(P.phic(1:end-1)*P.rD.*DHc(1:end-1,n)+P.rA*AHc(1:end-1,n)+P.vc(2:end)))...
-        ./(1+(lamH+P.muH(2:end))*dt);      
-    EHc(2:end,n+1) = (EHc(1:end-1,n)+dt*lamH*SHc(2:end,n+1))./(1+(P.h+P.muH(2:end))*dt);
+        ./(1+(lamH(1:end-1)+P.muH(2:end))*dt);      
+    EHc(2:end,n+1) = (EHc(1:end-1,n)+dt*lamH(1:end-1).*SHc(2:end,n+1))./(1+(P.h+P.muH(2:end))*dt);
     temp2 = (1-P.rhoc(1:end-1))*P.h.*EHc(2:end,n+1)+(1-P.phic(1:end-1)).*P.rD.*DHc(1:end-1,n);
     AHc(2:end,n+1) = ((1-dt*P.rA)*AHc(1:end-1,n)+dt*temp2)...
-        ./(1+dt*(P.psic(1:end-1)*lamH+P.muH(2:end)));
-    temp3 = P.rhoc(1:end-1)*P.h.*EHc(2:end,n+1)+P.psic(1:end-1).*lamH.*AHc(2:end,n+1);
+        ./(1+dt*(P.psic(1:end-1).*lamH(1:end-1)+P.muH(2:end)));
+    temp3 = P.rhoc(1:end-1)*P.h.*EHc(2:end,n+1)+P.psic(1:end-1).*lamH(1:end-1).*AHc(2:end,n+1);
     DHc(2:end,n+1) = ((1-dt*P.rD)*DHc(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));
 
@@ -128,7 +128,7 @@ for n = 1:nt-1
     
     % mosquito time evolution
     P.gM = P.gM0*P.ss_S(t(n+1)); % incorporate seasonlity
-    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DHr(:,n)+DHc(:,n)+DHv(:,n), AHr(:,n)+AHc(:,n)+AHv(:,n), NH(n), NHp1, NM(n));
+    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DHr(:,n)+DHc(:,n)+DHv(:,n), AHr(:,n)+AHc(:,n)+AHv(:,n), PHp1, NHp1, NM(n));
     NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     
     % immunity gained at age = 0 
@@ -142,11 +142,11 @@ for n = 1:nt-1
     Cmc(1,n+1) = 0; Cacc(1,n+1) = 0; Cvc(1,n+1) = 0;
     
     % acquired immunity - use Qn+1
-    [bHp1,~] = biting_rate(NHp1,NM(n+1));
+    [bHp1,~] = biting_rate(PHp1,NM(n+1));
     lamHp1 = FOI_H(bHp1,IM(1,n+1),NM(n+1));
     
     % pooled immunity
-    Brnp1 = f(lamHp1).*(P.cS*SHr(2:end,n+1) + P.cE*EHr(2:end,n+1) + P.cA*AHr(2:end,n+1) + P.cD*DHr(2:end,n+1));
+    Brnp1 = f(lamHp1(2:end)).*(P.cS*SHr(2:end,n+1) + P.cE*EHr(2:end,n+1) + P.cA*AHr(2:end,n+1) + P.cD*DHr(2:end,n+1));
     Drnp1 = P.muH(2:end) + P.muD(2:end).*DHr(2:end,n+1)./PHrp1(2:end);
     temp = (P.vc(2:end)+P.vs(2:end))./PHrp1(2:end);
     Cacr(2:end,n+1) = (Cacr(1:end-1,n)+dt*Brnp1)./(1+dt*(1/P.dac+Drnp1+temp));
@@ -154,7 +154,7 @@ for n = 1:nt-1
     Cvr(2:end,n+1) = 0;
     Ctotr(:,n+1) = P.c1*Cacr(:,n+1)+P.c2*Cmr(:,n+1)+P.c3*Cvr(:,n+1); 
     
-    Bvnp1 = f(lamHp1).*(P.cS*SHv(2:end,n+1) + P.cE*EHv(2:end,n+1) + P.cA*AHv(2:end,n+1) + P.cD*DHv(2:end,n+1) + P.cU*UHv(2:end,n+1));
+    Bvnp1 = f(lamHp1(2:end)).*(P.cS*SHv(2:end,n+1) + P.cE*EHv(2:end,n+1) + P.cA*AHv(2:end,n+1) + P.cD*DHv(2:end,n+1) + P.cU*UHv(2:end,n+1));
     Dvnp1 = P.muH(2:end) + P.muD(2:end).*DHv(2:end,n+1)./PHvp1(2:end);
     temp1 = P.vs(2:end).*Cacr(2:end,n+1)./PHrp1(2:end);
     Cacv(2:end,n+1) = (Cacv(1:end-1,n)+dt*(Bvnp1+temp1))./(1+dt*(1/P.dac+Dvnp1));
@@ -165,7 +165,7 @@ for n = 1:nt-1
     Ctotv(:,n+1) = P.c1*Cacv(:,n+1)+P.c2*Cmv(:,n+1)+P.c3*Cvv(:,n+1); 
     
     %
-    Bcnp1 = f(lamHp1).*(P.cS*SHc(2:end,n+1) + P.cE*EHc(2:end,n+1) + P.cA*AHc(2:end,n+1) + P.cD*DHc(2:end,n+1));
+    Bcnp1 = f(lamHp1(2:end)).*(P.cS*SHc(2:end,n+1) + P.cE*EHc(2:end,n+1) + P.cA*AHc(2:end,n+1) + P.cD*DHc(2:end,n+1));
     Dcnp1 = P.muH(2:end) + P.muD(2:end).*DHc(2:end,n+1)./PHcp1(2:end);
     temp1 = P.vc(2:end).*Cacr(2:end,n+1)./PHrp1(2:end);
     Cacc(2:end,n+1) = (Cacc(1:end-1,n)+dt*(Bcnp1+temp1))./(1+dt*(1/P.dac+Dcnp1));

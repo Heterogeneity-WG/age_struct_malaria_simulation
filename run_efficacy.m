@@ -14,7 +14,8 @@ da = dt;
 a = (0:da:age_max)';
 na = length(a);
 
-P.dt = dt; 
+P.disease_mortality = 0;
+P.dt = dt;
 P.a = a;
 P.na = na;
 P.da = da;
@@ -23,7 +24,7 @@ P.da = da;
 Malaria_parameters_baseline;
 % using fitted value
 P.etas = 0.659553156743644;
-P.w = 0.004566152172269; 
+P.w = 0.004566152172269;
 P.v0s = 0; P.v0c = 0;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
@@ -67,7 +68,7 @@ for it = 1:length(t0_list)
     PH = PHr+PHc+PHv;
     NH = trapz(PH,1)*da;
     NM = SM+EM+IM;
-    [bH,~] = biting_rate(NH,NM);
+    [bH,~] = biting_rate(PH,NM);
     lamH = FOI_H(bH,IM,NM);
     
     rhov = sigmoid_prob(Ctotv./PHv, 'rho'); % prob. of severely infected, EH -> DH
@@ -92,20 +93,32 @@ for it = 1:length(t0_list)
     title(['vacc starts at month=',num2str(t(2)/365*12,2)])
     % axis([0 max(t/365) -0.2 1])
     axis([t(2)/365 max(t/365) -0.2 1])
-    save(['Results/season_vacc_',num2str(t0_vacc/30,2),'.mat'],'t','eff')
+    currentFolderPath = pwd;
+    subfolderPath = fullfile(currentFolderPath, 'Results/');
+    if exist(subfolderPath, 'dir')
+        save(['Results/season_vacc_',num2str(t0_vacc/30,2),'.mat'],'t','eff')
+    else
+        displayText = ['The "Results" folder does not exist, cannot save data.'];
+        disp(displayText);
+    end
 end
 %% comparison vacc starting time
-figure_setups; hold on
-for it = 1:length(t0_list)
-    load(['Results/season_vacc_',num2str(t0_list(it)),'.mat'],'t','eff')
-    plot(t(2:end)/365,eff(2:end),'DisplayName',['t0=',num2str(t0_list(it))])   
-%     plot((t(2:end)-t0_list(it)*30)/365,eff(2:end),'DisplayName',['t0=',num2str(t0_list(it))])    
+if exist(subfolderPath, 'dir')
+    figure_setups; hold on
+    for it = 1:length(t0_list)
+        load(['Results/season_vacc_',num2str(t0_list(it)),'.mat'],'t','eff')
+        plot(t(2:end)/365,eff(2:end),'DisplayName',['t0=',num2str(t0_list(it))])
+        %     plot((t(2:end)-t0_list(it)*30)/365,eff(2:end),'DisplayName',['t0=',num2str(t0_list(it))])
+    end
+    xlabel('Time since vacc')
+    ylabel('Efficacy')
+    legend;
+    ylim([-0.2 1])
+else
+    displayText = ['The "Results" folder does not exist, cannot load data.'];
+    disp(displayText);
 end
-xlabel('Time since vacc')
-ylabel('Efficacy')
-legend;
-ylim([-0.2 1])
-%% calculate efficacy - using aggregated incidence (within three month period) 
+%% calculate efficacy - using aggregated incidence (within three month period)
 % time_period = 30*3;
 % Incidence_vacc_agg = NaN(size(t));
 % Incidence_control_agg = NaN(size(t));
@@ -114,7 +127,7 @@ ylim([-0.2 1])
 %     period_beg = t(it)-time_period;
 %     if period_beg<0; continue; end
 %     [~,ind_beg] = min(abs(t-period_beg)); ind_beg = ind_beg+1;
-%     [~,ind_end] = min(abs(t-period_end)); 
+%     [~,ind_end] = min(abs(t-period_end));
 %     Incidence_vacc_agg(it) = trapz(Incidence_vacc(ind_beg:ind_end))*P.dt;
 %     Incidence_control_agg(it) = trapz(Incidence_control(ind_beg:ind_end))*P.dt;
 % end
@@ -162,7 +175,7 @@ ylim([-0.2 1])
 % plot(a/365,(AH(:,end)+DH(:,end))./PH_final,'r-.');
 % plot(a/365,PH_final./PH_final,'-k');
 % legend('SH/PH','EH/PH','DH/PH', 'AH/PH', 'VH/PH','UH/PH','(AH+DH)/PH');
-% title(['Final Age Dist. Proportions']); 
+% title(['Final Age Dist. Proportions']);
 % xlabel('age (years)');
 % grid on
 % axis([0 P.age_max/365 0 1.1]);
@@ -176,8 +189,8 @@ ylim([-0.2 1])
 % plot(a/365,(AHr(:,end)+DHr(:,end))./PHr(:,end),'r-.');
 % plot(a/365,PHr(:,end)./PHr(:,end),'-k');
 % legend('SH/PH','EH/PH','DH/PH', 'AH/PH', '(AH+DH)/PH');
-% title(['Final Age Dist. Proportions']); 
-% % title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]); 
+% title(['Final Age Dist. Proportions']);
+% % title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]);
 % xlabel('age (years)');
 % grid on
 % % axis([0 P.age_max/365 0 1.1]);

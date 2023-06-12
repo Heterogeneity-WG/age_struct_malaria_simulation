@@ -1,12 +1,12 @@
-function [y,vacc_sterile, vacc_blood,SH1, EH1, DH1, AH1, VH1, UH1, SM1, EM1, IM1, Cm1, Cac1, Cv1, Ctot1, MH1] = incidence_cal_time(da,na,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,group)
+function [y,vacc_sterile, vacc_blood,SH1, EH1, DH1, AH1, VH1, UH1, SM1, EM1, IM1, Cm1, Cac1, Cv1, Ctot1, MH1] = incidence_cal_time(da,na,tinitial,tfinal_conti,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,group)
 global P
 
-[SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tfinal_conti,...
+[~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,tinitial,tfinal_conti,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
-NH = trapz(PH,1)*da;
+%NH = trapz(PH,1)*da;
 NM = SM+EM+IM;
-[bH,~] = biting_rate(NH,NM);
+[bH,~] = biting_rate(PH,NM);
 lamH = FOI_H(bH,IM,NM);
 vacc_sterile = cumsum(trapz(P.v*(1-P.z).*SH,1)*P.da)*P.dt;
 vacc_blood = cumsum(trapz(P.v*P.z.*SH,1)*P.da)*P.dt;
