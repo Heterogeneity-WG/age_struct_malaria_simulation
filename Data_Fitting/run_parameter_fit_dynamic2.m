@@ -1,3 +1,4 @@
+% calibration of sigmoids with multiple initial sampling of x0 for fmincon
 close all;
 clearvars;
 clc;
@@ -17,68 +18,71 @@ Malaria_parameters_baseline;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 np = 6; % # of sigmoid parameters to be fitted
-nrun = 1; % # of LHC samples to generate
+nrun = 10; % # of LHC samples to generate
 
 %% optimization - fit to data 
 lb = [0, 0.1, 0, 0.1, 0, 0.1];
-ub = [5, 5, 5, 5, 5, 5];
-% x_lhsraw = lhsdesign(nrun,np); 
-% x_lhs = NaN(size(x_lhsraw));
-% for k = 1:np
-%     x_lhs(:,k)=(x_lhsraw(:,k).*(ub(k)-lb(k)))+lb(k);
-% end
+ub = [5, 4, 5, 4, 5, 4];
+
+x_lhsraw = lhsdesign(nrun,np); 
+x_lhs = NaN(size(x_lhsraw));
+for k = 1:np
+    x_lhs(:,k)=(x_lhsraw(:,k).*(ub(k)-lb(k)))+lb(k);
+end
 
 % [phi_s phi_r rho_s rho_s psi_r psi_r phif0 phif1 rhof0 rhof1 psif0 psif1]
-x0 = (lb+ub)/2;
+% x0 = (lb+ub)/2;
 
 options = optimset('Display','iter','TolX',10^-5,'MaxIter',30);
 Xmat = NaN(nrun,np+1);
 for irun = 1:nrun
     disp(['run #',num2str(irun)])
     Malaria_parameters_baseline;
+    x0 = x_lhs(irun,:);
     [x,fval] = fmincon(@fun_Filipe_dynamic2,x0,[],[], [], [], lb, ub, [], options);
     Xmat(irun,1) = fval;
     Xmat(irun,2:end) = x;
-%     save('Data_Fitting/Filipe_paper/Xmat_fine.mat','Xmat','irun','x_lhs')
+    save('Data_Fitting/Filipe_paper/Xmat_fine.mat','Xmat','irun','x_lhs')
 end
 keyboard
 %%
 load('Data_Fitting/Filipe_paper/Xmat.mat','Xmat','irun','x_lhs')
-% for irun = 1:60
-%     x = Xmat(irun,2:end);
-%     Malaria_parameters_baseline;
-%     P.phis2 = x(1);
-%     P.phir2 = x(2);
-%     P.rhos2 = x(3);
-%     P.rhor2 = x(4);
-%     P.psis2 = x(5);
-%     P.psir2 = x(6);
-%     Malaria_parameters_transform;
-%     [SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-%     [SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-%     PH = SH(:,end)+EH(:,end)+DH(:,end)+AH(:,end);
-%     NH = trapz(PH)*P.da;
-%     Ctot_pp = Ctot(:,end)./PH;
-%     figure_setups; hold on
-%     cc = linspace(0,max(Ctot_pp),100);
-%     phi_curve = sigmoid_prob(cc, 'phi');
-%     rho_curve = sigmoid_prob(cc, 'rho');
-%     psi_curve = sigmoid_prob(cc, 'psi');
-%     plot(cc,phi_curve,'-')
-%     plot(cc,rho_curve,'--')
-%     plot(cc,psi_curve,'-.')
-%     % population average sigmoids
-%     phi_ave = trapz(sigmoid_prob(Ctot_pp, 'phi').*PH/NH)*P.da;
-%     rho_ave = trapz(sigmoid_prob(Ctot_pp, 'rho').*PH/NH)*P.da;
-%     psi_ave = trapz(sigmoid_prob(Ctot_pp, 'psi').*PH/NH)*P.da;
-%     legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','Location','e')
-%     axis([0 max(cc) 0 1])
-%     xlabel('$\tilde{C}_{H}$')
-%     ylabel('Probability')
-%     %title('Calibrated linking functions')
-%     [phi_ave rho_ave psi_ave]
-%     fun_Filipe_dynamic2(x);
-% end
+for irun = 1:size(x_lhs,1)
+    x = Xmat(irun,2:end);
+    Malaria_parameters_baseline;
+    P.phis2 = x(1);
+    P.phir2 = x(2);
+    P.rhos2 = x(3);
+    P.rhor2 = x(4);
+    P.psis2 = x(5);
+    P.psir2 = x(6);
+    Malaria_parameters_transform;
+    Malaria_parameters_transform_vac;
+    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('init');
+    [~,SH, EH, DH, AH, ~,~, ~, ~, ~, ~, ~, ~, Ctot, ~] = age_structured_Malaria_vac(P.da,P.na,0,P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
+    PH = SH(:,end)+EH(:,end)+DH(:,end)+AH(:,end);
+    NH = trapz(PH)*P.da;
+    Ctot_pp = Ctot(:,end)./PH;
+    figure_setups; hold on
+    cc = linspace(0,max(Ctot_pp),100);
+    phi_curve = sigmoid_prob(cc, 'phi');
+    rho_curve = sigmoid_prob(cc, 'rho');
+    psi_curve = sigmoid_prob(cc, 'psi');
+    plot(cc,phi_curve,'-')
+    plot(cc,rho_curve,'--')
+    plot(cc,psi_curve,'-.')
+    % population average sigmoids
+    phi_ave = trapz(sigmoid_prob(Ctot_pp, 'phi').*PH/NH)*P.da;
+    rho_ave = trapz(sigmoid_prob(Ctot_pp, 'rho').*PH/NH)*P.da;
+    psi_ave = trapz(sigmoid_prob(Ctot_pp, 'psi').*PH/NH)*P.da;
+    legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','Location','e')
+    axis([0 max(cc) 0 1])
+    xlabel('$\tilde{C}_{H}$')
+    ylabel('Probability')
+    %title('Calibrated linking functions')
+    [phi_ave rho_ave psi_ave]
+    fun_Filipe_dynamic2(x);
+end
 
 % keyboard
 % ----> update Malaria_parameters_baseline.m with the fitted results <-----

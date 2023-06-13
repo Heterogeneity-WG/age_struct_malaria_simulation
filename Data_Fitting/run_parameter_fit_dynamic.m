@@ -20,11 +20,12 @@ Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 options = optimset('Display','iter','TolX',10^-5,'MaxIter',30);
 % [phi_s phi_r rho_s psi_r rho_s psi_r]
-x0 = [2, 1, 2, 1, 2, 1];
+lb = [0, 0.1, 0, 0.1, 0, 0.1];
+ub = [5, 4, 5, 4, 5, 4];
+x0 = (lb+ub)/2;
 % x0 = [1.748400494250446   4.089465852051163   2.781182708408349   3.349185468908294   1.267935962166972   2.767371953595199]; % Tfinal = 10 years IC = [4, 5, 4, 5];
 % x0 = [0.978511191108162   0.101270457374745   1.957064739448506   3.354032211122635   0.001254524505761   1.119700445524332];
-lb = [0, 0.1, 0, 0.1, 0, 0.1];
-ub = [5, 4, 5,4, 5, 4];
+
 [x,fval] = fmincon(@fun_Filipe_dynamic,x0,[],[], [], [], lb, ub, [], options);
 keyboard
 % ----> update Malaria_parameters_baseline.m with the fitted results <-----
@@ -34,7 +35,8 @@ tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
 dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
-x = [0.978511191108162   0.101270457374745   1.957064739448506   3.354032211122635   0.001254524505761   1.119700445524332];
+x = [2.190590606590128   2.078437497848872   2.921061093971156   1.218264166958853   0.614949157082559   2.462790900030959];
+%[0.978511191108162   0.101270457374745   1.957064739448506   3.354032211122635   0.001254524505761   1.119700445524332];
 Malaria_parameters_baseline;
 P.phis2 = x(1);
 P.phir2 = x(2); 
@@ -43,11 +45,11 @@ P.rhor2 = x(4);
 P.psis2 = x(5);
 P.psir2 = x(6);
 Malaria_parameters_transform;
-[SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-[SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-PH = SH(:,end)+EH(:,end)+DH(:,end)+AH(:,end);
+Malaria_parameters_transform_vac;
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
+PH = SH+EH+DH+AH;
 NH = trapz(PH)*P.da;
-Ctot_pp = Ctot(:,end)./PH;
+Ctot_pp = Ctot./PH;
 figure_setups; hold on
 cc = linspace(0,max(Ctot_pp),100);
 phi_curve = sigmoid_prob(cc, 'phi');
@@ -64,7 +66,7 @@ legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','
 axis([0 max(cc) 0 1])
 xlabel('$\tilde{C}_{H}$')
 ylabel('Probability')
-%title('Calibrated linking functions')
+% title('Calibrated linking functions')
 [phi_ave rho_ave psi_ave]
 
 
@@ -104,12 +106,14 @@ zz = zeros(na,length(var_list));
 for jj = 1:length(var_list)
     P.betaM = var_list(jj);
     Malaria_parameters_transform;
-    [SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0] = age_structured_Malaria_IC('init');
-    [SH, EH, DH, AH, SM, EM, IM, ~, ~, Ctot] = age_structured_Malaria(P.da,P.na,P.tfinal,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);
-    EIR = fit_EIR(SH,EH,DH,AH,SM, EM, IM);   
-    PH = SH+EH+DH+AH;    
-    yy(1,jj) = EIR(end); % aEIR
-    zz(:,jj) = Ctot(:,end)./PH(:,end); % final Ctot at EE    
+    [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
+    PH = SH+EH+DH+AH;
+    NM = SM+EM+IM;
+    [bH,~] = biting_rate(PH,NM);
+    EIR = bH.*IM./NM*365; % EIR matrix
+    EIR_tot = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
+    yy(1,jj) = EIR_tot; % aEIR
+    zz(:,jj) = Ctot./PH; % final Ctot at EE    
 end
 %%
 % figure_setups;
@@ -159,12 +163,3 @@ xlabel('age (years)')
 ylabel('susceptibility')
 axis([0 50 0 1.05 ])
 
-
-function EIR = fit_EIR(SH,EH,DH,AH,SM,EM,IM)
-global P
-NH = trapz(SH+EH+DH+AH)*P.da;
-NM = SM+EM+IM;
-[bH,~] = biting_rate(NH,NM);
-IM_frac = IM./NM;
-EIR = bH.*IM_frac*365; % annual EIR
-end
