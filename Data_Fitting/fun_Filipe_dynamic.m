@@ -13,12 +13,12 @@ P.rhor2 = x(4);
 P.psis2 = x(5);
 P.psir2 = x(6);
 
-nsamp = 20;
+nsamp = 30;
 [~,ind1] = min(abs(P.a-0.3*365)); % [0.5, 3] years old
-[~,ind0] = min(abs(P.a-3*365));
-[~,ind2] = min(abs(P.a-10*365)); % [3, 10] years old
-ind_a = [round(linspace(ind1,ind0,15)'); round(linspace(ind0+1,ind2,nsamp-15)')];
-betaM_list = [0.02:0.002:0.03, 0.04:0.01:0.3, 0.5, 1];
+[~,ind0] = min(abs(P.a-10*365));
+[~,ind2] = min(abs(P.a-20*365)); % [3, 10] years old
+ind_a = [round(linspace(ind1,ind0,20)'); round(linspace(ind0+1,ind2,nsamp-20)')];
+betaM_list = [linspace(0,0.05,50),linspace(0.05,1,50)]; 
 res_list = [];
 EIR_list = [];
 
@@ -30,23 +30,24 @@ for ibeta = 1:length(betaM_list)
     PH = SH+EH+DH+AH;
     NM = SM+EM+IM;
     [bH,~] = biting_rate(PH,NM);
-    EIR = bH.*IM./NM*365; % EIR matrix
-    EIR_tot = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
+    EIR = bH.*IM./NM*365; % EIR (age-dependent)
+    EIR_final = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
     
-    if EIR_tot<0.5; keyboard; end
+    if EIR_final<1 || EIR_final>150
+        continue
+    end
     x = P.a(ind_a)/365;
-    y = EIR_tot;
+    y = EIR_final;
     Z = Ctot(ind_a,end)./PH(ind_a,end); % final Ctot at EE
     Z_samp = sigmoid_prob(Z, 'rho'); % rho from samples
     [X,Y] = ndgrid(x,y);
     Z_data = F(X,Y); % rho from data
     res_list = [res_list; abs(Z_data(:)-Z_samp(:))];
-    EIR_list = [EIR_list; EIR_tot];
+    EIR_list = [EIR_list; EIR_final];
 end
-
 w = ones(size(res_list));%./(res+eps);
-err = sum(w.*(res_list.^2));
-% disp(round([EIR_list', err]',3))
+err = sum(w.*(res_list.^2))/length(res_list);
+
 end
 
 % fun = @(x) f(x,10,SH0, EH0, DH0, AH0, SM0, EM0, IM0, Cm0, Cac0, Ctot0);

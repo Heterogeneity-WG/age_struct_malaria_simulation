@@ -18,15 +18,14 @@ F = s.F;
 Malaria_parameters_baseline;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
-options = optimset('Display','iter','TolX',10^-5,'MaxIter',30);
+options = optimset('Display','iter','TolX',10^-6,'MaxIter',30);
 % [phi_s phi_r rho_s psi_r rho_s psi_r]
 lb = [0, 0.1, 0, 0.1, 0, 0.1];
-ub = [5, 4, 5, 4, 5, 4];
+ub = [5, 5, 5, 5, 5, 5];
 x0 = (lb+ub)/2;
-% x0 = [1.748400494250446   4.089465852051163   2.781182708408349   3.349185468908294   1.267935962166972   2.767371953595199]; % Tfinal = 10 years IC = [4, 5, 4, 5];
-% x0 = [0.978511191108162   0.101270457374745   1.957064739448506   3.354032211122635   0.001254524505761   1.119700445524332];
-
+tic
 [x,fval] = fmincon(@fun_Filipe_dynamic,x0,[],[], [], [], lb, ub, [], options);
+toc
 keyboard
 % ----> update Malaria_parameters_baseline.m with the fitted results <-----
 
@@ -35,8 +34,15 @@ tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
 dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
-x = [2.190590606590128   2.078437497848872   2.921061093971156   1.218264166958853   0.614949157082559   2.462790900030959];
-%[0.978511191108162   0.101270457374745   1.957064739448506   3.354032211122635   0.001254524505761   1.119700445524332];
+% uniform EIR sampling
+x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+
+% refine EIR sampling linspace(0,0.1,50)
+% x = [4.054028031572193   3.112804946380192   1.795855001626887   1.489513759827821   3.576364022306257   2.176976575527686];
+
+% refine EIR sampling linspace(0,0.05,50)
+% x = [2.447889755984070   2.544920188222090   1.841524526659086   2.359471176773747   2.390735795064254   2.419704159102402];
+
 Malaria_parameters_baseline;
 P.phis2 = x(1);
 P.phir2 = x(2); 
@@ -66,7 +72,7 @@ legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','
 axis([0 max(cc) 0 1])
 xlabel('$\tilde{C}_{H}$')
 ylabel('Probability')
-% title('Calibrated linking functions')
+title('Calibrated linking functions')
 [phi_ave rho_ave psi_ave]
 
 
@@ -98,7 +104,7 @@ if immunity_feedback == 0
     P.psif1 = 0.056984636045019; % value at L (function saturates to this value)   
     var_list = [0.01:0.05:1.0].^2; 
 else
-    var_list = [0.01:0.1:1].^2;
+    var_list = [0.01:0.01:1].^2;
 end
 xx = P.a/365;
 yy = zeros(1,length(var_list));
@@ -115,49 +121,46 @@ for jj = 1:length(var_list)
     yy(1,jj) = EIR_tot; % aEIR
     zz(:,jj) = Ctot./PH; % final Ctot at EE    
 end
-%%
-% figure_setups;
-% plot(var_list,y,'-o');
-% keyboard
+%% plotting heatmap (age, EIR, immunity) 
 figure_setups;
 imagesc(xx,yy,zz')
 xlim([0 20])
+ylim([0 max(yy)])
 xlabel('Age (years)')
 ylabel('aEIR')
-% title(['Immunity levels, feedback = ',num2str(immunity_feedback)]);
 title('Immunity level per person');
 set(gca,'YDir','normal');
 colormap jet
 colorbar('Ticks',0:2:15);
-zz = sigmoid_prob(zz, 'rho');
-%% plotting heatmap (age, EIR, rho) -> to compare with Filipe's curves
-% figure_setups; hold on
-% zz = sigmoid_prob(zz, 'rho');
-% imagesc(xx,yy,zz')
-% axis([0 20 0 120])
-% xlabel('Age (years)')
-% ylabel('aEIR')
-% % title(['Immunity levels, feedback = ',num2str(immunity_feedback)]);
-% title('Susceptibility ($\rho$)');
-% set(gca,'YDir','normal');
-% colormap jet
-% colorbar('Ticks',0:0.1:1);
-% EIR_list = [1 10 20 50 100];
-% for iEIR = 1:length(EIR_list)
-%     plot(xx,EIR_list(iEIR)*ones(size(xx)),'m--')
-% end
+%% plotting heatmap (age, EIR, rho)
+figure_setups; hold on; grid off
+zz_rho = sigmoid_prob(zz, 'rho');
+imagesc(xx,yy,zz_rho')
+xlabel('Age (years)')
+ylabel('aEIR')
+title('Susceptibility ($\rho$)');
+set(gca,'YDir','normal');
+colormap jet
+colorbar('Ticks',0:0.2:1);
+xlim([0 20])
+ylim([0 max(yy)])
+caxis([0 max(max(zz_rho))])
 %% slices of heatmap to compare with Filipe's curves
+zz_rho = sigmoid_prob(zz, 'rho');
 EIR_list = [1 10 20 50 100];
 figure_setups; hold on
 xx_data = 0.3:0.2:50; 
 xx_fit = xx;
-for iEIR = 4
+for iEIR = 1:5
     zz_data = F(xx_data,EIR_list(iEIR)*ones(size(xx_data)))';
-    plot(xx_data,zz_data,'--')
-    [~,ind] = min(abs(EIR_list(iEIR)-yy));
-    zz_fit = zz(:,ind);
-    plot(xx,zz_fit,'-.')
+    plot(xx_data,zz_data,'-','DisplayName',['EIR=',num2str(EIR_list(iEIR))])
 end
+for iEIR = 1:5
+    [~,ind] = min(abs(EIR_list(iEIR)-yy));
+    zz_fit = zz_rho(:,ind);    
+    plot(xx,zz_fit,'-.')       
+end
+
 legend('Location','e')
 xlabel('age (years)')
 ylabel('susceptibility')

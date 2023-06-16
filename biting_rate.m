@@ -5,8 +5,9 @@ global P
 % bH = P.bm*NM/NH;
 
 % compromise model from Chitnis et al. (2006)
-%b_tot = P.bm*P.bh*NH.*NM./(P.bm*NM+P.bh*NH);
-%bH = b_tot./NH; % bites per human
+% NH = trapz(PH)*P.da;
+% b_tot = P.bm*P.bh*NH.*NM./(P.bm*NM+P.bh*NH);
+% bH = b_tot./NH.*ones(size(PH)); % bites per human
 
 % age-dependent biting rate (surface area factor)
 temp = trapz(P.zeta.*PH,1)*P.da;

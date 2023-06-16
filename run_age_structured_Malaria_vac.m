@@ -1,4 +1,4 @@
-close all
+% close all
 clc
 format long
 global P
@@ -15,7 +15,6 @@ da = dt;
 a = (0:da:age_max)';
 na = length(a);
 
-P.disease_mortality = 0;
 P.dt = dt;
 P.a = a;
 P.na = na;
@@ -29,13 +28,12 @@ Malaria_parameters_transform_vac;
 %% initial condition 'EE' - numerical EE
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 NN_S = trapz(SH0)*P.da;
-%keyboard;
 
 %% time evolution
 P.v0 = 0;
 P.z = 0; % z=0 sterile, z=1 blood-stage
 Malaria_parameters_transform_vac; % resetting vaccination distribution
-tfinal = 365*10;
+tfinal = 365;
 [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,0,tfinal,...
     SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
 PH = SH+EH+DH+AH+VH+UH;
@@ -45,121 +43,122 @@ NM = SM+IM+EM;
 vacc_sterile = trapz(P.v*(1-P.z).*SH,1)*P.da*365*P.NN/1000;
 vacc_blood = trapz(P.v*P.z.*SH,1)*P.da*365*P.NN/1000;
 
-%% Population proportions & EIR versus time
 [bH,~] = biting_rate(PH,NM); % NB bH varies by age and time
 EIR = bH.*IM./NM*365; % EIR matrix
-
-figure_setups;
-figure(1);
-subplot(1,2,1), plot(t/365,EIR(end,:));
-hold on;
-plot(t/365,EIR(floor(end/10),:));
-plot(t/365,EIR(floor(end/100),:));
-legend('EIR age 100', 'EIR age 10','EIR age 1');
-xlabel('Time (years)');
-title('aEIR dynamics');
-
+EIR_tot = trapz(EIR.*PH,1)*P.da./NH;
+EIR_final = EIR_tot(end);
+%% Population proportions & EIR versus time
+% figure_setups;
+% figure(1);
+% subplot(1,2,1), plot(t/365,EIR(end,:));
+% hold on;
+% plot(t/365,EIR(floor(end/10),:));
+% plot(t/365,EIR(floor(end/100),:));
+% legend('EIR age 100', 'EIR age 10','EIR age 1');
+% xlabel('Time (years)');
+% title('aEIR dynamics');
 %figure_setups;
 %plot(t/365,(PH(:,end)')*EIR/NH(end));
 %title('Average EIR (pop. weighted)');
-figure(1);
-subplot(1,2,2), plot(t/365,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
-plot(t/365,trapz(EH,1)*da./NH,'-','Color',colour_mat3);
-plot(t/365,trapz(AH,1)*da./NH,'-','Color',colour_mat2);
-plot(t/365,trapz(DH,1)*da./NH,'-','Color',colour_mat7);
-plot(t/365,trapz(VH,1)*da./NH,'-','Color',colour_mat6);
-plot(t/365,trapz(UH,1)*da./NH,'-','Color',colour_mat4);
-plot(t/365,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1)+trapz(VH,1)+trapz(UH,1))*da./NH,'-.k');
-legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$', '$\tilde{D}_H$', '$\tilde{V}_H$','$\tilde{U}_H$','$N_H$');
-title('Disease dynamics');
-xlabel('Time (years)');
-grid on
-axis([0 max(t)/365 0 1.1]);
+% figure(1);
+% subplot(1,2,2), plot(t/365,trapz(SH,1)*da./NH,'-','Color',colour_mat1); hold on;
+% plot(t/365,trapz(EH,1)*da./NH,'-','Color',colour_mat3);
+% plot(t/365,trapz(AH,1)*da./NH,'-','Color',colour_mat2);
+% plot(t/365,trapz(DH,1)*da./NH,'-','Color',colour_mat7);
+% plot(t/365,trapz(VH,1)*da./NH,'-','Color',colour_mat6);
+% plot(t/365,trapz(UH,1)*da./NH,'-','Color',colour_mat4);
+% plot(t/365,(trapz(SH,1)+trapz(EH,1)+trapz(AH,1)+trapz(DH,1)+trapz(VH,1)+trapz(UH,1))*da./NH,'-.k');
+% legend('$\tilde{S}_H$','$\tilde{E}_H$','$\tilde{A}_H$', '$\tilde{D}_H$', '$\tilde{V}_H$','$\tilde{U}_H$','$N_H$');
+% title('Disease dynamics');
+% xlabel('Time (years)');
+% grid on
+% axis([0 max(t)/365 0 1.1]);
 
 %% Disease class dynamics
-figure_setups;
+% figure_setups;
+% 
+% tempNorm = SH./PH;
+% subplot(2,2,1), plot(t/365,tempNorm(end,:));
+% hold on;
+% plot(t/365,tempNorm(floor(end/10),:));
+% plot(t/365,tempNorm(floor(end/100),:));
+% ylim([0 1]);
+% title('$\tilde{S}_{H}(\alpha,t)$');
+% grid on;
+% 
+% tempNorm = EH./PH;
+% subplot(2,2,2), plot(t/365,tempNorm(end,:));
+% hold on;
+% plot(t/365,tempNorm(floor(end/10),:));
+% plot(t/365,tempNorm(floor(end/100),:));
+% title('$\tilde{E}_{H}(\alpha,t)$');
+% legend('Age 100', 'Age 10','Age 1');
+% ylim([0 1]);
+% grid on;
+% 
+% tempNorm = AH./PH;
+% subplot(2,2,3), plot(t/365,tempNorm(end,:));
+% hold on;
+% plot(t/365,tempNorm(floor(end/10),:));
+% plot(t/365,tempNorm(floor(end/100),:));
+% title('$\tilde{A}_{H}(\alpha,t)$');
+% ylim([0 1]);
+% grid on;
+% xlabel('Time (years)');
+% 
+% tempNorm = DH./PH;
+% subplot(2,2,4), plot(t/365,tempNorm(end,:));
+% hold on;
+% plot(t/365,tempNorm(floor(end/10),:));
+% plot(t/365,tempNorm(floor(end/100),:));
+% title('$\tilde{D}_{H}(\alpha,t)$');
+% ylim([0 1]);
+% grid on;
+% xlabel('Time (years)');
 
-tempNorm = SH./PH;
-subplot(2,2,1), plot(t/365,tempNorm(end,:));
-hold on;
-plot(t/365,tempNorm(floor(end/10),:));
-plot(t/365,tempNorm(floor(end/100),:));
-ylim([0 1]);
-title('$\tilde{S}_{H}(\alpha,t)$');
-grid on;
-
-tempNorm = EH./PH;
-subplot(2,2,2), plot(t/365,tempNorm(end,:));
-hold on;
-plot(t/365,tempNorm(floor(end/10),:));
-plot(t/365,tempNorm(floor(end/100),:));
-title('$\tilde{E}_{H}(\alpha,t)$');
-legend('Age 100', 'Age 10','Age 1');
-ylim([0 1]);
-grid on;
-
-tempNorm = AH./PH;
-subplot(2,2,3), plot(t/365,tempNorm(end,:));
-hold on;
-plot(t/365,tempNorm(floor(end/10),:));
-plot(t/365,tempNorm(floor(end/100),:));
-title('$\tilde{A}_{H}(\alpha,t)$');
-ylim([0 1]);
-grid on;
-xlabel('Time (years)');
-
-tempNorm = DH./PH;
-subplot(2,2,4), plot(t/365,tempNorm(end,:));
-hold on;
-plot(t/365,tempNorm(floor(end/10),:));
-plot(t/365,tempNorm(floor(end/100),:));
-title('$\tilde{D}_{H}(\alpha,t)$');
-ylim([0 1]);
-grid on;
-xlabel('Time (years)');
 %% Immunity dynamics
-figure_setups;
-nt = length(t);
-subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/40))./PH(:,floor(nt/40)));
-hold on;
-subplot(2,2,1), plot(a/365,Ctot(:,floor(3*nt/40))./PH(:,floor(3*nt/40)));
-subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/20))./PH(:,floor(nt/20)));
-subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/10))./PH(:,floor(nt/10)));
-%subplot(2,2,1), plot(a/365,Ctot(:,end)./PH(:,end),'-.');
-xlabel('age')
-legend(['t = ',num2str(t(end)/(40*365))],['t = ',num2str(t(end)/(20*365))],...
-    ['t = ',num2str(3*t(end)/(40*365))],['t = ',num2str(t(end)/(10*365))],'Location','SouthEast');
-title('$C_{total}(t)/P_H(t)$');
-grid on
-subplot(2,2,2), plot(t/365,(trapz(Ctot,1)*da)./NH);
-title('$\int C_{total}(\alpha,t)d\alpha / N_H(t)$');
-xlabel('time');
-grid on
-
-subplot(2,2,3), imagesc(t/365,a/365,Ctot./PH);
-set(gca,'YDir','normal');
-colorbar;
-ylabel('age');
-xlabel('Time (years)');
-title('$C_{total}(\alpha,t)/P_H(\alpha,t)$');
-
-Ctot_norm = Ctot./PH;
-subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/100),:));
-hold on;
-subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/20),:));
-subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/10),:));
-subplot(2,2,4), plot(t/365,Ctot_norm(na,:),'-.');
-xlabel('Time(years)')
-legend('age 1','age 5','age 10', 'age 100'); % assume age_max=100
-title('$\tilde{C}_{total}(t,\cdot)$');
+% figure_setups;
+% nt = length(t);
+% subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/40))./PH(:,floor(nt/40)));
+% hold on;
+% subplot(2,2,1), plot(a/365,Ctot(:,floor(3*nt/40))./PH(:,floor(3*nt/40)));
+% subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/20))./PH(:,floor(nt/20)));
+% subplot(2,2,1), plot(a/365,Ctot(:,floor(nt/10))./PH(:,floor(nt/10)));
+% %subplot(2,2,1), plot(a/365,Ctot(:,end)./PH(:,end),'-.');
+% xlabel('age')
+% legend(['t = ',num2str(t(end)/(40*365))],['t = ',num2str(t(end)/(20*365))],...
+%     ['t = ',num2str(3*t(end)/(40*365))],['t = ',num2str(t(end)/(10*365))],'Location','SouthEast');
+% title('$C_{total}(t)/P_H(t)$');
+% grid on
+% subplot(2,2,2), plot(t/365,(trapz(Ctot,1)*da)./NH);
+% title('$\int C_{total}(\alpha,t)d\alpha / N_H(t)$');
+% xlabel('time');
+% grid on
+% 
+% subplot(2,2,3), imagesc(t/365,a/365,Ctot./PH);
+% set(gca,'YDir','normal');
+% colorbar;
+% ylabel('age');
+% xlabel('Time (years)');
+% title('$C_{total}(\alpha,t)/P_H(\alpha,t)$');
+% 
+% Ctot_norm = Ctot./PH;
+% subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/100),:));
+% hold on;
+% subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/20),:));
+% subplot(2,2,4), plot(t/365,Ctot_norm(floor(na/10),:));
+% subplot(2,2,4), plot(t/365,Ctot_norm(na,:),'-.');
+% xlabel('Time(years)')
+% legend('age 1','age 5','age 10', 'age 100'); % assume age_max=100
+% title('$\tilde{C}_{total}(t,\cdot)$');
 
 %% DALY calculation
-[DALY,YLL,YLD] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot);
-figure(4);
-subplot(2,2,1), plot(t/365,DALY,t/365,YLL,t/365,YLD);
-grid on
-xlabel('Year')
-legend('DALY','YLL (death)','YLD (disability)')
+% [DALY,YLL,YLD] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot);
+% figure(4);
+% subplot(2,2,1), plot(t/365,DALY,t/365,YLL,t/365,YLD);
+% grid on
+% xlabel('Year')
+% legend('DALY','YLL (death)','YLD (disability)')
 
 %% vac control
 % P.v0 = 0;
@@ -217,43 +216,41 @@ legend('DALY','YLL (death)','YLD (disability)')
 %% vaccine efficacy - reduction in incidence with or w/o vaccine (on population level)
 % initial condition = at the end of initial run
 %---- vaccinated group -----
-lgroup = 'DH'; tfinal_vacc = 365; tfinal_count = 3650;  % -> counting incidence for one year
-P.v0 = 100; % turn on vaccination
-Malaria_parameters_transform_vac;
-[~,ind1] = min(abs(P.a-7*30));
-[~,ind2] = min(abs(P.a-19*30));
-[~,vacc,~,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
-P.v0 = 0; % turn off vaccination
-Malaria_parameters_transform_vac;
-Incidence_vacc = incidence_cal_time(da,na,0,tfinal_count,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv,ind1,ind2,lgroup);
-%---- control group -----
-P.v0 = 0;
-Malaria_parameters_transform_vac;
-[~,~,~,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
-Incidence_control = incidence_cal_time(da,na,0,tfinal_count,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc,ind1,ind2,lgroup);
-eff = (Incidence_control-Incidence_vacc)./vacc;
+% lgroup = 'DH'; tfinal_vacc = 365; tfinal_count = 3650;  % -> counting incidence for one year
+% P.v0 = 100; % turn on vaccination
+% Malaria_parameters_transform_vac;
+% [~,ind1] = min(abs(P.a-7*30));
+% [~,ind2] = min(abs(P.a-19*30));
+% [~,vacc,~,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+% P.v0 = 0; % turn off vaccination
+% Malaria_parameters_transform_vac;
+% Incidence_vacc = incidence_cal_time(da,na,0,tfinal_count,SHv, EHv, DHv, AHv, VHv, UHv, SMv, EMv, IMv, Cmv, Cacv, Cvv, Ctotv, MHv,ind1,ind2,lgroup);
+% %---- control group -----
+% P.v0 = 0;
+% Malaria_parameters_transform_vac;
+% [~,~,~,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc] = incidence_cal(da,na,0,tfinal_vacc,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0,ind1,ind2,lgroup);
+% Incidence_control = incidence_cal_time(da,na,0,tfinal_count,SHc, EHc, DHc, AHc, VHc, UHc, SMc, EMc, IMc, Cmc, Cacc, Cvc, Ctotc, MHc,ind1,ind2,lgroup);
+% eff = (Incidence_control-Incidence_vacc)./vacc;
 
 %% vaccine efficacy plots
-figure(4);
-subplot(2,2, 2), plot((0:P.dt:tfinal_count),eff), axis tight;
-grid on;
-xlabel('Time');
-title('Incidence reduction per vaccine');
-
-figure(4);
-subplot(2,2, 3), plot((0:P.dt:tfinal_count),Incidence_control,(0:P.dt:tfinal_count),Incidence_vacc), axis tight;
-grid on;
-xlabel('Time');
-legend('Control','With vaccination');
-title('Incidence with/without vaccination');
-
+% figure(4);
+% subplot(2,2, 2), plot((0:P.dt:tfinal_count),eff), axis tight;
+% grid on;
+% xlabel('Time');
+% title('Incidence reduction per vaccine');
+% 
+% figure(4);
+% subplot(2,2, 3), plot((0:P.dt:tfinal_count),Incidence_control,(0:P.dt:tfinal_count),Incidence_vacc), axis tight;
+% grid on;
+% xlabel('Time');
+% legend('Control','With vaccination');
+% title('Incidence with/without vaccination');
 
 %% output data to .mat file for analysis
 % SH_EE = SH(:,end); EH_EE = EH(:,end); AH_EE = AH(:,end); DH_EE = DH(:,end); VH_EE = VH(:,end); UH_EE = UH(:,end); PH_EE = PH(:,end); v = P.v;
 % Cm_EE = Cm(:,end); Cac_EE = Cac(:,end); Ctot_EE = Ctot(:,end);
 % save(['Results/Vaccine/v0_',num2str(P.v0*100),'.mat'],'t','a','v','vacc_sterile','vacc_blood','SH_EE','EH_EE','AH_EE','DH_EE','VH_EE','UH_EE','PH_EE',...
 %     'Cm_EE','Cac_EE','Ctot_EE');
-
 
 %% seasonlity plots
 % figure_setups_2;
@@ -286,14 +283,14 @@ title('Incidence with/without vaccination');
 % [~,ind22] = min(abs(t-(t(end)-365)));
 % cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));% should be around ~3 for Nanoro seasonlity study
 
-%%
+%% calculate cumulative cases
 % figure_setups; hold on;
 % plot(t/365,cumsum(cases_rate1)*dt);
 % plot(t/365,cumsum(cases_rate2)*dt);
 % title('Cumulative new (cohort) cases');
 % legend('AH to DH','EH to DH');
 
-%%
+%% Incidence pp per year
 % figure_setups;
 % subplot(1,3,2)
 % bar(t'/365,(cases_rate1+cases_rate2).*30); % corresponding to Figure S1 in White et al. (2015)
@@ -356,41 +353,42 @@ title('Incidence with/without vaccination');
 % axis([0 max(t)/365 0 max(NH)+0.1]);
 
 %% Age profiles at tfinal
-% figure_setups;
-% plot(a/365,SH(:,end),'-','Color',colour_mat1); hold on;
-% plot(a/365,EH(:,end),'--','Color',colour_mat3);
-% plot(a/365,DH(:,end),'-.','Color',colour_mat2);
-% plot(a/365,AH(:,end),':','Color',colour_mat7);
-% plot(a/365,VH(:,end),':','Color',colour_mat6);
-% plot(a/365,UH(:,end),':','Color',colour_mat4);
-% plot(a/365,PH_final,'-k');
-% plot(a/365,MH(:,end),'-r');
-% hold off;
-% title(num2str(t(end)/365));
-% xlim([0 15])
-% legend('$S_H$','$E_H$','$D_H$','$A_H$','$V_H$','$U_H$','$P_H$','$M_H$ ($\mu_D$)');
-% title(['Final Age Distribution']);
-% xlabel('age (years)');
-% grid on
-% axis([0 age_max/365 0 max(PH_final)]);
+figure_setups;
+plot(a/365,SH(:,end),'-','Color',colour_mat1); hold on;
+plot(a/365,EH(:,end),'--','Color',colour_mat3);
+plot(a/365,DH(:,end),'-.','Color',colour_mat2);
+plot(a/365,AH(:,end),':','Color',colour_mat7);
+plot(a/365,VH(:,end),':','Color',colour_mat6);
+plot(a/365,UH(:,end),':','Color',colour_mat4);
+plot(a/365,PH_final,'-k');
+plot(a/365,MH(:,end),'-r');
+hold off;
+title(num2str(t(end)/365));
+xlim([0 15])
+legend('$S_H$','$E_H$','$D_H$','$A_H$','$V_H$','$U_H$','$P_H$','$M_H$ ($\mu_D$)');
+title(['Final Age Distribution']);
+xlabel('age (years)');
+grid on
+axis([0 age_max/365 0 max(PH_final)]);
 %% Age proportions at tfinal
-% figure_setups;
-% plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
-% plot(a/365,EH(:,end)./PH_final,'--','Color',colour_mat6);
-% plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
-% plot(a/365,AH(:,end)./PH_final,':','Color',colour_mat3);
-% plot(a/365,VH(:,end)./PH_final,':','Color',colour_mat5);
-% plot(a/365,UH(:,end)./PH_final,':','Color',colour_mat4);
-% plot(a/365,MH(:,end)./PH_final,'r-');
-% plot(a/365,(AH(:,end)+DH(:,end))./PH_final,'r-.');
-% plot(a/365,PH_final./PH_final,'-k');
+figure_setups;
+plot(a/365,SH(:,end)./PH_final,'-','Color',colour_mat1); hold on;
+plot(a/365,EH(:,end)./PH_final,'--','Color',colour_mat6);
+plot(a/365,DH(:,end)./PH_final,'-.','Color',colour_mat2);
+plot(a/365,AH(:,end)./PH_final,':','Color',colour_mat3);
+%plot(a/365,VH(:,end)./PH_final,':','Color',colour_mat5);
+%plot(a/365,UH(:,end)./PH_final,':','Color',colour_mat4);
+%plot(a/365,MH(:,end)./PH_final,'r-');
+%plot(a/365,(AH(:,end)+DH(:,end))./PH_final,'r-.');
+plot(a/365,PH_final./PH_final,'-k');
 % legend('SH/PH','EH/PH','DH/PH', 'AH/PH', 'VH/PH','UH/PH','$M_H$ ($\mu_D$)','(AH+DH)/PH');
-% title(['Final Age Dist. Proportions']);
-% % title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]);
-% xlabel('age (years)');
-% grid on
-% axis([0 P.age_max/365 0 1.1]);
-% xlim([0 15])
+legend('SH/PH','EH/PH','DH/PH', 'AH/PH');
+title(['Final Age Dist. Proportions']);
+% title(['Final Age Dist. Proportions ~~ feedback =',num2str(immunity_feedback)]);
+xlabel('age (years)');
+grid on
+axis([0 P.age_max/365 0 1.1]);
+xlim([0 30])
 
 %% Age proportions in time - movie
 % figure_setups;

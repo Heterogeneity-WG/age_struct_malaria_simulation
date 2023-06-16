@@ -1,6 +1,9 @@
 global P
 
 P.disease_mortality = 1; % turn on mu_D (disease induced mortality)
+P.balance_fertility = 0; % balanced fertility or not
+P.balance_mortality = 0; % balanced mortality or not
+P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Nanoro (Burkina Faso), EIR peaks at August
@@ -32,10 +35,6 @@ P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed 
 
 %% dummy varaible for eFast SA
 P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for global SA eFAST - values from original code 
-%% 
-P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
-P.balance_fertility = 0; % balanced fertility or not
-P.balance_mortality = 0; % balanced mortality or not
 
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
@@ -60,20 +59,40 @@ P.cX = 0.1; P.cX_lower = 0.065; P.cX_upper = 0.21; % free parameter - weight for
 P.m = 1; % fraction of new-born immunity relative to mother’s
 P.uc = 10; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
-% fitted values
-% using Tfinal = 10 years
+% fitted values using Tfinal = 10 years
+x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+P.phis2 = x(1);
+P.phir2 = x(2); 
+P.rhos2 = x(3);
+P.rhor2 = x(4); 
+P.psis2 = x(5);
+P.psir2 = x(6);
+
 P.phif0 = 0.01; 
 P.phif1 = 1;
-P.phis2 = 2.496616069343053; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
-P.phir2 = 3.205980769145713; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
+% P.phis2 = 2.432431947045749; 
+% P.phir2 = 1.278072983365070; 
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-P.rhos2 = 1.465971889493823; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
-P.rhor2 = 0.673606954469396; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
+% P.rhos2 = 3.186658383357816; 
+% P.rhor2 = 1.030263636242633; 
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-P.psis2 = 3.692266816475124; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
-P.psir2 = 4.096181686675311; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
+% P.psis2 = 3.186658383357816; 
+% P.psir2 = 1.030263636242633; 
+
+% P.phif0 = 0.01; 
+% P.phif1 = 1;
+% P.phis2 = 2.496616069343053; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
+% P.phir2 = 3.205980769145713; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
+% P.rhof0 = 0.01; 
+% P.rhof1 = 1; 
+% P.rhos2 = 1.465971889493823; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
+% P.rhor2 = 0.673606954469396; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
+% P.psif0 = 0.01; 
+% P.psif1 = 1; 
+% P.psis2 = 3.692266816475124; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
+% P.psir2 = 4.096181686675311; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
