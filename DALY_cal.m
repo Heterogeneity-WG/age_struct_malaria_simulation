@@ -6,10 +6,9 @@ Malaria_parameters_DALY;
 
 % use time series solutions
 PH = SH+EH+DH+AH+VH+UH;
-NH = trapz(PH,1)*P.da;
 NM = SM+EM+IM;
 
-[bH,~] = biting_rate(NH,NM);
+[bH,~] = biting_rate(PH,NM);
 lamH = FOI_H(bH,IM,NM);
 rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
 psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH

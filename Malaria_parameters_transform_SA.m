@@ -14,7 +14,6 @@ P.cD = 0.5*P.cX; % DH weight
 P.cU = P.cS; % UH weight ~~ SH
 P.cV = P.cS; % weight for vaccination ~~ SH
 
-
 P.rho = sigmoid_prob(zeros(size(a)), 'rho');
 P.phi = sigmoid_prob(zeros(size(a)), 'phi');
 P.psi = sigmoid_prob(zeros(size(a)), 'psi');

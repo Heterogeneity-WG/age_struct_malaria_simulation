@@ -121,12 +121,12 @@ find_stable_age; % when mu_D>0, this gives the age distribution when no disease 
 % % keyboard
 end
 
-function intfx = intf(f,xs)
-ns = length(xs);
-fx = f(xs);
-e = ones(ns,ns+1)/2;
-e(2:end,1:end-1)=1;e(1,end)=0;
-A = spdiags(e,-ns:0,ns,ns);
-intfx= A*fx;
-end
+% function intfx = intf(f,xs)
+% ns = length(xs);
+% fx = f(xs);
+% e = ones(ns,ns+1)/2;
+% e(2:end,1:end-1)=1;e(1,end)=0;
+% A = spdiags(e,-ns:0,ns,ns);
+% intfx= A*fx;
+% end
 

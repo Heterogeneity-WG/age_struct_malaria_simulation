@@ -70,41 +70,29 @@ P.psir2 = x(6);
 
 P.phif0 = 0.01; 
 P.phif1 = 1;
-% P.phis2 = 2.432431947045749; 
-% P.phir2 = 1.278072983365070; 
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
-% P.rhos2 = 3.186658383357816; 
-% P.rhor2 = 1.030263636242633; 
 P.psif0 = 0.01; 
 P.psif1 = 1; 
-% P.psis2 = 3.186658383357816; 
-% P.psir2 = 1.030263636242633; 
 
-% P.phif0 = 0.01; 
-% P.phif1 = 1;
-% P.phis2 = 2.496616069343053; P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
-% P.phir2 = 3.205980769145713; P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
-% P.rhof0 = 0.01; 
-% P.rhof1 = 1; 
-% P.rhos2 = 1.465971889493823; P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
-% P.rhor2 = 0.673606954469396; P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
-% P.psif0 = 0.01; 
-% P.psif1 = 1; 
-% P.psis2 = 3.692266816475124; P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
-% P.psir2 = 4.096181686675311; P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
+P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
+P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
+P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
+P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
+P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
+P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
-P.betaM = 0.3; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
+P.betaM = 0.25; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
 P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
 P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 
-P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes 1/10
+P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes
 P.gM = 0.5*P.NN; % recruitment rate of mosquitoes;
 P.MHm = P.gM/P.muM/P.NN; % assume NH = 1; % mosquito/human ratio
-P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes 1/15
+P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data
 % P.b0 = 0.0024214446844162;
