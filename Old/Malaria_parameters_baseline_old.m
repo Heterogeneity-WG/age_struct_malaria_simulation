@@ -55,16 +55,9 @@ P.h = 1/26; % incubation rate in human
 P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % half life of acquired immunity   
 P.dm = 0.25*365; % half life of maternal immunity
 P.c1 = 1; % weight for acquired immunity
-%%
-cX = 0.1;
-P.cS = (1-2.5*cX)/2; P.cS_lower = P.cS*0.65; P.cS_upper = P.cS*2.1;
-P.cE = cX; P.cE_lower = P.cE*0.65; P.cE_upper = P.cE*2.1;
-P.cA = cX; P.cA_lower = P.cA*0.65; P.cA_upper = P.cA*2.1;
-P.cD = 0.5*cX; P.cD_lower = P.cD*0.65; P.cD_upper = P.cD*2.1;
-P.cU = P.cS; P.cU_lower = P.cU*0.65; P.cU_upper = P.cU*2.1;
-
-P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immunity relative to mother's
-P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
+P.cX = 0.1; P.cX_lower = 0.065; P.cX_upper = 0.21; % free parameter - weight for boosting
+P.m = 1; % fraction of new-born immunity relative to mother’s
+P.uc = 10; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
 x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
@@ -136,5 +129,5 @@ P.ww = 12.603;
 % P.ww = 13.196127635937707;
 
 %%
-% Malaria_parameters_transform_SA; % commented out for running SA
+% Malaria_parameters_transform; % commented out for running SA
 

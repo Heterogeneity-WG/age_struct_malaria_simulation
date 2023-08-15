@@ -59,7 +59,7 @@ for n = 1:nt-1
     temp3 = P.rho(1:end-1)*P.h.*EH(2:end,n+1)+P.psi(1:end-1).*lamH(1:end-1).*AH(2:end,n+1);
     DH(2:end,n+1) = ((1-dt*P.rD)*DH(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));
-    % diagnostic, disease-induced mortality counts
+    % diagnostic, disease-induced mortality counts, accumulative (ODE)
     MH(:,n+1) = MH(:,n)+dt*P.muD.*DH(:,n);
     
     PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1)+VH(:,n+1)+UH(:,n+1); % total human at age a, t = n+1

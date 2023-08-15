@@ -24,19 +24,20 @@ a = (0:da:age_max)';
 na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; P.tfinal_vac = tfinal_vac;
 
-% SA setting 
+% SA setting
 % lQ = {'EE-D','EE-DA','EE-D-frac','EE-EIR',...
 %     'EE-D-02-10','EE-DA-02-10','EE-D-frac-02-10',...
 %     'EE-D-09-24','EE-DA-09-24','EE-D-frac-09-24',...
-%     'EE-death','EE-death-02-10','EE-death-09-24',...
-%     'DALY'};  
-lQ = {'EE-death','EE-death-02-10','EE-death-09-24','EE-death-10+',...
-      'EE-DA','EE-DA-02-10','EE-DA-09-24','EE-DA-10+'};  
+%     'EE-death','EE-death-02-10','EE-death-09-24'};  
+lQ = {'EE-death','EE-death-02-10','EE-death-09-24',...
+      'EE-DA','EE-DA-02-10','EE-DA-09-24',...
+      'DALY'};
 Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
 time_points = length(t); % default time_points = 1, unless if wants to check QOI at particular time points
 % time_points = 1:nt; 
-lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psir2','dac','uc','m',...
-    'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
+lP_list = {'rA','rD','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2'};
+% lP_list = {'rA','rD','muM','sigma','betaM','betaD', 'betaA','dac','cX','phis2','phir2','rhos2','rhor2','psis2','psir2','w','etas'}; 
+% 'w','etas'
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -50,7 +51,7 @@ end
 NR = 5;    % # of search curves - Resampling - keep the value
 k = length(lP_list); % # of POIs + dummy parameter, keep it in the range 5~11
 NS = 257;   % # of samples per search curve - keep 2^n+1, min = 65
-wantedN = NS*k*NR; % wanted no. of sample points
+wantedN=NS*k*NR; % wanted no. of sample points
 MI = 4; %: maximum number of fourier coefficients that may be retained in calculating the partial variances without interferences between the assigned frequencies
 % Computation of the frequency for the group of interest OMi and the # of sample points NS (here N=NS)
 OMi = floor(((wantedN/NR)-1)/(2*MI)/k); % >=8
@@ -65,17 +66,15 @@ Y(NS,Size_timepts,Size_QOI,length(pmin),NR)=0;  % For each model evaluation, the
 X(NS,k,k,NR) = 0;
 
 %% Generate parameter samples, stored in matrix X
-direc = 'D:/Results_local_SA/SA_22POI_eFAST/';
-if ~exist([direc,'eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'file')
+if ~exist(['Results/vaccine_no/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'file')
     disp('generate parameter samples...')
     X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'triangular'); % triangular distribution for POIs
     % X = efast_gensamples(X,OMi,MI,pmin,pmax,pmean,'unif'); % uniform distribution for POIs
-    save([direc,'/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
+    save(['Results/vaccine_no/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 else
     disp('load parameter samples...')
-    load([direc,'eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
+    load(['Results/vaccine_no/eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],'X')
 end
-
 tic
 %% model evaluations
 % common calculations/quantities that don't be impacted by the POIs
@@ -134,14 +133,14 @@ palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);
 [CVsi, CVsti] = CVmethod(Si, rangeSi,Sti,rangeSti,var); % Coeff. of Variance; See online Supplement A.5 for details
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi 
-save([direc,'eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
+save(['Results/vaccine_no/eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
 toc
 
 %% Sorting
-load([direc,'eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
-% lP_PRCC = {'rD','dac','cX','psir2','muM','rhos2','betaM','psis2','rA','betaD','betaA','sigma','rhor2','phis2','phir2'}; 
-% [~,index] = ismember(lP_PRCC,lP_list); index = index';
-[~,index] = sort(abs(s_struct.Si(1:end-1,1,1)),'descend');
+load(['Results/vaccine_no/eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
+lP_PRCC = {'rD','dac','cX','psir2','muM','rhos2','betaM','psis2','rA','betaD','betaA','sigma','rhor2','phis2','phir2'}; 
+[~,index] = ismember(lP_PRCC,lP_list); index = index';
+% [~,index] = sort(abs(s_struct.Si(1:end-1,1,1)),'descend');
 s_struct.Si = s_struct.Si([index;k],:,:); s_struct.p_Si = s_struct.p_Si(index,:,:,:); s_struct.rangeSi = s_struct.rangeSi([index;k],:,:,:);
 s_struct.Sti = s_struct.Sti([index;k],:,:); s_struct.p_Sti = s_struct.p_Sti(index,:,:,:); s_struct.rangeSti = s_struct.rangeSti([index;k],:,:,:);
 lP_list = lP_list([index;k]);
@@ -179,5 +178,5 @@ for iQ = 1:Size_QOI_plot
     title(['QOI=',lQ{iQ}])
     xticklabels(lP_list_name)
     ylim([0 0.5])
-    saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc')
+    saveas(gcf,['Results/vaccine_no/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc')
 end

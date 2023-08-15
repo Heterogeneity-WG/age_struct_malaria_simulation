@@ -11,8 +11,9 @@ for iQ = 1:length(lQ)
     end
 end
 
+direc = ['D:/Results_local_SA/SA_22POI_', lmethod,'/'];
 if flag_EE
-    if ~exist(['Results/vaccine_no/',lmethod,'_',num2str(run_num),'.mat'],'file')
+    if ~exist([direc, lmethod,'_',num2str(run_num),'.mat'],'file')
         [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
         [~, SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, ~, ~, ~, Ctot_solu, MH_solu] = ...
             age_structured_Malaria_vac(P.da,P.na, 0, P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
@@ -21,9 +22,9 @@ if flag_EE
         % Cm = Cm_solu(:,time_points); Cac = Cac_solu(:,time_points); Cv = Cv_solu(:,time_points);
         Ctot = Ctot_solu(:,time_points);
         SM = SM_solu(:,time_points); EM = EM_solu(:,time_points); IM = IM_solu(:,time_points);
-        save(['Results/vaccine_no/',lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
+        save([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
     else
-        load(['Results/vaccine_no/',lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
+        load([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
     end
     PH = SH+EH+DH+AH+VH+UH;
     % figure_setups;
@@ -63,6 +64,8 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(DH(ind0210y,:)+AH(ind0210y,:),1)*da;
         case 'EE-DA-09-24'
             Q_val(:,iQ) = trapz(DH(ind0924m,:)+AH(ind0924m,:),1)*da;
+        case 'EE-DA-10+'
+            Q_val(:,iQ) = trapz(DH(ind0210y(end)+1:end,:)+AH(ind0210y(end),:),1)*da;
         case 'EE-D-frac'
             Q_val(:,iQ) = trapz(DH,1)/trapz(DH+AH,1);
         case 'EE-D-frac-02-10'
@@ -75,6 +78,8 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(MH(ind0210y,:),1)*da;
         case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0924m,:),1)*da;
+        case 'EE-death-10+' % Cumulative disease-induced mortality, diagnostic eqn MH
+            Q_val(:,iQ) = trapz(MH(ind0210y(end)+1:end,:),1)*da;    
         case 'EE-EIR'
             NH = trapz(PH,1)*da;
             NM = SM+EM+IM;
