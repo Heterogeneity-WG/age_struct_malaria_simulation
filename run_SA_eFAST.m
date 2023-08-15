@@ -138,10 +138,11 @@ save([direc,'eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_li
 toc
 
 %% Sorting
-load([direc,'eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
-% lP_PRCC = {'rD','dac','cX','psir2','muM','rhos2','betaM','psis2','rA','betaD','betaA','sigma','rhor2','phis2','phir2'}; 
-% [~,index] = ismember(lP_PRCC,lP_list); index = index';
-[~,index] = sort(abs(s_struct.Si(1:end-1,1,1)),'descend');
+% load([direc,'eFAST_result_',num2str(NS),'_',num2str(k),'.mat'],'s_struct','lP_list','lQ','palpha')
+lP_eFAST = {'rD','dac','uc','cS','psir2','betaM','muM','cA','rhos2','psis2','rA','cE',...
+    'betaD','m','sigma','rhor2','betaA','cD','phir2','cU','phis2'}; 
+[~,index] = ismember(lP_eFAST,lP_list); index = index';
+% [~,index] = sort(abs(s_struct.Si(1:end-1,1,1)),'descend');
 s_struct.Si = s_struct.Si([index;k],:,:); s_struct.p_Si = s_struct.p_Si(index,:,:,:); s_struct.rangeSi = s_struct.rangeSi([index;k],:,:,:);
 s_struct.Sti = s_struct.Sti([index;k],:,:); s_struct.p_Sti = s_struct.p_Sti(index,:,:,:); s_struct.rangeSti = s_struct.rangeSti([index;k],:,:,:);
 lP_list = lP_list([index;k]);

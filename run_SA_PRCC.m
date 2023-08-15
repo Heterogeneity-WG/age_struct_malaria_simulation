@@ -137,11 +137,11 @@ toc
 
 %%
 %% Sorting 
-load(['Results/vaccine_no/PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
-% lP_eFAST = {'rD','dac','muM','betaM', 'betaD','rA','sigma','betaA','cX','psir2','psis2','rhor2','rhos2','phir2','phis2'}; 
-% lP_eFAST = {'rD','cX','dac','psir2','muM','betaM', 'rhor2','betaD','rhos2','rA','sigma','psis2','phir2','phis2','betaA'}; 
-% [~,index] = ismember(lP_eFAST,lP_list); index = index';
-[~,index] = sort(abs(PRCC(1:end-1,1,1)),'descend'); % sort using QOI #11, sort all the POIs except dummy
+% load(['Results/vaccine_no/PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
+lP_eFAST = {'rD','dac','uc','cS','psir2','betaM','muM','cA','rhos2','psis2','rA','cE',...
+    'betaD','m','sigma','rhor2','betaA','cD','phir2','cU','phis2'}; 
+[~,index] = ismember(lP_eFAST,lP_list); index = index';
+% [~,index] = sort(abs(PRCC(1:end-1,1,1)),'descend'); % sort using QOI #11, sort all the POIs except dummy
 PRCC = PRCC([index;k],:,:); stat_p = stat_p(index,:,:,:);
 lP_list = lP_list([index;k]);
 
