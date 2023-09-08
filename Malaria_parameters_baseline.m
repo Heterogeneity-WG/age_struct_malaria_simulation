@@ -2,32 +2,32 @@ global P
 
 P.disease_mortality = 1; % turn on mu_D (disease induced mortality)
 P.balance_fertility = 0; % balanced fertility or not
-P.balance_mortality = 0; % balanced mortality or not
+P.balance_mortality = 1; % balanced mortality or not
 P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Nanoro (Burkina Faso), EIR peaks at August
-P.ss_c = 0.02;
-P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-P.ss_k1 = 6.73;
-P.ss_k2 = 1.68;
-P.ss_u1 = 0.656;
-P.ss_u2 = 0.841;
-P.ss_S0 = 0.68; % magnitude of seasonlity profile, aim for 2.69 incidence rate
-P.ss_t0 = 100; % time shift to incoporate delay 
+% P.ss_c = 0.02;
+% P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+% P.ss_k1 = 6.73;
+% P.ss_k2 = 1.68;
+% P.ss_u1 = 0.656;
+% P.ss_u2 = 0.841;
+% P.ss_S0 = 0.68; % magnitude of seasonlity profile, aim for 2.69 incidence rate
+% P.ss_t0 = 100; % time shift to incoporate delay 
 
 % for Siaya (Kenya), EIR has modes at May and November
-% P.ss_c = 0.31;
-% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-% P.ss_k1 = 4.08;
-% P.ss_k2 = 3.66;
-% P.ss_u1 = 0.003;
-% P.ss_u2 = 0.456;
-% P.ss_S0 = 0.32; % magnitude of seasonlity profile, aim for 3.15 incidence rate
-% P.ss_t0 = 50; % time shift to incoporate delay 
+P.ss_c = 0.31;
+P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+P.ss_k1 = 4.08;
+P.ss_k2 = 3.66;
+P.ss_u1 = 0.003;
+P.ss_u2 = 0.456;
+P.ss_S0 = 0.32; % magnitude of seasonlity profile, aim for 3.15 incidence rate
+P.ss_t0 = 50; % time shift to incoporate delay 
 
 % turn off seasonlity
-P.ss_c = 1; P.ss_S0 = 1;
+P.ss_c = 0; P.ss_S0 = 1;
 
 %% system configuration
 P.lMsystem = 'ss'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
@@ -56,7 +56,7 @@ P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % half life of ac
 P.dm = 0.25*365; % half life of maternal immunity
 P.c1 = 1; % weight for acquired immunity
 %%
-cX = 0.1;
+cX = 0.1; P.cX = cX;
 P.cS = (1-2.5*cX)/2; P.cS_lower = P.cS*0.65; P.cS_upper = P.cS*2.1;
 P.cE = cX; P.cE_lower = P.cE*0.65; P.cE_upper = P.cE*2.1;
 P.cA = cX; P.cA_lower = P.cA*0.65; P.cA_upper = P.cA*2.1;
