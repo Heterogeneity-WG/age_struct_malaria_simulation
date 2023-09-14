@@ -35,7 +35,7 @@ for n = 1:nt-1
     
     [bH,~] = biting_rate(PH,NM(n));
     lamH = FOI_H(bH,IM(1,n),NM(n));  % force of infection at t=n
-    %keyboard;
+    
     % human birth terms
     SH(1,n+1) = trapz(P.gH.*PH)*da;
     EH(1,n+1) = 0;
@@ -43,7 +43,7 @@ for n = 1:nt-1
     AH(1,n+1) = 0;
     VH(1,n+1) = 0;
     UH(1,n+1) = 0;
-    %keyboard;
+    
     % human time evolution
     SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)))...
         ./(1+(lamH(1:end-1)+P.v(2:end)+P.muH(2:end))*dt); 
@@ -65,7 +65,7 @@ for n = 1:nt-1
     PHp1 = SH(:,n+1)+EH(:,n+1)+DH(:,n+1)+AH(:,n+1)+VH(:,n+1)+UH(:,n+1); % total human at age a, t = n+1
     NHp1 = trapz(PHp1)*da; % total human population at t=n+1;
     % mosquito time evolution
-    P.gM = P.gM0*P.ss_S(t(n+1)); % incorporate seasonlity
+    P.gM = P.gM_fun(t(n+1)); % incorporate seasonlity
     [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DH(:,n), AH(:,n), PHp1, NHp1, NM(n));
     NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     

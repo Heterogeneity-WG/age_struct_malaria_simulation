@@ -11,7 +11,7 @@ function [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var)
 
 for u=1:length(var)
     for t=1:length(time_points) %loop through time_points
-        disp([num2str([t u]), '//timepoint QOI']) 
+        % disp([num2str([t u]), '//timepoint QOI']) 
         for i=1:NP % loop through parameters
             for L=1:NR 
                 Y(:,t,u,i,L) = (Y(:,t,u,i,L)-mean(Y(:,t,u,i,L)))';

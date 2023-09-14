@@ -14,8 +14,8 @@ P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rat
 Malaria_parameters_transform_vac;
 t = (0:dt:tfinal_vacc)';
 temp0 = zeros(size(SH0));
-[SHr, EHr, DHr, AHr, Cmr, Cacr, Ctotr, SHv, EHv, DHv, AHv, VHv, UHv, Cmv, Cacv, Ctotv, SHc, EHc, DHc, AHc, Cmc, Cacc, Ctotc, SM, EM, IM] = ...
-    age_structured_Malaria_eff(da, na, tfinal_vacc, SH0, EH0, DH0, AH0, Cm0, Cac0, Ctot0, ...
+[~,SHr, EHr, DHr, AHr, Cmr, Cacr, Ctotr, SHv, EHv, DHv, AHv, VHv, UHv, Cmv, Cacv, Ctotv, SHc, EHc, DHc, AHc, Cmc, Cacc, Ctotc, SM, EM, IM] = ...
+    age_structured_Malaria_eff(da, na, 0, tfinal_vacc, SH0, EH0, DH0, AH0, Cm0, Cac0, Ctot0, ...
     temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, temp0, SM0, EM0, IM0);
 
 %% simulation using three-group model - vaccine off
@@ -23,8 +23,8 @@ tfinal_conti = 5*365; total_vacc = 0;
 P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
 Malaria_parameters_transform_vac;
 t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)';
-[SHr2, EHr2, DHr2, AHr2, Cmr2, Cacr2, Ctotr2, SHv2, EHv2, DHv2, AHv2, VHv2, UHv2, Cmv2, Cacv2, Ctotv2, SHc2, EHc2, DHc2, AHc2, Cmc2, Cacc2, Ctotc2, SM2, EM2, IM2] = ...
-    age_structured_Malaria_eff(da, na, tfinal_conti, SHr(:,end), EHr(:,end), DHr(:,end), AHr(:,end), Cmr(:,end), Cacr(:,end), Ctotr(:,end), ...
+[~,SHr2, EHr2, DHr2, AHr2, Cmr2, Cacr2, Ctotr2, SHv2, EHv2, DHv2, AHv2, VHv2, UHv2, Cmv2, Cacv2, Ctotv2, SHc2, EHc2, DHc2, AHc2, Cmc2, Cacc2, Ctotc2, SM2, EM2, IM2] = ...
+    age_structured_Malaria_eff(da, na, 0, tfinal_conti, SHr(:,end), EHr(:,end), DHr(:,end), AHr(:,end), Cmr(:,end), Cacr(:,end), Ctotr(:,end), ...
     SHv(:,end), EHv(:,end), DHv(:,end), AHv(:,end), VHv(:,end), UHv(:,end), Cmv(:,end), Cacv(:,end), Ctotv(:,end), ...
     SHc(:,end), EHc(:,end), DHc(:,end), AHc(:,end), Cmc(:,end), Cacc(:,end), Ctotc(:,end), SM(end), EM(end), IM(end));
 % combine results
@@ -38,9 +38,8 @@ PHr = SHr+EHr+DHr+AHr;
 PHc = SHc+EHc+DHc+AHc;
 PHv = SHv+EHv+DHv+AHv+VHv+UHv;
 PH = PHr+PHc+PHv;
-NH = trapz(PH,1)*da;
 NM = SM+EM+IM;
-[bH,~] = biting_rate(NH,NM);
+[bH,~] = biting_rate(PH,NM);
 lamH = FOI_H(bH,IM,NM);
 
 rhov = sigmoid_prob(Ctotv./PHv, 'rho'); % prob. of severely infected, EH -> DH
@@ -59,26 +58,26 @@ xdata = Data(:,1)*365; % time in years -> days
 ydata = Data(:,2);
 
 %% using aggregated incidence (within three month period) for residual calculation
-Incidence_vacc_3mon = NaN(size(ydata));
-Incidence_control_3mon = NaN(size(ydata));
-for i = 1:length(xdata)
-    period_end = xdata(i);
-    period_beg = xdata(i)-30*3;
-    [~,ind_beg] = min(abs(t-period_beg)); ind_beg = ind_beg+1;
-    [~,ind_end] = min(abs(t-period_end)); 
-    Incidence_vacc_3mon(i) = trapz(Incidence_vacc(ind_beg:ind_end))*P.dt;
-    Incidence_control_3mon(i) = trapz(Incidence_control(ind_beg:ind_end))*P.dt;
-end
-eff_3mon = (Incidence_control_3mon'-Incidence_vacc_3mon')./Incidence_control_3mon';
-ydata(isnan(eff_3mon))=[];
-eff_3mon(isnan(eff_3mon))=[];
-yrun = eff_3mon';
+% Incidence_vacc_3mon = NaN(size(ydata));
+% Incidence_control_3mon = NaN(size(ydata));
+% for i = 1:length(xdata)
+%     period_end = xdata(i);
+%     period_beg = xdata(i)-30*3;
+%     [~,ind_beg] = min(abs(t-period_beg)); ind_beg = ind_beg+1;
+%     [~,ind_end] = min(abs(t-period_end)); 
+%     Incidence_vacc_3mon(i) = trapz(Incidence_vacc(ind_beg:ind_end))*P.dt;
+%     Incidence_control_3mon(i) = trapz(Incidence_control(ind_beg:ind_end))*P.dt;
+% end
+% eff_3mon = (Incidence_control_3mon'-Incidence_vacc_3mon')./Incidence_control_3mon';
+% ydata(isnan(eff_3mon))=[];
+% eff_3mon(isnan(eff_3mon))=[];
+% yrun = eff_3mon';
 
 %% using instantaneous incidence for residual calculation
-% eff = (Incidence_control'-Incidence_vacc')./Incidence_control';
-% t(isnan(eff))=[]; % remove day 1 if needed
-% eff(isnan(eff))=[];
-% yrun = interp1(t,eff,xdata,'pchip'); 
+eff = (Incidence_control'-Incidence_vacc')./Incidence_control';
+t(isnan(eff))=[]; % remove day 1 if needed
+eff(isnan(eff))=[];
+yrun = interp1(t,eff,xdata,'pchip'); 
 
 err = norm(ydata-yrun);
 

@@ -1,4 +1,4 @@
-function Q_val = QOI_value_SA(lQ,time_points,run_num,lmethod)
+function Q_val = QOI_value_SA(lQ,time_points,run_num,lmethod,direc)
 global P
 
 da = P.da;
@@ -11,22 +11,32 @@ for iQ = 1:length(lQ)
     end
 end
 
-direc = ['D:/Results_local_SA/SA_22POI_', lmethod,'/'];
 if flag_EE
     if ~exist([direc, lmethod,'_',num2str(run_num),'.mat'],'file')
+        if run_num == 1
+            keyboard
+        end
+        temp_v0 = P.v0;
+        % find malaria EE
+        P.v0 = 0;
+        Malaria_parameters_transform_vac;
         [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
+        P.v0 = temp_v0;
+        Malaria_parameters_transform_vac;
         [~, SH_solu, EH_solu, DH_solu, AH_solu, VH_solu, UH_solu, SM_solu, EM_solu, IM_solu, ~, ~, ~, Ctot_solu, MH_solu] = ...
             age_structured_Malaria_vac(P.da,P.na, 0, P.tfinal,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
         SH = SH_solu(:,time_points); EH = EH_solu(:,time_points); DH = DH_solu(:,time_points); AH = AH_solu(:,time_points); MH = MH_solu(:,time_points);
         VH = VH_solu(:,time_points); UH = UH_solu(:,time_points);
-        % Cm = Cm_solu(:,time_points); Cac = Cac_solu(:,time_points); Cv = Cv_solu(:,time_points);
         Ctot = Ctot_solu(:,time_points);
         SM = SM_solu(:,time_points); EM = EM_solu(:,time_points); IM = IM_solu(:,time_points);
-        save([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
+        NM = SM+EM+IM;
+        PH = SH+EH+DH+AH+VH+UH;
+        % save([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM','Cm','Cac','Cv');
+        save([direc,lmethod,'_',num2str(run_num),'.mat'],'DH','AH','MH','Ctot','PH','IM','NM');
     else
-        load([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
-    end
-    PH = SH+EH+DH+AH+VH+UH;
+        % load([direc,lmethod,'_',num2str(run_num),'.mat'],'SH','EH','DH','AH','MH','VH','UH','Ctot','SM','EM','IM');
+        load([direc,lmethod,'_',num2str(run_num),'.mat'],'DH','AH','MH','Ctot','PH','IM','NM');
+    end   
     % figure_setups;
     % plot(t/365,trapz(SH_solu,1)*da); hold on;
     % plot(t/365,trapz(EH_solu,1)*da);
@@ -74,6 +84,8 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(DH(ind0924m,:),1)./trapz(DH(ind0924m,:)+AH(ind0924m,:),1);
         case 'EE-death' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH,1)*da;
+        case 'EE-death-rate' % disease-induced mortality rate, diagnostic eqn MH
+            Q_val(:,iQ) = trapz(P.muD.*DH,1)*da;
         case 'EE-death-02-10' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0210y,:),1)*da;
         case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
@@ -81,17 +93,21 @@ for iQ = 1:length(lQ)
         case 'EE-death-10+' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0210y(end)+1:end,:),1)*da;    
         case 'EE-EIR'
-            NH = trapz(PH,1)*da;
-            NM = SM+EM+IM;
-            [bH,~] = biting_rate(NH,NM);
-            IM_frac = IM./NM;
-            Q_val(:,iQ) = bH.*IM_frac*365; % annual EIR
+            NH = trapz(PH,1)*P.da;
+            [bH,~] =  biting_rate(PH,NM);
+            EIR_age = bH.*IM./NM*365;
+            EIR_tot = trapz(EIR_age.*PH,1)*P.da./NH;
+            Q_val(:,iQ) = EIR_tot; % annual EIR
+            % figure_setups
+            % plot(0:P.dt:P.tfinal,EIR_tot)
         case 'EE-Ctot-pp'
             Q_val(:,iQ) = trapz(Ctot,1)./trapz(PH,1);
         case 'EE-Ctot-pp-02-10'
             Q_val(:,iQ) = trapz(Ctot(ind0210y,:),1)./trapz(PH(ind0210y,:),1);
         case 'EE-Ctot-pp-09-24'
             Q_val(:,iQ) = trapz(Ctot(ind0924m,:),1)./trapz(PH(ind0924m,:),1);
+        case 'EE-Ctot-pp-10+'
+            Q_val(:,iQ) = trapz(Ctot(ind0210y(end)+1:end,:),1)./trapz(PH(ind0210y(end)+1:end,:),1);
         case 'DALY' % instantaneous (time series) DALY based on daily cases
             [DALY,~,~] = DALY_cal(SH, EH, DH, AH, VH, UH, SM, EM, IM, Ctot);
             Q_val(:,iQ) = DALY;

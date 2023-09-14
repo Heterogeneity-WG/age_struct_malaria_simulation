@@ -2,10 +2,10 @@ function balance_fertility
 % calculate a balanced fertility rate, given a death rate
 global P
 
-% if exist('balanced_births.mat','file') % need to re-run the mat file if the death rates are updated!!
-%     load('balanced_births.mat','fun_balanced_births')
-%     if P.verbose==1; disp('Previously calculated balanced birth rate loaded.'); end
-% else
+if exist('balanced_births.mat','file') % need to re-run the mat file if the death rates are updated!!
+    load('balanced_births.mat','fun_balanced_births')
+    if P.verbose==1; disp('Previously calculated balanced birth rate loaded.'); end
+else
     if P.verbose==1; disp('calculating new balanced fertility profile.'); end
     gH = P.gH_fun;
     muH_int = P.muH_int_fun;
@@ -36,5 +36,5 @@ P.gH = fun_balanced_births(P.a);
 %     hold on;
 %     plot(P.a/365,P.gH,'-.r');
 %     legend('original fertility','balanced fertility');
-% %     keyboard
+%     keyboard
 end

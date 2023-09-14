@@ -21,6 +21,9 @@ for ip = 1:length(lP_list)
     if strcmp(lP_list{ip}, '$\m$');  lP_list{ip} = '$m$'; end
     lP_list{ip} = strrep(lP_list{ip},'\uc','\gamma');
     lP_list{ip} = strrep(lP_list{ip},'\dummy','dummy');
+    lP_list{ip} = strrep(lP_list{ip},'\v0','\nu_0');
+    lP_list{ip} = strrep(lP_list{ip},'\w','w');
+    lP_list{ip} = strrep(lP_list{ip},'\etas','\eta_s');
 end
 lQ = strrep(lQ,'_',' ');
 end

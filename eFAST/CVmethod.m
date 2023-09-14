@@ -29,6 +29,6 @@ b=stdSti(:,:,out)./meanSti(:,:,out);
 
 end
 
-CVsi=100*a
-CVsti=100*b
+CVsi=100*a;
+CVsti=100*b;
 end

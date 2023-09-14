@@ -7,30 +7,30 @@ P.verbose = 1; % turn on the warning messages. Error messages from the check rou
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Nanoro (Burkina Faso), EIR peaks at August
-P.ss_c = 0.02;
-P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-P.ss_k1 = 6.73;
-P.ss_k2 = 1.68;
-P.ss_u1 = 0.656;
-P.ss_u2 = 0.841;
-P.ss_S0 = 0.68; % magnitude of seasonlity profile, aim for 2.69 incidence rate
-P.ss_t0 = 100; % time shift to incoporate delay 
+% P.ss_c = 0.02;
+% P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+% P.ss_k1 = 6.73;
+% P.ss_k2 = 1.68;
+% P.ss_u1 = 0.656;
+% P.ss_u2 = 0.841;
+% P.ss_S0 = 3.19; % magnitude of seasonlity profile, aim for 2.69 incidence rate
+% P.ss_t0 = 100; % time shift to incoporate delay 
 
 % for Siaya (Kenya), EIR has modes at May and November
-% P.ss_c = 0.31;
-% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-% P.ss_k1 = 4.08;
-% P.ss_k2 = 3.66;
-% P.ss_u1 = 0.003;
-% P.ss_u2 = 0.456;
-% P.ss_S0 = 0.32; % magnitude of seasonlity profile, aim for 3.15 incidence rate
-% P.ss_t0 = 50; % time shift to incoporate delay 
+P.ss_c = 0.31;
+P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+P.ss_k1 = 4.08;
+P.ss_k2 = 3.66;
+P.ss_u1 = 0.003;
+P.ss_u2 = 0.456;
+P.ss_S0 = 1.99; % magnitude of seasonlity profile, aim for 3.15 incidence rate
+P.ss_t0 = 50; % time shift to incoporate delay 
 
 % turn off seasonlity
 P.ss_c = 1; P.ss_S0 = 1;
 
 %% system configuration
-P.lMsystem = 'ss'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
+P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
 P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
 
 %% dummy varaible for eFast SA
@@ -39,13 +39,13 @@ P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for gl
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
 P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; cohort 8500
-P.v0 = 0; % default vaccination rate
+P.v0 = 0; P.v0_lower = 0; P.v0_upper = 10; % vaccination rate 
 P.v0s = P.v0; P.v0c = P.v0;
-P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (1-z) and blood-stage (z)
+P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (P.z = 0) and blood-stage (P.z = 1)
 P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
-P.etas = 0.73; P.etas_lower = 0.4; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children 
-P.etab = 0.73; P.etab_lower = 0.4; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
-P.w = 1/(0.66*365); P.w_lower = 1/(1.0*365); P.w_upper = 1/(0.31*365); % Waning rate for the sterlizing immunity (VH) for children 
+P.etas = 0.82; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
+P.etab = 0.82; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
+P.w = 1/(0.41*365); P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  P.w = 1/(0.66*365)
 %%
 P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
@@ -62,18 +62,19 @@ P.cE = cX; P.cE_lower = P.cE*0.65; P.cE_upper = P.cE*2.1;
 P.cA = cX; P.cA_lower = P.cA*0.65; P.cA_upper = P.cA*2.1;
 P.cD = 0.5*cX; P.cD_lower = P.cD*0.65; P.cD_upper = P.cD*2.1;
 P.cU = P.cS; P.cU_lower = P.cU*0.65; P.cU_upper = P.cU*2.1;
+P.cV = P.cS; % weight for vaccination ~~ SH
 
 P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immunity relative to mother's
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
-x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
-P.phis2 = x(1);
-P.phir2 = x(2); 
-P.rhos2 = x(3);
-P.rhor2 = x(4); 
-P.psis2 = x(5);
-P.psir2 = x(6);
+x_fit = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+P.phis2 = x_fit(1);
+P.phir2 = x_fit(2); 
+P.rhos2 = x_fit(3);
+P.rhor2 = x_fit(4); 
+P.psis2 = x_fit(5);
+P.psir2 = x_fit(6);
 
 P.phif0 = 0.01; 
 P.phif1 = 1;
@@ -92,13 +93,12 @@ P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
-P.betaM = 0.25; P.betaM_lower = 0.16; P.betaM_upper = 0.53; % infectivity of mosquitoes P.betaM = 0.25;
+P.betaM = 0.35; P.betaM_lower = 0.23; P.betaM_upper = 0.74; % infectivity of mosquitoes P.betaM = 0.25;
 P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
 P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 
 P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes
-P.gM = 0.5*P.NN; % recruitment rate of mosquitoes;
-P.MHm = P.gM/P.muM/P.NN; % assume NH = 1; % mosquito/human ratio
+% P.MHm = P.gM/P.muM/P.NN; % assume NH = 1; % mosquito/human ratio
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data

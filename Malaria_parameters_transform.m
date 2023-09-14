@@ -12,22 +12,11 @@ P.zeta = P.zeta_fun(a);
 
 P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u1)))./2).^P.ss_k1+...
     (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u2)))./2).^P.ss_k2);
-P.gM0 = P.gM;
-
-% figure_setups;
-% plot(t/365,P.ss_S(t))
-% title('seasonlity curve')
+P.gM_fun = @(t) 0.5*P.NN*P.ss_S(t); % recruitment rate of mosquitoes;
 
 %%
 P.c2 = P.c1; % weight for maternal immunity
 P.c3 = P.c1; % weight for vaccine-derived immunity
-
-P.cS = (1-2.5*P.cX)/2; % SH weight
-P.cE = P.cX; % EH weight  ~~ AH
-P.cA = P.cX; % AH weight
-P.cD = 0.5*P.cX; % DH weight
-P.cU = P.cS; % UH weight ~~ SH
-P.cV = P.cS; % weight for vaccination ~~ SH
 
 P.rho = sigmoid_prob(zeros(size(a)), 'rho');
 P.phi = sigmoid_prob(zeros(size(a)), 'phi');

@@ -7,17 +7,16 @@ format long
 global P
 
 % numerical config
-tfinal = 10*365; % time for integration
-tfinal_vac = 0*365; % time to achieve "new EE" w/ vaccination
+tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
 dt = 20; % time/age step size in days, default = 5;
 da = dt;
-t = (0:dt:tfinal+tfinal_vac)';
+t = (0:dt:tfinal)';
 nt = length(t);
 a = (0:da:age_max)';
 na = length(a);
-P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; P.tfinal_vac = tfinal_vac;
+P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; 
 
 % SA setting 
 % lQ = {'EE-D','EE-DA','EE-D-frac','EE-EIR',...
@@ -25,14 +24,16 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 %     'EE-D-09-24','EE-DA-09-24','EE-D-frac-09-24',...
 %     'EE-death','EE-death-02-10','EE-death-09-24',...
 %     'DALY'};  
-lQ = {'EE-death','EE-death-02-10','EE-death-09-24','EE-death-10+',...
-      'EE-DA','EE-DA-02-10','EE-DA-09-24','EE-DA-10+'};  
+% lQ = {'EE-death'};
+% lQ = {'EE-death','EE-death-09-24','EE-death-02-10','EE-death-10+',...
+%       'EE-DA','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};  
+lQ = {'EE-EIR','EE-DA','EE-death-rate','EE-Ctot-pp','EE-Ctot-pp-09-24','EE-Ctot-pp-02-10','EE-Ctot-pp-10+'};
 Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
-time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
-% time_points = 1:nt; 
+% time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
+time_points = 1:nt;  % for time-series SA index
 lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psir2','dac','uc','m',...
     'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
-
+% lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -102,10 +103,11 @@ for run_num = 1:NS % Loop through each parameter sample
         P.(lP_list{iP}) = X(run_num,iP);
     end
     Malaria_parameters_transform_SA; % update dependent parameters
-    Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC'); % calculate QOI values
+    Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
     Y(run_num,:,:) = Q_val;
 end
-
+% Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
+save([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
 %% PRCC on output matrix Y
 PRCC = NaN(k,Size_timepts,Size_QOI); stat_p = PRCC;
 for itime = 1:Size_timepts
@@ -115,7 +117,7 @@ for itime = 1:Size_timepts
         stat_p(:,itime,iQOI) = p(1:end-1,end); % associated p-value
     end
 end
-save(['Results/vaccine_no/PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
+save([direc,'/PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
 toc
 
 %% Plotting POIs vs. QOIs: check monotonic relationships
@@ -138,9 +140,10 @@ toc
 %%
 %% Sorting 
 % load(['Results/vaccine_no/PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
-lP_eFAST = {'rD','dac','uc','cS','psir2','betaM','muM','cA','rhos2','psis2','rA','cE',...
-    'betaD','m','sigma','rhor2','betaA','cD','phir2','cU','phis2'}; 
+lP_eFAST = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
+    'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
 [~,index] = ismember(lP_eFAST,lP_list); index = index';
+index(index==0)=[]; 
 % [~,index] = sort(abs(PRCC(1:end-1,1,1)),'descend'); % sort using QOI #11, sort all the POIs except dummy
 PRCC = PRCC([index;k],:,:); stat_p = stat_p(index,:,:,:);
 lP_list = lP_list([index;k]);
@@ -156,11 +159,12 @@ if Size_timepts == 1  % bar plot (for one time point)
     [lP_list_name,lQ] = SA_output_formatting(lP_list,lQ,1);
     for iQOI = 1:Size_QOI_plot
         figure_setups; hold on
-        %         subplot(Size_timepts,Size_QOI_plot,(itime-1)*Size_QOI_plot+iQOI)
+        % subplot(Size_timepts,Size_QOI_plot,(itime-1)*Size_QOI_plot+iQOI)
         b = bar(X,PRCC(:,1,QOI_plot(iQOI)));
         ylim([-1.1 1.1])
         xtips = b.XEndPoints;
         ytips = b.YEndPoints;
+        ytips(PRCC(:,1,QOI_plot(iQOI))<0) = ytips(PRCC(:,1,QOI_plot(iQOI))<0)-0.15;
         labels = cell(1, length(lP_list_name));
         labels(stat_p(:,1,QOI_plot(iQOI))<palpha) = {'*'};
         %         for j = 1:k
@@ -170,24 +174,30 @@ if Size_timepts == 1  % bar plot (for one time point)
             'VerticalAlignment','bottom','fontsize',14)
         title(['QOI=', lQ{QOI_plot(iQOI)}])
         xticklabels(lP_list_name)
-        saveas(gcf,['Results/vaccine_no/PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc')
+        grid off
+        saveas(gcf,[direc,'/PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc')
     end
 else
-    QOI_plot = [1]; % [11:13] deaths; [2,6,9]: total infected
     Size_QOI_plot = length(QOI_plot);
+    [lP_list_name,lQ] = SA_output_formatting(lP_list,lQ,1);
     for iQOI = 1:Size_QOI_plot   
-        figure_setups; hold on
-        for iPOI = 1:k
-            PRCC_vec = PRCC(iPOI,:,QOI_plot(iQOI))';
-            plot(t(time_points)/365,PRCC_vec)            
-            labels = cell(size(PRCC_vec));
-            labels(stat_p(iPOI,:,QOI_plot(iQOI))'<palpha) = {'*'};
-            text(t(time_points)/365,PRCC_vec,labels,'HorizontalAlignment','center',...
-                'VerticalAlignment','bottom','fontsize',14)
-        end
-        legend(lP_list)
+        figure_setups; hold on; 
         xlabel('years')
         title(['QOI=', lQ{QOI_plot(iQOI)}])
+        ylim([-1 1])
+        for iPOI = 1:k
+            PRCC_vec = PRCC(iPOI,:,QOI_plot(iQOI))';
+            plot(t(time_points)/365,PRCC_vec,'DisplayName',lP_list_name{iPOI})      
+            % if iPOI<k
+            %     labels = cell(size(PRCC_vec));
+            %     % labels(stat_p(iPOI,:,QOI_plot(iQOI))'<palpha) = {'*'};
+            %     % text(t(time_points)/365,PRCC_vec,labels,'HorizontalAlignment','center',...
+            %     %     'VerticalAlignment','bottom','fontsize',14)
+            % end
+            lP_list_name{iPOI}
+        end
+        legend('Location','eastoutside')
+        saveas(gcf,[direc,'/PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc')
     end
 end
 

@@ -36,10 +36,9 @@ for iQOI=1:length(y_var)
     end % for t
 end
 S=SAefast_struct;
-% output results
-efast_var  % POIs
-Si_out=squeeze(S.Si(:,:,y_var))'
-p_Si_out=squeeze(S.p_Si(:,:,:,y_var))'
-Sti_out=squeeze(S.Sti(:,:,y_var))'
-p_Sti_out=squeeze(S.p_Si(:,:,:,y_var))'
+% efast_var  % POIs
+% Si_out=squeeze(S.Si(:,:,y_var))
+% p_Si_out=squeeze(S.p_Si(:,:,:,y_var))
+% Sti_out=squeeze(S.Sti(:,:,y_var))
+% p_Sti_out=squeeze(S.p_Si(:,:,:,y_var))
 end

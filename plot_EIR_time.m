@@ -1,0 +1,10 @@
+figure_setups;
+plot(t/365,EIR(end,:));
+hold on;
+plot(t/365,EIR(floor(end/10),:));
+plot(t/365,EIR(floor(end/100),:));
+pop = trapz(PH,1)*P.da;
+plot(t/365,trapz(PH.*EIR,1)*P.da./pop);
+legend('EIR age 100', 'EIR age 10','EIR age 1','Average EIR (pop. weighted)');
+xlabel('Time (years)');
+title('aEIR dynamics');
