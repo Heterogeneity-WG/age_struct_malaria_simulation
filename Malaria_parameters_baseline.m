@@ -56,7 +56,7 @@ P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % half life of ac
 P.dm = 0.25*365; % half life of maternal immunity
 P.c1 = 1; % weight for acquired immunity
 %%
-cX = 0.1;
+cX = 0.1; P.cX = cX;
 P.cS = (1-2.5*cX)/2; P.cS_lower = P.cS*0.65; P.cS_upper = P.cS*2.1;
 P.cE = cX; P.cE_lower = P.cE*0.65; P.cE_upper = P.cE*2.1;
 P.cA = cX; P.cA_lower = P.cA*0.65; P.cA_upper = P.cA*2.1;
