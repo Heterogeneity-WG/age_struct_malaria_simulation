@@ -60,7 +60,7 @@ xlim([0 30])
 %     xlabel('age (years)');
 %     grid on
 %     axis([0 P.age_max/365 0 1.1]);
-%     % xlim([0 2])
+%     xlim([0 5])
 % %     saveas(gcf,['Results/seasonality_',num2str(t(iplot)/30),'.png'])
 %     pause
 % end

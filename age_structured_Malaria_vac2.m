@@ -1,10 +1,6 @@
-function [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da, na, t0, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0)
+%% constant vaccination rate (instead of per-capita)
+function [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac2(da, na, t0, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0)
 global P
-
-if max(P.v)>0 
-    disp('do you want to run per capita vac or constant vac?') % just a reminder
-    keyboard
-end
 
 dt = da;
 t = (t0:dt:tfinal)';
@@ -50,11 +46,14 @@ for n = 1:nt-1
     UH(1,n+1) = 0;
     
     % human time evolution
-    SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)))...
-        ./(1+(lamH(1:end-1)+P.v(2:end)+P.muH(2:end))*dt); 
-    VH(2:end,n+1) = (VH(1:end-1,n)+dt*P.etas*(1-P.z)*P.v(2:end).*SH(2:end,n+1))...
+    SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)-P.v(1:end-1)))...
+        ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
+    if min(SH(2:end,n+1))<0
+        keyboard
+    end
+    VH(2:end,n+1) = (VH(1:end-1,n)+dt*P.etas*(1-P.z)*P.v(1:end-1))...
         ./(1+(P.muH(2:end)+P.w)*dt);
-    temp1 = (P.z*P.v(2:end)+(1-P.etas)*(1-P.z)*P.v(2:end)).*SH(2:end,n+1)+P.w*VH(2:end,n+1);
+    temp1 = (P.z*P.v(1:end-1)+(1-P.etas)*(1-P.z)*P.v(1:end-1))+P.w*VH(2:end,n+1);
     UH(2:end,n+1) = (UH(1:end-1,n)+dt*temp1)./(1+(lamH(1:end-1)+P.muH(2:end))*dt);
     EH(2:end,n+1) = (EH(1:end-1,n)+dt*lamH(1:end-1).*(SH(2:end,n+1)+UH(2:end,n+1)))...
         ./(1+(P.h+P.muH(2:end))*dt);
