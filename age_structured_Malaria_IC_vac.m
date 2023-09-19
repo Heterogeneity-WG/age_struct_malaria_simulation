@@ -6,8 +6,8 @@ global P
 na = P.na;
 da = P.da;
 NH = P.NN;
-gM = P.gM_fun(0);
-NM = gM/P.muM;
+P.gM = P.gM_fun(0);
+NM = P.gM/P.muM;
 switch state
     case 'init' %
         SH = 0.4*P.PH_stable*NH; %0.9*NH/na/da*ones(na,1); % cell averages; %
@@ -56,8 +56,9 @@ switch state
         Ctot0 = P.c1*Cac0 + P.c2*Cm0 + P.c3*Cv0;
         
         % tfinal= 0.5*365; % for non-seasonal case 
-        tfinal= 2*365; % for seasonal case
-        [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da,P.na, 0, tfinal,...
+        % tfinal= 2*365; % for seasonal case (dt = 5)
+        tfinal= 10*365; % for seasonal case (dt = 10)
+        [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da, P.na, 0, tfinal,...
             SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
         SH = SH(:,end); EH = EH(:,end); DH = DH(:,end); AH = AH(:,end);  UH = UH(:,end);  VH = VH(:,end); MH = 0*MH(:,end);
         SM = SM(end); EM = EM(end);  IM = IM(end);

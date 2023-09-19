@@ -1,34 +1,34 @@
 global P
 
 P.disease_mortality = 1; % turn on mu_D (disease induced mortality)
+P.balance_mortality = 0; % balanced mortality or notS
 P.balance_fertility = 0; % balanced fertility or not
-P.balance_mortality = 0; % balanced mortality or not
 P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Nanoro (Burkina Faso), EIR peaks at August
-% P.ss_c = 0.02;
-% P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-% P.ss_k1 = 6.73;
-% P.ss_k2 = 1.68;
-% P.ss_u1 = 0.656;
-% P.ss_u2 = 0.841;
-% P.ss_S0 = 3.19; % magnitude of seasonlity profile, aim for 2.69 incidence rate
-% P.ss_t0 = 100; % time shift to incoporate delay 
+P.ss_c = 0.02;
+P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+P.ss_k1 = 6.73;
+P.ss_k2 = 1.68;
+P.ss_u1 = 0.656;
+P.ss_u2 = 0.841;
+P.ss_S0 = 3.19; % magnitude of seasonlity profile, aim for 2.69 incidence rate
+P.ss_t0 = 100; % time shift to incoporate delay 
 
 % for Siaya (Kenya), EIR has modes at May and November
-P.ss_c = 0.31;
-P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-P.ss_k1 = 4.08;
-P.ss_k2 = 3.66;
-P.ss_u1 = 0.003;
-P.ss_u2 = 0.456;
-P.ss_S0 = 1.99; % magnitude of seasonlity profile, aim for 3.15 incidence rate
-P.ss_t0 = 50; % time shift to incoporate delay 
+% P.ss_c = 0.31;
+% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
+% P.ss_k1 = 4.08;
+% P.ss_k2 = 3.66;
+% P.ss_u1 = 0.003;
+% P.ss_u2 = 0.456;
+% P.ss_S0 = 1.99; % magnitude of seasonlity profile, aim for 3.15 incidence rate
+% P.ss_t0 = 50; % time shift to incoporate delay 
 
 % turn off seasonlity
-P.ss_c = 1; P.ss_S0 = 1;
-
+% P.ss_c = 1; P.ss_S0 = 1;
+% 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
 P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
@@ -38,7 +38,7 @@ P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for gl
 
 %% vaccine related parameters
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
-P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; cohort 8500
+P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; (5, 17) =216,893;  cohort = 8500
 P.v0 = 0; P.v0_lower = 0; P.v0_upper = 10; % vaccination rate 
 P.v0s = P.v0; P.v0c = P.v0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (P.z = 0) and blood-stage (P.z = 1)
