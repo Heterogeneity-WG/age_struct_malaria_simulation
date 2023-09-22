@@ -186,6 +186,31 @@ set(f1, {'color'}, num2cell(winter(nyear),2));
 set(f2, {'color'}, num2cell(winter(nyear),2));
 set(f3, {'color'}, num2cell(winter(nyear),2));
 
+%% 3D plotting
+% cases_per_vacc_target_constant dimensions -> part of year x years
+[nrows, ncols] = size(cases_per_vacc_target_constant);
+figure_setups;
+for jj = 1:ncols
+    plot3(jj*ones(nrows,1),t0_list,cases_per_vacc_target_constant(:,jj),'b');
+    hold on;
+end
+grid on;
+for jj = 1:ncols
+    plot3(jj*ones(nrows,1),t0_list,cases_per_vacc_target(:,jj),'r');
+    hold on;
+end
+title('Cases prevented per vaccine');
+xlabel('vaccine year');
+ylabel('vacc start month');
+xlim([0 ncols]);
+ylim([0 12]);
+dim = [0.2 0.55 0.3 0.3];
+a = annotation('textbox',dim,'String','Constant vaccination','FitBoxToText','on');
+a.Color = 'blue';
+dim = [0.2 0.6 0.3 0.3];
+b = annotation('textbox',dim,'String','Seasonal vaccination','FitBoxToText','on');
+b.Color = 'red';
+
 %%
 % figure_setups; 
 % h = subplot(1,2,1);

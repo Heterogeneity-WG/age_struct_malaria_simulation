@@ -1,10 +1,10 @@
 function [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da, na, t0, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0)
 global P
 
-if max(P.v)>0 
-    disp('do you want to run per capita vac or constant vac?') % just a reminder
-    keyboard
-end
+% if max(P.v)>0 
+%     disp('do you want to run per capita vac or constant vac?') % just a reminder
+%     keyboard
+% end
 
 dt = da;
 t = (t0:dt:tfinal)';
