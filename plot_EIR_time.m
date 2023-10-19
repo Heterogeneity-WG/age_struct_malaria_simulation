@@ -19,6 +19,7 @@ figure_setups;
 % 
 pop_avg_EIR = trapz(PH.*EIR,1)*P.da./pop;
 plot(t/365,movmean(pop_avg_EIR,[round(365/dt) 0]));
+title('Moving average population EIR');
 % 
 % legend('EIR age 100', 'EIR age 10','EIR age 1','Average EIR (pop. weighted)');
 % xlabel('Time (years)');

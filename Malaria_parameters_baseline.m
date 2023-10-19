@@ -27,7 +27,7 @@ P.ss_t0 = 100; % time shift to incoporate delay
 % P.ss_t0 = 50; % time shift to incoporate delay 
 
 % turn off seasonlity
-% P.ss_c = 1; P.ss_S0 = 1;
+%P.ss_c = 1; P.ss_S0 = 1;
 % 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS

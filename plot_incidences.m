@@ -44,3 +44,40 @@ plot(tfinal/365*ones(2),ylim,'m-')
 xlabel('year')
 ylabel('Incidence pp per year')
 title(['Incidence pp per year = ', num2str(cases_pp_py)]);
+
+%% Heatmaps of population disease burden over one period
+
+figure; 
+imagesc(t/365,a/365,AH./PH);
+clim([0 1]);
+colorbar;
+title('$A_H(\alpha,t)$');
+xlabel('Time (years)');
+ylabel('Age (years)');
+set(gca,'YDir','normal')
+colormap jetwhite;
+
+figure;
+imagesc(t/365,a/365,DH./PH);
+clim([0 1]);
+colorbar;
+xlabel('Time (years)');
+ylabel('Age (years)');
+title('$D_H(\alpha,t)$');
+set(gca,'YDir','normal')
+colormap jetwhite;
+
+
+% figure; 
+% imagesc(param,a/365,DH_matrix');
+% clim([0 1]);
+% colorbar;
+% title('$\int^{T}_{T-1} D_H(\alpha,t)dt$');
+% xlabel('$r_A$');
+% ylabel('Age ($\alpha$)');
+% ylim([0 30]);
+% %xticks([0 0.04 0.08 0.12]);
+% set(gca,'YDir','normal')
+% colormap jetwhite;
+% hold on;
+% xline([P.rA_lower base_value P.rA_upper],'--r','LineWidth',3); % indicator for the baseline
