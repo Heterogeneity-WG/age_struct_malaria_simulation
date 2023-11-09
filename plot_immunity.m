@@ -1,3 +1,8 @@
+%%
+% figure_setups;
+% rho = trapz(sigmoid_prob(Ctot./PH, 'rho').*PH,1)*P.da/(trapz(PH(:,end),1)*P.da);
+% plot(t/365, rho)
+
 %% Immunity dynamics for Ctot
 figure_setups;
 nt = length(t);

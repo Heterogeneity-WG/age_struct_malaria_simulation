@@ -13,7 +13,7 @@ plot(t/365,SM,'b-'); hold on;
 plot(t/365,EM,'-','Color',colour_r1);
 plot(t/365,IM,'r-.');
 plot(t/365,SM+EM+IM,'-.')
-plot(t/365, P.gM0*P.ss_S(t)./P.muM,'*')
+plot(t/365, P.gM_fun(t)./P.muM,'*')
 legend('$S_M$','$E_M$','$I_M$','$N_M$');
 title('mosquito population size by stages')
 grid on

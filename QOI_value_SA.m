@@ -64,6 +64,8 @@ for iQ = 1:length(lQ)
             [~,~,Q_val(:,iQ)]  = R0_cal();
         case 'EE-D'
             Q_val(:,iQ) = trapz(DH,1)*da;
+        case 'EE-A'
+            Q_val(:,iQ) = trapz(AH,1)*da;
         case 'EE-D-02-10'
             Q_val(:,iQ) = trapz(DH(ind0210y,:),1)*da;
         case 'EE-D-09-24'

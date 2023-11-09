@@ -121,8 +121,28 @@ for jj = 1:length(var_list)
     yy(1,jj) = EIR_tot; % aEIR
     zz(:,jj) = Ctot./PH; % final Ctot at EE    
 end
+%% calculate two slices
+beta_slice1 = 0.02; % EIR ~ 32
+P.betaM = beta_slice1;
+Malaria_parameters_transform;
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, Cm1, Cac1, ~, Ctot1, ~] = age_structured_Malaria_IC_vac('EE_reset');
+PH = SH+EH+DH+AH; PH1 = PH;
+NM = SM+EM+IM;
+[bH,~] = biting_rate(PH,NM);
+EIR = bH.*IM./NM*365; % EIR matrix
+EIR_tot1 = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
+beta_slice2 = 0.25; % EIR ~ 79
+P.betaM = beta_slice2;
+Malaria_parameters_transform;
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, Cm2, Cac2, ~, Ctot2, ~] = age_structured_Malaria_IC_vac('EE_reset');
+PH = SH+EH+DH+AH; PH2 = PH;
+NM = SM+EM+IM;
+[bH,~] = biting_rate(PH,NM);
+EIR = bH.*IM./NM*365; % EIR matrix
+EIR_tot2 = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
 %% plotting heatmap (age, EIR, immunity) 
-figure_setups;
+figure_setups; hold on; grid off
+set(gcf,'Position',[353   307   552   446])
 imagesc(xx,yy,zz')
 xlim([0 20])
 ylim([0 max(yy)])
@@ -132,8 +152,30 @@ title('Immunity level per person');
 set(gca,'YDir','normal');
 colormap jet
 colorbar('Ticks',0:2:15);
+% plot([0 20],[EIR_tot1 EIR_tot1],'k--')
+% plot([0 20],[EIR_tot2 EIR_tot2],'k--')
+%% plotting slices of immunity heatmap
+figure_setups;
+set(gcf,'Position',[353   307   552   446])
+plot(P.a/365,Cac2(:,end)./PH2(:,end),'-.',P.a/365,Cm2(:,end)./PH2(:,end),'--', P.a/365,Ctot2(:,end)./PH2(:,end))
+xlim([0 10])
+ylim([0 10])
+legend off
+title('Per-person immunity dist.');
+xlabel('Age (years)')
+ylabel('Immunity level')
+figure_setups;
+set(gcf,'Position',[353   307   552   446])
+plot(P.a/365,Cac1(:,end)./PH1(:,end),'-.',P.a/365,Cm1(:,end)./PH1(:,end),'--', P.a/365,Ctot1(:,end)./PH1(:,end))
+xlim([0 10])
+ylim([0 10])
+title('Per-person immunity dist.');
+legend('$\widetilde{C}_e$ (Exposure-acquired immunity)','$\widetilde{C}_{m}$ (Maternal immunity)','$\widetilde{C}_{H}$ (Total immunity)','Location','North');
+xlabel('Age (years)')
+ylabel('Immunity level')
 %% plotting heatmap (age, EIR, rho)
 figure_setups; hold on; grid off
+set(gcf,'Position',[353   307   552   446])
 zz_rho = sigmoid_prob(zz, 'rho');
 imagesc(xx,yy,zz_rho')
 xlabel('Age (years)')

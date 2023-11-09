@@ -1,4 +1,4 @@
-function [lP_list,lQ] = SA_output_formatting(lP_list,lQ,flag_dollar)
+function [lP_list,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,flag_dollar)
 if flag_dollar
     lP_list = cellfun(@(x) join(["$\",x,"$"],""),lP_list,'UniformOutput',false);
 end
@@ -18,6 +18,9 @@ for ip = 1:length(lP_list)
     lP_list{ip} = strrep(lP_list{ip},'phir2','phi(r_2)');
     lP_list{ip} = strrep(lP_list{ip},'phis2','phi(s_2)');
     lP_list{ip} = strrep(lP_list{ip},'\c','c');
+    lP_list{ip} = strrep(lP_list{ip},'cA','c_A');
+    lP_list{ip} = strrep(lP_list{ip},'cS','c_S');
+    lP_list{ip} = strrep(lP_list{ip},'cU','c_U');
     if strcmp(lP_list{ip}, '$\m$');  lP_list{ip} = '$m$'; end
     lP_list{ip} = strrep(lP_list{ip},'\uc','\gamma');
     lP_list{ip} = strrep(lP_list{ip},'\dummy','dummy');
@@ -25,5 +28,21 @@ for ip = 1:length(lP_list)
     lP_list{ip} = strrep(lP_list{ip},'\w','w');
     lP_list{ip} = strrep(lP_list{ip},'\etas','\eta_s');
 end
-lQ = strrep(lQ,'_',' ');
+
+lQ_title = lQ;
+for iq = 1:length(lQ)
+    if strcmp(lQ{iq}, 'EE-death');  lQ_title{iq} = 'malaria death'; end
+    if strcmp(lQ{iq}, 'EE-EIR');  lQ_title{iq} = 'EIR'; end
+    if strcmp(lQ{iq}, 'EE-death-rate');  lQ_title{iq} = 'malaria death incidence'; end
+    if strcmp(lQ{iq}, 'EE-death-09-24');  lQ_title{iq} = 'malaria death ($9\sim 24$m)'; end
+    if strcmp(lQ{iq}, 'EE-death-02-10');  lQ_title{iq} = 'malaria death ($2\sim 10$y)'; end
+    if strcmp(lQ{iq}, 'EE-death-10+');  lQ_title{iq} = 'malaria death (10y+)'; end
+    if strcmp(lQ{iq}, 'EE-D');  lQ_title{iq} = 'symptomatic infection'; end
+    if strcmp(lQ{iq}, 'EE-A');  lQ_title{iq} = 'asymptomatic infection'; end
+    if strcmp(lQ{iq}, 'EE-DA');  lQ_title{iq} = 'malaria prevalence'; end
+    if strcmp(lQ{iq}, 'EE-DA-09-24');  lQ_title{iq} = 'malaria prevalence ($9\sim 24$m)'; end
+    if strcmp(lQ{iq}, 'EE-DA-02-10');  lQ_title{iq} = 'malaria prevalence ($2\sim 10$y)'; end
+    if strcmp(lQ{iq}, 'EE-DA-10+');  lQ_title{iq} = 'malaria prevalence (10y+)'; end
+end
+
 end

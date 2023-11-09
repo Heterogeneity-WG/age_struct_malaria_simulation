@@ -9,7 +9,7 @@ global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 c
 
 set(0,'defaultLineLineWidth',3,'defaultTextFontSize',30,'defaultTextFontname','CMU Serif Italic','defaultAxesFontSize',30,'defaultLineMarkerSize',8)
 
-set(0,'defaultAxesColorOrder',lines(5))
+set(0,'defaultAxesColorOrder',lines(5),'DefaultAxesLineStyleOrder','-|--|:|-.')
 set(0,'defaultLegendInterpreter','latex');
 set(0,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaulttextinterpreter','latex');  

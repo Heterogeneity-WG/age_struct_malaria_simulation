@@ -4,6 +4,6 @@ global P
 % bM is calculated in biting_rate.m
 
 da = P.da;
-lamM = bM*trapz(P.betaD*DH+P.betaA*AH)*da/NH; 
+lamM = bM.*trapz(P.betaD*DH+P.betaA*AH)*da./NH; 
 
 end
