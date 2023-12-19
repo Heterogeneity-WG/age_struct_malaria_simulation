@@ -27,7 +27,7 @@ P.ss_t0 = 140; %  for correct peaking, time shift to incoporate delay
 % P.ss_t0 = 90; % time shift to incoporate delay 
 
 % turn off seasonlity
-%P.ss_c = 1; P.ss_S0 = 1;
+P.ss_c = 1; P.ss_S0 = 1;
 % 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
@@ -40,21 +40,22 @@ P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for gl
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
 P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; 
 % (5, 17) =216,893;  cohort = 8500
-P.v0 = 0; 
-% P.v0 = 1.2*10^5/365; P.v0_lower = 0; P.v0_upper = 1.2*10^5*2.1/365; % vaccination rate 
+% P.v0 = 0; 
+P.v0 = 1.2*10^5/365; 
+P.v0_lower = 0; P.v0_upper = 1.2*10^5*2.1/365; % vaccination rate 
 P.v0s = P.v0; P.v0c = P.v0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (P.z = 0) and blood-stage (P.z = 1)
-P.dv = 5*365; % Half-life of vaccine-boosted immunity (Cv)
+P.dv = 5*365; % averaged period of vaccine-boosted immunity (Cv)
 P.etas = 0.82; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
 P.etab = 0.82; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
-P.w = 1/(0.41*365); P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  P.w = 1/(0.66*365)
+P.w = 1/(0.41*365); P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  
 %%
 P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
 P.h = 1/26; % incubation rate in human
 
 %% immunity parameters/rates
-P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % half life of acquired immunity   
+P.dac = 5*365; P.dac_lower = 3.25*365; P.dac_upper = 10.5*365; % averaged waning period of acquired immunity   
 P.dm = 0.25*365; % half life of maternal immunity
 P.c1 = 1; % weight for acquired immunity
 %%
@@ -70,7 +71,8 @@ P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immun
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
-x_fit = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+x_fit = [2.567957971786876   2.487540758554113   3.649596968324358  ...
+    1.395449806257184   2.332526365071812   2.150211932758257];
 P.phis2 = x_fit(1);
 P.phir2 = x_fit(2); 
 P.rhos2 = x_fit(3);

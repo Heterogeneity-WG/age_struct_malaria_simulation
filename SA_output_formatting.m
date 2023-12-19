@@ -25,7 +25,7 @@ for ip = 1:length(lP_list)
     lP_list{ip} = strrep(lP_list{ip},'\uc','\gamma');
     lP_list{ip} = strrep(lP_list{ip},'\dummy','dummy');
     lP_list{ip} = strrep(lP_list{ip},'\v0','\nu_0');
-    lP_list{ip} = strrep(lP_list{ip},'\w','w');
+    lP_list{ip} = strrep(lP_list{ip},'\w','d_\nu'); % sample the period d_\nu (notation in paper), not the wanning rate w (notation in the code)
     lP_list{ip} = strrep(lP_list{ip},'\etas','\eta_s');
 end
 

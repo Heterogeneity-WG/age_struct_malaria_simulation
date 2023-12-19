@@ -47,6 +47,13 @@ for iP = 1:length(lP_list)
     pmin(iP,1) = P.([lP_list{iP},'_lower']);
     pmax(iP,1) = P.([lP_list{iP},'_upper']);
     pmean(iP,1) = P.([lP_list{iP}]);
+    if strcmp(lP_list{iP},'w')
+        % POI = w wanning rate, sample the 1/w = average period instead.
+        pmin(iP,1) = 1/P.([lP_list{iP},'_upper']);
+        pmax(iP,1) = 1/P.([lP_list{iP},'_lower']);
+        pmean(iP,1) = 1/P.([lP_list{iP}]);
+        index_w = iP; % index for the POI = w
+    end
 end
 
 % eFAST config
@@ -128,6 +135,8 @@ for i=1:k % Loop over POIs, including dummy
             for iP = 1:length(lP_list) % update parameter with sampled values
                 P.(lP_list{iP}) = X(run_num,iP,i,L);
             end
+            % POI = w wanning rate: X stores the sampled value 1/w = period, model uses w = rate.
+            P.(lP_list{index_w}) = 1/X(run_num,index_w);
             Malaria_parameters_transform_SA; % update dependent parameters
             Q_val = QOI_value_SA(lQ,time_points,ind,'eFAST',direc); % calculate QOI values
             Y(run_num,:,:,i,L) = Q_val;
@@ -137,7 +146,7 @@ end
 % Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
 % save([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
 %% eFAST on output matrix Y
-% load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
+load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
 var = 1:length(lQ); % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);

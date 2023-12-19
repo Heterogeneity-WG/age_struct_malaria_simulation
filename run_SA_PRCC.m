@@ -42,8 +42,14 @@ for iP = 1:length(lP_list)
     pmin(iP,1) = P.([lP_list{iP},'_lower']);
     pmax(iP,1) = P.([lP_list{iP},'_upper']);
     pmean(iP,1) = P.([lP_list{iP}]);
+    if strcmp(lP_list{iP},'w') 
+        % POI = w wanning rate, sample the 1/w = average period instead.
+        pmin(iP,1) = 1/P.([lP_list{iP},'_upper']);
+        pmax(iP,1) = 1/P.([lP_list{iP},'_lower']);
+        pmean(iP,1) = 1/P.([lP_list{iP}]);
+        index_w = iP; % index for the POI = w
+    end
 end
-
 % PRCC config
 NS = 1000; % number of samples, min = k+1, 100~1000
 k = length(lP_list); % # of POIs
@@ -97,7 +103,7 @@ P.muD_fun = muD_fun;
 P.gH = gH;
 P.gH_fun = gH_fun;
 find_stable_age; % depends on gH and muH
-% save([direc,'parameters_P_baseline.mat'],'P')
+save([direc,'parameters_P_baseline.mat'],'P')
 
 for run_num = 1:NS % Loop through each parameter sample
     if mod(run_num,NS/10)==0; disp([num2str(run_num/NS*100,3),' %']); end % display progress
@@ -105,12 +111,14 @@ for run_num = 1:NS % Loop through each parameter sample
     for iP = 1:length(lP_list) % update parameter with sampled values
         P.(lP_list{iP}) = X(run_num,iP);
     end
+    % POI = w wanning rate: X stores the sampled value 1/w = period, model uses w = rate.
+    P.(lP_list{index_w}) = 1/X(run_num,index_w);
     Malaria_parameters_transform_SA; % update dependent parameters
     Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
     Y(run_num,:,:) = Q_val;
 end
 % Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
-% save([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
+save([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
 %% PRCC on output matrix Y
 load([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
 PRCC = NaN(k,Size_timepts,Size_QOI); stat_p = PRCC;
@@ -121,7 +129,7 @@ for itime = 1:Size_timepts
         stat_p(:,itime,iQOI) = p(1:end-1,end); % associated p-value
     end
 end
-% save([direc,'PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
+save([direc,'PRCC_result_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p','lP_list','lQ')
 toc
 
 %% Plotting POIs vs. QOIs: check monotonic relationships
