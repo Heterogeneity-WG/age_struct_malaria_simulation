@@ -1,7 +1,8 @@
 clear all
 % clc
 %% 2019 Deaths KENYA all causes minus Malaria
-% downloaded from GHO life tables
+% downloaded from Global Health Observatory (GHO) data repository: Life Tables
+% https://apps.who.int/gho/data/view.main.61860?lang=en 
 % nMx - age-specific death rate between ages x and x+n for both sexes in 2019
 % Age Group: 1-4 years, 5-9 years, 10-14 years,..., 80-84 years and 85+ years 
 %nMHx: Deaths all causes minus malaria / pop by age group

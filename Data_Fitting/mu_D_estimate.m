@@ -2,6 +2,13 @@ clear all
 % clc
 %% Kenya malaria-related mortality data 
 % downloaded from IHME
+% @misc{GBD_data,
+%   title = {{Global Burden of Disease Study 2019 (GBD 2019) Population Estimates 1950-2019}},
+%   author = {{Institute for Health Metrics and Evaluation}},
+%   howpublished = {\url{https://ghdx.healthdata.org/record/ihme-data/gbd-2019-population-estimates-1950-2019}},
+%   note = {Accessed: 2022-03-29},
+%   year = 2020
+% }
 % We use age-specific malaria-related deaths between ages x and x+n for both sexes in 2019
 % Age Group: <1 year, 1-4 years, 5-9 years, 10-14 years,..., 70-74. We do
 % not consider higher ages bc the curve trend changes
