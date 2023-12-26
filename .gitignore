@@ -9,3 +9,5 @@ Auxiliary/R0_calculation_checks.nb
 Data_Fitting/Filipe_paper/Xmat_fine.mat
 balanced_mortality.mat
 balanced_mortality.mat
+Data_SA/**/*.eps
+Data_SA/**/*.mat
