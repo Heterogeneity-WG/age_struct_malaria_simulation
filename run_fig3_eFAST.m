@@ -1,4 +1,7 @@
-%% Figure 3, global SA using eFAST, adapted from
+%% Figure 3, global SA at quasi-endmic state using eFAST
+% 'Data_SA/Results_local_SA_no vac/SA_22POI_eFAST/'
+
+% adapted from
 % Dr. Denise Kirschner - University of Michigan http://malthus.micro.med.umich.edu/lab/usadata/
 % Output:
 % SI[POI,timepoints,QOI] : first order sensitivity indices

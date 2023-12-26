@@ -1,4 +1,6 @@
-%% Figure A3, global SA time series using using PRCC
+%% Figure A3 (supplement for Figure 5, selected PRCC curves)
+% global SA time series at quasi-endmic state using using PRCC
+% 'Data_SA/Results_local_SA_time/SA_22POI_PRCC/'
 
 close all
 clearvars

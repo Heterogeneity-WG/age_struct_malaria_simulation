@@ -1,4 +1,7 @@
-%% Figure 5, global SA time series using eFAST, adapted from
+%% Figure 5, global SA time series using eFAST (selected eFAST curves)
+% 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/'
+
+% adapted from
 % Dr. Denise Kirschner - University of Michigan http://malthus.micro.med.umich.edu/lab/usadata/
 % Output:
 % SI[POI,timepoints,QOI] : first order sensitivity indices

@@ -1,5 +1,8 @@
-%% Figure A2 (complete plots for all eFAST curves)
-% global SA time series using eFAST, adapted from
+%% Figure A2 (supplement for Figure 5, complete plots for all eFAST curves)
+% global SA time series at quasi-endmic state using eFAST
+% 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/'
+
+% adapted from
 % Dr. Denise Kirschner - University of Michigan http://malthus.micro.med.umich.edu/lab/usadata/
 % Output:
 % SI[POI,timepoints,QOI] : first order sensitivity indices

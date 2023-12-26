@@ -1,4 +1,5 @@
-%% Figure 4, global SA using PRCC
+%% Figure 4, global SA (with vaccination-related parameters) at quasi-endmic state using PRCC
+% 'Data_SA/Results_local_SA_vac/SA_17POI_PRCC/'
 
 close all
 clearvars

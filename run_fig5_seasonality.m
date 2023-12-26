@@ -1,4 +1,5 @@
-%% Figure 5, global SA time series; First panel for different seasonality curves
+%% Figure 5, first panel for various seasonality curves
+
 close all
 clear all
 clc

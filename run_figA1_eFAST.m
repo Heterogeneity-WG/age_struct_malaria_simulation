@@ -1,4 +1,8 @@
-%% Figure A.1, global SA using eFAST, adapted from
+%% Figure A.1 (supplement for Figure 4) 
+% global SA (with vaccination-related parameters) using eFAST
+% 'Data_SA/Results_local_SA_vac/SA_17POI_eFAST/'
+
+% adapted from
 % Dr. Denise Kirschner - University of Michigan http://malthus.micro.med.umich.edu/lab/usadata/
 % Output:
 % SI[POI,timepoints,QOI] : first order sensitivity indices

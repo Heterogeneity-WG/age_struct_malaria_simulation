@@ -1,4 +1,5 @@
-%% Figure 3, global SA using PRCC
+%% Figure 3, global SA at quasi-endmic state using PRCC
+% 'Data_SA/Results_local_SA_no vac/SA_22POI_PRCC/'
 
 close all
 clearvars
