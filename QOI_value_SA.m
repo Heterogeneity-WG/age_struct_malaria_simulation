@@ -14,6 +14,7 @@ end
 if flag_EE
     if ~exist([direc, lmethod,'_',num2str(run_num),'.mat'],'file')
         if run_num == 1
+            disp('Ready to generate new results? Could be time and storage consuming...If so, press Continue')
             keyboard
         end
         temp_v0 = P.v0;

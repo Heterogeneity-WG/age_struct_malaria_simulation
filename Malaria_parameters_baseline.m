@@ -7,27 +7,13 @@ P.verbose = 1; % turn on the warning messages. Error messages from the check rou
 
 %% seasonality parameters  - White et al 2015 supp Table S6
 % % for Nanoro (Burkina Faso), EIR peaks at August
-P.ss_c = 0.02;
-P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-P.ss_k1 = 6.73;
-P.ss_k2 = 1.68;
-P.ss_u1 = 0.656;
-P.ss_u2 = 0.841;
-P.ss_S0 = 3.19; % magnitude of seasonlity profile, aim for 2.69 incidence rate
-P.ss_t0 = 140; %  for correct peaking, time shift to incoporate delay 
+Malaria_parameters_baseline_Nanoro;
 
 % for Siaya (Kenya), EIR has modes at May and November
-% P.ss_c = 0.31;
-% P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
-% P.ss_k1 = 4.08;
-% P.ss_k2 = 3.66;
-% P.ss_u1 = 0.003;
-% P.ss_u2 = 0.456;
-% P.ss_S0 = 1.99; % magnitude of seasonlity profile, aim for 3.15 incidence rate
-% P.ss_t0 = 90; % time shift to incoporate delay 
+% Malaria_parameters_baseline_Siaya;
 
 % turn off seasonlity
-P.ss_c = 1; P.ss_S0 = 1;
+% P.ss_c = 1; P.ss_S0 = 1;
 % 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
@@ -66,7 +52,6 @@ P.cA = cX; P.cA_lower = P.cA*0.65; P.cA_upper = P.cA*2.1;
 P.cD = 0.5*cX; P.cD_lower = P.cD*0.65; P.cD_upper = P.cD*2.1;
 P.cU = P.cS; P.cU_lower = P.cU*0.65; P.cU_upper = P.cU*2.1;
 P.cV = P.cS; % weight for vaccination ~~ SH
-
 P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immunity relative to mother's
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
@@ -93,7 +78,6 @@ P.rhos2_lower = P.rhos2*0.65; P.rhos2_upper = P.rhos2*2.1;
 P.rhor2_lower = P.rhor2*0.65; P.rhor2_upper = P.rhor2*2.1;
 P.psis2_lower = P.psis2*0.65; P.psis2_upper = P.psis2*2.1;
 P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
-
 %% mosquito related parameters/rates
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito

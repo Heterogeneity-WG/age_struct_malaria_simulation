@@ -19,22 +19,15 @@ na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal; 
 
 % SA setting 
-% lQ = {'EE-D','EE-DA','EE-D-frac','EE-EIR',...
-%     'EE-D-02-10','EE-DA-02-10','EE-D-frac-02-10',...
-%     'EE-D-09-24','EE-DA-09-24','EE-D-frac-09-24',...
-%     'EE-death','EE-death-02-10','EE-death-09-24',...
-%     'DALY'};  
-% lQ = {'EE-death'};
 lQ = {'EE-death','EE-death-09-24','EE-death-02-10','EE-death-10+',...
       'EE-DA','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};  
 % lQ = {'EE-A','EE-D','EE-DA','EE-EIR','EE-death-rate'};
-% lQ = {'EE-EIR','EE-DA','EE-death-rate','EE-Ctot-pp','EE-Ctot-pp-09-24','EE-Ctot-pp-02-10','EE-Ctot-pp-10+'};
 Size_QOI = length(lQ); % length of the QOI. Default = 1, unless it is an age distribution, or wants to test multiple QOIs at once
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 % time_points = 1:nt;  % for time-series SA index
-% lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psir2','dac','uc','m',...
-%     'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
-lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
+lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psir2','dac','uc','m',...
+    'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
+% lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;

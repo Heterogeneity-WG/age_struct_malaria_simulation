@@ -183,7 +183,6 @@ X = categorical(lP_list);
 X = reordercats(X,lP_list);
 QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
-% lP_list_name = lP_list;
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 if Size_timepts == 1  % bar plot (for one time point)
     for iQ = 1:Size_QOI_plot
@@ -227,7 +226,7 @@ else
         xlabel('years')
         title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
         ylim([0 1.1])
-        POI_index =1:k;%  [1 3 7 15 19];
+        POI_index = 1:k;%  [1 3 7 15 19];
         for iPOI = 1:length(POI_index) 
             Sti_vec = s_struct.Sti(POI_index(iPOI),:,QOI_plot(iQOI))';
             time_pts = t(time_points)/365;
