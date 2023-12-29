@@ -25,59 +25,88 @@ cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));
 
 %% Incidence per person per year
 % corresponding to Figure S1 in White et al. (2015)
-figure_setups;
-subplot(1,2,1)
-bar(t'/365,(cases_rate1+cases_rate2).*30); 
-hold on
-ylim([0 10^5])
-plot(tfinal/365*ones(2),ylim,'m-')
-% plot((tfinal+tfinal_conti)/365*ones(2),ylim,'m-')
-xlabel('year')
-ylabel('total cases (per 30days)')
 
-subplot(1,2,2)
-plot(t/365,cases./pop*365)
-ylim([0, 8])
-hold on
-plot(tfinal/365*ones(2),ylim,'m-')
-% plot((tfinal+tfinal_conti)/365*ones(2),ylim,'m-')
-xlabel('year')
-ylabel('Incidence pp per year')
-title(['Incidence pp per year = ', num2str(cases_pp_py)]);
+% figure_setups;
+% subplot(1,2,1)
+% bar(t'/365,(cases_rate1+cases_rate2).*30); 
+% hold on
+% ylim([0 10^5])
+% plot(tfinal/365*ones(2),ylim,'m-')
+% % plot((tfinal+tfinal_conti)/365*ones(2),ylim,'m-')
+% xlabel('year')
+% ylabel('total cases (per 30days)')
+% 
+% subplot(1,2,2)
+% plot(t/365,cases./pop*365)
+% ylim([0, 8])
+% hold on
+% plot(tfinal/365*ones(2),ylim,'m-')
+% % plot((tfinal+tfinal_conti)/365*ones(2),ylim,'m-')
+% xlabel('year')
+% ylabel('Incidence pp per year')
+% title(['Incidence pp per year = ', num2str(cases_pp_py)]);
 
-%% Heatmaps of population disease burden over one period
+%% Heatmaps of population disease burden over 3 seasons (years)
+subfigure_strings1 = ["(a)","(b)","(c)"];
 
-figure; 
-imagesc(t/365,a/365,AH./PH);
-clim([0 1]);
-colorbar;
-title('$A_H(\alpha,t)$');
-xlabel('Time (years)');
-ylabel('Age (years)');
-set(gca,'YDir','normal')
-colormap jetwhite;
-
-figure;
-imagesc(t/365,a/365,DH./PH);
-clim([0 1]);
-colorbar;
-xlabel('Time (years)');
-ylabel('Age (years)');
-title('$D_H(\alpha,t)$');
-set(gca,'YDir','normal')
-colormap jetwhite;
-
-
-% figure; 
-% imagesc(param,a/365,DH_matrix');
+% figure_setups; 
+% imagesc(t/365,a/365,AH./PH);
 % clim([0 1]);
 % colorbar;
-% title('$\int^{T}_{T-1} D_H(\alpha,t)dt$');
-% xlabel('$r_A$');
-% ylabel('Age ($\alpha$)');
-% ylim([0 30]);
-% %xticks([0 0.04 0.08 0.12]);
+% title('Fraction of asymptomatic infections');
+% xlabel('Time (years)');
+% ylabel('Age (years)');
+% xlim([0 3]);
+% ylim([0 20]);
 % set(gca,'YDir','normal')
 % colormap jetwhite;
-% hold on;
-% xline([P.rA_lower base_value P.rA_upper],'--r','LineWidth',3); % indicator for the baseline
+% grid off;
+% yticks([0 5 10 15 20]);
+% xticks([0 1 2 3]);
+
+figure_setups;
+imagesc(t/365,a/365,DH./(AH+DH));
+clim([0 1]);
+colorbar;
+xlim([0 3]);
+ylim([0 20]);
+xlabel('Time (years)');
+ylabel('Age (years)');
+title('Fraction of symptomatic infections');
+set(gca,'YDir','normal')
+colormap jetwhite;
+str_temp = subfigure_strings1(immunity_feedback);
+annotation( 'textbox', 'String', str_temp, 'EdgeColor', 'none', ...
+            'Position', [0,1,0,0] );
+grid off;
+yticks([0 5 10 15 20]);
+xticks([0 1 2 3]);
+
+%%
+subfigure_strings2 = ["(d)","(e)","(f)"];
+str_temp = subfigure_strings2(immunity_feedback);
+
+[~,age2] = min(abs(P.a-2*365/P.da));
+[~,age10] = min(abs(P.a-10*365/P.da));
+[~,age20] = min(abs(P.a-20*365/P.da));
+figure_setups;
+temp_plot = AH./(PH); 
+plot(t/365,temp_plot(age2,:),'Color',[0.9290, 0.6940, 0.1250]);
+hold on;
+plot(t/365,temp_plot(age10,:),'-.','Color',[0.9290, 0.6940, 0.1250]);
+plot(t/365,temp_plot(age20,:),'--','Color',[0.9290, 0.6940, 0.1250]);
+
+temp_plot = DH./(PH); 
+plot(t/365,temp_plot(age2,:),'Color',[0.8500, 0.3250, 0.0980]);
+plot(t/365,temp_plot(age10,:),'-.','Color',[0.8500, 0.3250, 0.0980]);
+plot(t/365,temp_plot(age20,:),'--','Color',[0.8500, 0.3250, 0.0980]);
+
+ylim([0 1]);
+xlim([0 3]);
+yticks([0 0.2 0.4 0.6 0.8 1]);
+xticks([0 1 2 3]);
+annotation( 'textbox', 'String', str_temp, 'EdgeColor', 'none', ...
+            'Position', [0,1,0,0] );
+legend('Age 2 (asymptomatic)','Age 10 (asymptomatic)','Age 20 (asymptomatic)'...
+    ,'Age 2 (symptomatic)','Age 10 (symptomatic)','Age 20 (symptomatic)'...
+    ,'NumColumns', 3);
