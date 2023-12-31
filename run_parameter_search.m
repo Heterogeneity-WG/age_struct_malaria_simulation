@@ -14,9 +14,9 @@ P.sigmoid_surfs = 0; % toggle surfaces from the sigmoids
 P.age_aEIR_surf = 1;
 
 tfinal = 200*365; % final time in days
-age_max = 60*365; % max ages in days
+age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 10; % time/age step size in days
+dt = 5; % time/age step size in days
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -30,7 +30,7 @@ P.dt = dt;
 P.da = da;
 P.t = t;
 
-L = [25]; % 25 seems most interesting, gives a threshold around age 5 or so
+L = 25; % 25 seems most interesting, gives a threshold around age 5 or so
 EIR_var = 'betaM'; % use this parameter to adjust the EIR
 var_list = [0.05:0.01:0.07, 0.08, 0.1];
 final_immunity = zeros(na,length(var_list));
@@ -55,7 +55,7 @@ for ii = 1:length(L)
             lamH = FOI_H(bH,IM(1,end),NM);
             final_EIR(1,jj) = lamH/P.betaM*365;
             disp(['EIR = ',num2str(final_EIR(1,jj),'%10.6f')]);
-            R0 = R0_cal()
+            %R0 = R0_cal()
         end
         %% Plot the sigmoids
         if P.sigmoid_surfs == 1

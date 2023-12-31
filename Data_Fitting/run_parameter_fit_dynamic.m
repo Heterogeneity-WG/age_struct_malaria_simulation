@@ -44,6 +44,8 @@ x = [2.567957971786876   2.487540758554113   3.649596968324358   1.3954498062571
 % x = [2.447889755984070   2.544920188222090   1.841524526659086   2.359471176773747   2.390735795064254   2.419704159102402];
 
 Malaria_parameters_baseline;
+P.ss_c = 1; P.ss_S0 = 1; % turn off seasonality
+
 P.phis2 = x(1);
 P.phir2 = x(2); 
 P.rhos2 = x(3);
@@ -186,7 +188,7 @@ colormap jet
 colorbar('Ticks',0:0.2:1);
 xlim([0 20])
 ylim([0 max(yy)])
-caxis([0 max(max(zz_rho))])
+caxis([0 max(max(zz_rho))]);
 %% slices of heatmap to compare with Filipe's curves
 zz_rho = sigmoid_prob(zz, 'rho');
 EIR_list = [1 10 20 50 100];

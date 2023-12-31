@@ -25,7 +25,8 @@ Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
 %% initial condition 'EE' - numerical EE
-P.v0 = 0; Malaria_parameters_transform_vac;
+P.v0 = 0; 
+Malaria_parameters_transform_vac;
 [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
 
 %% time evolution
@@ -99,12 +100,12 @@ EIR_final = EIR_tot(end);
 % plot_human_prop_time; % human proportion in time (total and by age group) 
 % plot_human_popsize_time; % human pop size in time (total and by age group) 
 % plot_human_pop_age_tfinal; % age distributions (in prop and size) at final time (and movie)
-% plot_immunity; 
+plot_immunity; 
 % plot_DALY;
 % plot_sigmoids;
 % plot_FOI;
 % plot_incidences;
-plot_seasonality;
+% plot_seasonality;
 % plot_mosquitoes;
 % plot_vacc_counts_time;
 

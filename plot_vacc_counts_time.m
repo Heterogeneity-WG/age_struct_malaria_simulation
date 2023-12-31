@@ -3,7 +3,8 @@
 [~,ind2] = min(abs(P.a-17*30));
 NN_target = trapz(PH_final(ind1:ind2))*P.da;
 
-figure_setups; hold on
+figure_setups; 
+hold on
 subplot(1,2,1)
 yyaxis left
 plot(t/365,cumsum(trapz(vacc_sterile,1)*P.da)*dt/P.NN)

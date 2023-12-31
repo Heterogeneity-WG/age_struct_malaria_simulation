@@ -105,6 +105,7 @@ ylim([0 1]);
 xlim([0 3]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
 xticks([0 1 2 3]);
+grid on;
 annotation( 'textbox', 'String', str_temp, 'EdgeColor', 'none', ...
             'Position', [0,1,0,0] );
 legend('Age 2 (asymptomatic)','Age 10 (asymptomatic)','Age 20 (asymptomatic)'...

@@ -1,0 +1,104 @@
+global P
+
+% numerical config
+tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
+dt = 5; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
+P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
+
+Malaria_parameters_baseline;
+P.ss_c = 1; P.ss_S0 = 1; % turn off seasonality
+Malaria_parameters_transform;
+Malaria_parameters_transform_vac;
+[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
+PH = SH+EH+DH+AH;
+NH = trapz(PH)*P.da;
+Ctot_pp = Ctot./PH;
+
+figure_setups; 
+set(gcf,'Position',[353   307   552   446]);
+hold on;
+cc = linspace(0,max(Ctot_pp),100);
+phi_curve = sigmoid_prob(cc, 'phi');
+rho_curve = sigmoid_prob(cc, 'rho');
+psi_curve = sigmoid_prob(cc, 'psi');
+plot(cc,phi_curve,'-')
+plot(cc,rho_curve,'--')
+plot(cc,psi_curve,'-.')
+% population average sigmoids
+phi_ave = trapz(sigmoid_prob(Ctot_pp, 'phi').*PH/NH)*P.da;
+rho_ave = trapz(sigmoid_prob(Ctot_pp, 'rho').*PH/NH)*P.da;
+psi_ave = trapz(sigmoid_prob(Ctot_pp, 'psi').*PH/NH)*P.da;
+legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','Location','e')
+axis([0 max(cc) 0 1])
+xlabel('$\tilde{C}_{H}$')
+ylabel('Probability')
+annotation( 'textbox', 'String', '(a)', 'EdgeColor', 'none', ...
+            'Position', [0,1,0,0] );
+xlim([0 10]);
+xticks([0 2 4 6 8 10]);
+ylim([0 1]);
+yticks([0 0.2 0.4 0.6 0.8 1]);
+title('Calibrated linking functions');
+
+%% plotting heatmap (age, EIR, immunity level)
+tfinal = 20*365; age_max = 100*365; P.age_max = age_max;
+dt = 10; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
+P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
+
+Malaria_parameters_baseline;
+P.ss_c = 1; P.ss_S0 = 1; % turn off seasonality
+Malaria_parameters_transform;
+Malaria_parameters_transform_vac;
+Malaria_parameters_transform;
+
+var_list = (0.01:0.01:1).^2;
+xx = P.a/365;
+yy = zeros(1,length(var_list));
+zz = zeros(na,length(var_list));
+for jj = 1:length(var_list)
+    P.betaM = var_list(jj);
+    Malaria_parameters_transform;
+    [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
+    PH = SH+EH+DH+AH;
+    NM = SM+EM+IM;
+    [bH,~] = biting_rate(PH,NM);
+    EIR = bH.*IM./NM*365; % EIR matrix
+    EIR_tot = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
+    yy(1,jj) = EIR_tot; % aEIR
+    zz(:,jj) = Ctot./PH; % final Ctot at EE    
+end
+
+%% plotting heatmap (age, EIR, immunity) 
+figure_setups; 
+hold on; 
+grid off;
+set(gcf,'Position',[353   307   552   446])
+imagesc(xx,yy,zz')
+xlim([0 20])
+ylim([0 max(yy)])
+xlabel('Age (years)')
+ylabel('aEIR')
+title('Immunity level per person');
+set(gca,'YDir','normal');
+colormap jet
+colorbar('Ticks',0:2:15);
+annotation( 'textbox', 'String', '(b)', 'EdgeColor', 'none', ...
+            'Position', [0,1,0,0] );
+
+%% plotting heatmap (age, EIR, rho)
+figure_setups; hold on; grid off
+set(gcf,'Position',[353   307   552   446])
+zz_rho = sigmoid_prob(zz, 'rho');
+imagesc(xx,yy,zz_rho')
+xlabel('Age (years)')
+ylabel('aEIR')
+title('Susceptibility ($\rho$)');
+set(gca,'YDir','normal');
+colormap jet
+colorbar('Ticks',0:0.2:1);
+xlim([0 20])
+ylim([0 max(yy)])
+clim([0 max(max(zz_rho))]);
+annotation( 'textbox', 'String', '(c)', 'EdgeColor', 'none', ...
+            'Position', [0,1,0,0] );
+
