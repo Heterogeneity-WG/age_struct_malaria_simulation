@@ -55,8 +55,8 @@ switch state
         Cv0 = (Cv./PH).*P.PH_stable*NH;
         Ctot0 = P.c1*Cac0 + P.c2*Cm0 + P.c3*Cv0;
         
-        tfinal= 0.5*365; % for non-seasonal case 
-        % tfinal= 2*365; % for seasonal case (dt = 5)
+        % tfinal= 0.5*365; % for non-seasonal case 
+        tfinal= 2*365; % for seasonal case (dt = 5)
         % tfinal= 10*365; % for seasonal case (dt = 10)
         [~,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(P.da, P.na, 0, tfinal,...
             SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
