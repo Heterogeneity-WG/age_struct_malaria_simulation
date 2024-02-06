@@ -22,7 +22,8 @@ options = optimset('Display','iter','TolX',10^-6,'MaxIter',30);
 % [phi_s phi_r rho_s psi_r rho_s psi_r]
 lb = [0, 0.1, 0, 0.1, 0, 0.1];
 ub = [5, 5, 5, 5, 5, 5];
-x0 = (lb+ub)/2;
+% x0 = (lb+ub)/2;
+x0 = [2.54   2.52   3.16   1.87   2.39   2.28];
 tic
 [x,fval] = fmincon(@fun_Filipe_dynamic,x0,[],[], [], [], lb, ub, [], options);
 toc
@@ -35,7 +36,8 @@ dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = 
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
 % uniform betaM sampling
-% x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+% [linspace(0,1,50)];
+x = [2.541054908661499   2.521263428837834   3.160535717325357   1.870698094604934   2.390238620104622   2.282195667153324];
 
 % refine betaM sampling linspace(0,0.1,50)
 % x = [4.054028031572193   3.112804946380192   1.795855001626887   1.489513759827821   3.576364022306257   2.176976575527686];
@@ -86,7 +88,7 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 Malaria_parameters_baseline;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
-% x = [2.567957971786876   2.487540758554113   3.649596968324358   1.395449806257184   2.332526365071812   2.150211932758257];
+x = [2.541054908661499   2.521263428837834   3.160535717325357   1.870698094604934   2.390238620104622   2.282195667153324];
 
 P.phis2 = x(1);
 P.phir2 = x(2); 

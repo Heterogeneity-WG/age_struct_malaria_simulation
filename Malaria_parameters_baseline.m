@@ -16,7 +16,7 @@ Malaria_parameters_baseline_Nanoro;
 P.ss_c = 1; P.ss_S0 = 1;
 % 
 %% system configuration
-P.lMsystem = 'ss'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
+P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
 P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH
 
 %% dummy varaible for eFast SA
@@ -36,7 +36,7 @@ P.etas = 0.82; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the
 P.etab = 0.82; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
 P.w = 1/(0.41*365); P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  
 %%
-P.rD = 1/33.5; P.rD_lower = 1/51.5; P.rD_upper = 1/16; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
+P.rD = 1/31; P.rD_lower = 1/48; P.rD_upper = 1/15; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
 P.h = 1/26; % incubation rate in human
 
@@ -56,8 +56,8 @@ P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immun
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
-x_fit = [2.567957971786876   2.487540758554113   3.649596968324358  ...
-    1.395449806257184   2.332526365071812   2.150211932758257];
+x_fit = [2.541054908661499   2.521263428837834   3.160535717325357...
+    1.870698094604934   2.390238620104622   2.282195667153324];
 P.phis2 = x_fit(1);
 P.phir2 = x_fit(2); 
 P.rhos2 = x_fit(3);

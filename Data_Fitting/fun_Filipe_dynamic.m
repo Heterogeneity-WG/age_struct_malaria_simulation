@@ -19,7 +19,8 @@ nsamp = 30;
 [~,ind2] = min(abs(P.a-20*365)); 
 ind_a = [round(linspace(ind1,ind0,20)'); round(linspace(ind0+1,ind2,nsamp-20)')]; 
 % [0.5, 10] and [10,20] years old
-betaM_list = [linspace(0,0.05,50),linspace(0.05,1,50)]; 
+betaM_list = [linspace(0,1,50)]; 
+% betaM_list = [linspace(0,0.05,50),linspace(0.05,1,50)]; 
 res_list = [];
 EIR_list = [];
 
