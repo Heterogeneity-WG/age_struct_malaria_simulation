@@ -14,10 +14,11 @@ P.psis2 = x(5);
 P.psir2 = x(6);
 
 nsamp = 30;
-[~,ind1] = min(abs(P.a-0.3*365)); % [0.5, 3] years old
+[~,ind1] = min(abs(P.a-0.3*365)); 
 [~,ind0] = min(abs(P.a-10*365));
-[~,ind2] = min(abs(P.a-20*365)); % [3, 10] years old
-ind_a = [round(linspace(ind1,ind0,20)'); round(linspace(ind0+1,ind2,nsamp-20)')];
+[~,ind2] = min(abs(P.a-20*365)); 
+ind_a = [round(linspace(ind1,ind0,20)'); round(linspace(ind0+1,ind2,nsamp-20)')]; 
+% [0.5, 10] and [10,20] years old
 betaM_list = [linspace(0,0.05,50),linspace(0.05,1,50)]; 
 res_list = [];
 EIR_list = [];
