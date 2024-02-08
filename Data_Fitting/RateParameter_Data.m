@@ -10,38 +10,46 @@ lenh = treat.lenh;
 
 %% Plot Treated
 ft = figure_setups();
-set(ft,'Position',[100 100 1400 400])
+set(ft,'Position',[100 100 1400 500])
 subplot(1,3,1)
 hT_DH = histogram(lenDH);
-xlabel('day')
+xlabel({'days infectious','(with symptoms)'})
 ylabel('frequency')
-title('Infectious with symptoms')
-ymax = max(hT_DH.Values);
-xmax = hT_DH.BinEdges(end)*.5;
-text(xmax,ymax*.9,sprintf('mean = %d days',round(nanmean(lenDH))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_DH.Values)),'fontsize',20)
+%title('Infectious with symptoms')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(2)*.5;
+text(xmax,ymax*.92,sprintf('mean = %d days',round(nanmean(lenDH))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_DH.Values)),'fontsize',20)
 
 subplot(1,3,2)
 hT_AH = histogram(lenAH);
-xlabel('day')
+xlabel({'days infectious','(without symptoms)'})
 ylabel('frequency')
-ymax = max(hT_AH.Values);
-xmax = hT_AH.BinEdges(end)*.5;
-text(xmax,ymax*.9,sprintf('mean = %d days',round(nanmean(lenAH))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_AH.Values)),'fontsize',20)
-title('Infectious without symptoms')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(2)*.5;
+text(xmax,ymax*.92,sprintf('mean = %d days',round(nanmean(lenAH))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_AH.Values)),'fontsize',20)
+%title('Infectious without symptoms')
+th = title({'Treated during parasitemia (and before 30 days)'},'fontsize',36);
+set(th,'Position',[th.Position(1) th.Position(2)*1.05])
 
 subplot(1,3,3)
 hT_h = histogram(lenh);
-xlabel('days')
+xlabel({'days prior to','infectiousness'})
 ylabel('frequency')
-ymax = max(hT_h.Values);
-xmax = hT_h.BinEdges(end)*.65;
-text(xmax,ymax*.9,sprintf('mean =  %d days',round(nanmean(lenh))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_h.Values)),'fontsize',20)
-title('Prepatent + time to infectious')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(1)+(ax.XLim(2)-ax.XLim(1))*.5;
+text(xmax,ymax*.92,sprintf('mean =  %d days',round(nanmean(lenh))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_h.Values)),'fontsize',20)
+%title('Prepatent + time to infectious')
 
-sgtitle('Treated during parasitemia (and before 30 days)','fontsize',36)
+%sgtitle('Treated during parasitemia (and before 30 days)','fontsize',36)
 
 %% Untreated MT Data
 
@@ -53,35 +61,43 @@ lenh = untreat.lenh;
 %% Plot Untreated
 
 ft = figure_setups();
-set(ft,'Position',[100 100 1400 400])
+set(ft,'Position',[100 100 1400 500])
 subplot(1,3,1)
 hT_DH = histogram(lenDH);
-xlabel('day')
+xlabel({'days infectious','(with symptoms)'})
 ylabel('frequency')
-title('Infectious with symptoms')
-ymax = max(hT_DH.Values);
-xmax = hT_DH.BinEdges(end)*.5;
-text(xmax,ymax*.9,sprintf('mean = %d days',round(nanmean(lenDH))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_DH.Values)),'fontsize',20)
+%title('Infectious with symptoms')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(2)*.5;
+text(xmax,ymax*.92,sprintf('mean = %d days',round(nanmean(lenDH))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_DH.Values)),'fontsize',20)
 
 subplot(1,3,2)
 hT_AH = histogram(lenAH);
-xlabel('day')
+xlabel({'days infectious','(without symptoms)'})
 ylabel('frequency')
-ymax = max(hT_AH.Values);
-xmax = hT_AH.BinEdges(end)*.5;
-text(xmax,ymax*.9,sprintf('mean = %d days',round(nanmean(lenAH))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_AH.Values)),'fontsize',20)
-title('Infectious without symptoms')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(2)*.5;
+text(xmax,ymax*.92,sprintf('mean = %d days',round(nanmean(lenAH))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_AH.Values)),'fontsize',20)
+%title('Infectious without symptoms')
+th = title('Not treated during parasitemia','fontsize',36);
+set(th,'Position',[th.Position(1) th.Position(2)*1.05])
 
 subplot(1,3,3)
 hT_h = histogram(lenh);
-xlabel('days')
+xlabel({'days prior to','infectiousness'})
 ylabel('frequency')
-ymax = max(hT_h.Values);
-xmax = hT_h.BinEdges(end)*.65;
-text(xmax,ymax*.9,sprintf('mean =  %d days',round(nanmean(lenh))),'fontsize',20)
-text(xmax,ymax*.8,sprintf('n = %d ',sum(hT_h.Values)),'fontsize',20)
-title('Prepatent + time to infectious')
+axis square
+ax = gca;
+ymax = ax.YLim(2);
+xmax = ax.XLim(1)+(ax.XLim(2)-ax.XLim(1))*.5;
+text(xmax,ymax*.92,sprintf('mean =  %d days',round(nanmean(lenh))),'fontsize',20)
+text(xmax,ymax*.86,sprintf('n = %d ',sum(hT_h.Values)),'fontsize',20)
+%title('Prepatent + time to infectious')
 
-sgtitle('Not treated during parasitemia','fontsize',36)
+%sgtitle('Not treated during parasitemia','fontsize',36)
