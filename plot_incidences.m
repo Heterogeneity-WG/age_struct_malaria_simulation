@@ -47,7 +47,7 @@ cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));
 % title(['Incidence pp per year = ', num2str(cases_pp_py)]);
 
 %% Heatmaps of population disease burden over 3 seasons (years)
-subfigure_strings1 = ["(a)","(b)","(c)"];
+subfigure_strings1 = ["(A)","(B)","(C)"];
 
 % figure_setups; 
 % imagesc(t/365,a/365,AH./PH);
@@ -65,25 +65,29 @@ subfigure_strings1 = ["(a)","(b)","(c)"];
 % xticks([0 1 2 3]);
 
 figure_setups;
-imagesc(t/365,a/365,DH./(AH+DH));
+ax = imagesc(t/365,a/365,DH./(AH+DH));
 clim([0 1]);
 colorbar;
 xlim([0 3]);
 ylim([0 20]);
 xlabel('Time (years)');
 ylabel('Age (years)');
-title('Fraction of symptomatic infections');
+title('Symptomatic infections');
 set(gca,'YDir','normal')
-colormap jetwhite;
+colormap jet;
 str_temp = subfigure_strings1(immunity_feedback);
-annotation( 'textbox', 'String', str_temp, 'EdgeColor', 'none', ...
-            'Position', [0,1,0,0] );
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,0,temp_ax(end)+2,str_temp,'Units','characters');
 grid off;
 yticks([0 5 10 15 20]);
 xticks([0 1 2 3]);
-
+save_string = strcat('fig2_',str_temp,'.svg');
+saveas(gcf,save_string);
 %%
-subfigure_strings2 = ["(d)","(e)","(f)"];
+subfigure_strings2 = ["(D)","(E)","(F)"];
 str_temp = subfigure_strings2(immunity_feedback);
 
 [~,age2] = min(abs(P.a-2*365/P.da));
@@ -94,20 +98,27 @@ temp_plot = AH./(PH);
 plot(t/365,temp_plot(age2,:),'Color',[0.9290, 0.6940, 0.1250]);
 hold on;
 plot(t/365,temp_plot(age10,:),'-.','Color',[0.9290, 0.6940, 0.1250]);
-plot(t/365,temp_plot(age20,:),'--','Color',[0.9290, 0.6940, 0.1250]);
+plot(t/365,temp_plot(age20,:),':','Color',[0.9290, 0.6940, 0.1250]);
 
 temp_plot = DH./(PH); 
 plot(t/365,temp_plot(age2,:),'Color',[0.8500, 0.3250, 0.0980]);
 plot(t/365,temp_plot(age10,:),'-.','Color',[0.8500, 0.3250, 0.0980]);
-plot(t/365,temp_plot(age20,:),'--','Color',[0.8500, 0.3250, 0.0980]);
+plot(t/365,temp_plot(age20,:),':','Color',[0.8500, 0.3250, 0.0980]);
+hold off;
 
+xlabel('Time (years)');
 ylim([0 1]);
 xlim([0 3]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
 xticks([0 1 2 3]);
 grid on;
-annotation( 'textbox', 'String', str_temp, 'EdgeColor', 'none', ...
-            'Position', [0,1,0,0] );
-legend('Age 2 (asymptomatic)','Age 10 (asymptomatic)','Age 20 (asymptomatic)'...
-    ,'Age 2 (symptomatic)','Age 10 (symptomatic)','Age 20 (symptomatic)'...
-    ,'NumColumns', 3);
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,0,temp_ax(end)+2,str_temp,'Units','characters');
+% legend('Age 2 (asymptomatic)','Age 10 (asymptomatic)','Age 20 (asymptomatic)'...
+%      ,'Age 2 (symptomatic)','Age 10 (symptomatic)','Age 20 (symptomatic)'...
+%      ,'NumColumns', 2);
+save_string = strcat('fig2_',str_temp,'.svg');
+saveas(gcf,save_string);
