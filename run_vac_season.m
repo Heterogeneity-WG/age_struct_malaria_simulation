@@ -28,7 +28,7 @@ Malaria_parameters_transform_vac;
 t0_list= (0:0.5:12)';
 nyear  = 10; % implement vaccination strategy for nyear
 vac_period = 6; % seasonal vacc implementation period (months)
-vac_param_annual = 1.2*10^5*0.5; % annual vacc number % target population total = 2.56*10^5; 
+vac_param_annual = 1.2*10^5*0.1; % annual vacc number % target population total = 2.56*10^5; 
 % pick 1.2*10^5*0.1 to avoid negative SH
 
 % allocation

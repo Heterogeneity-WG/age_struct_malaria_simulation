@@ -142,6 +142,18 @@ for iQOI = [2 6] % 1:Size_QOI_plot
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     xticklabels(lP_list_name)
     grid off
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an 'a)' right at the top left of the axes
+    if iQOI == 2
+        text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
+        save_string = strcat('fig4_','A','.svg');
+    else
+        text(ax,-12,temp_ax(end)+2,'(B)','Units','characters');
+        save_string = strcat('fig4_','B','.svg');
+    end
+    saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
 end
 

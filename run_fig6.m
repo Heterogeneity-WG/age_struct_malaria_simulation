@@ -6,7 +6,7 @@ global P
 if ~exist('Results/season_vacc','dir')
     disp('Create the folder Results/season_vacc');
     disp('Download appropriate data or run "run_vacc_season.m" to generate necessary results.');
-    return 
+    return
 end
 
 Data_low1 = load('Results/season_vacc/season_vacc_1_low.mat');
@@ -56,42 +56,51 @@ hold on
 ind = 1:10:length(t);
 yyaxis left
 p1 = plot(t/30,NM,'-^','MarkerIndices',ind,'DisplayName','Mosquitoes');
-ylim([0 2*10^8])
-yticks([0 0.5*10^8 1*10^8 1.5*10^8 2*10^8]);
+ylim([0 3*10^8])
+yticks([0 1*10^8 2*10^8 3*10^8]);
 ylabel('\# of mosquitoes')
 yyaxis right
 p2 = plot(t/30,EIR_tot,'-o','MarkerIndices',ind,'DisplayName','EIR');
 ylabel('EIR');
 ylim([0 120])
 yticks([0 20 40 60 80 100 120]);
+xticks([0 2 4 6 8 10 12]);
 sz = 100;
 scatter([t1,t2,t3],[80,70,60],sz,'k','filled','Marker','<');scatter([t11,t22,t33],[80,70,60],sz,'k','filled','Marker','>')
 f1 = plot([t1,t11],[80, 80],'k-','DisplayName','1-month');
 f2 = plot([t2,t22],[70, 70],'k--','DisplayName','3-month');
-f3 = plot([t3,t33],[60, 60],'k-.','DisplayName','6-month');
+f3 = plot([t3,t33],[60, 60],'k:','DisplayName','6-month');
 xlim([0 12])
 ll = legendUnq(h);
 xlabel('Month')
 legend(ll,'Location','southeast');
-annotation( 'textbox', 'String', '(b)', 'EdgeColor', 'none', ...
-    'Position', [0,1,0,0] );
-saveas(gcf,'Results/season_vacc/vac_optimal.eps','epsc')
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,0,temp_ax(end)+2,'(B)','Units','characters');
+save_string = strcat('fig6_','B','.svg');
+saveas(gcf,save_string);
 %%
 figure_setups;
 hold on
 plot(t0_list,Data_low1.cases_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
-plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),'k--','DisplayName','3-month');
-plot(t0_list,Data_low6.cases_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','6-month');
-plot(t0_list,Data_low1.cases_per_vacc_target_constant(:,plot_year_ind),'k:','DisplayName','year-long vac');
+plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
+plot(t0_list,Data_low6.cases_per_vacc_target(:,plot_year_ind),'k:','DisplayName','6-month');
+plot(t0_list,Data_low1.cases_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
 xlim([0 12])
-ylim([0.3 0.8])
+ylim([0.35 0.7])
 xlabel('Starting month of vaccination')
 ylabel('Cases prevented per year per vac ')
-legend('Location','northeast')
-annotation( 'textbox', 'String', '(a)', 'EdgeColor', 'none', ...
-    'Position', [0,1,0,0] );
+legend('Location','southwest');
 yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
-saveas(gcf,'Results/season_vacc/vac_cases_pp.eps','epsc')
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,0,temp_ax(end)+2,'(A)','Units','characters');
+save_string = strcat('fig6_','A','.svg');
+saveas(gcf,save_string);
 %%
 h = figure_setups;
 yyaxis left
@@ -104,14 +113,19 @@ ylabel('Cases prevented per year per vac ')
 yyaxis right
 plot(t0_list,Data_low3.cases_pp_py_target(:,plot_year_ind),':^','DisplayName','low vac count ($1.2\times 10^4$/year)','MarkerIndices',ind)
 plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),'--o','DisplayName','high vac count ($6\times 10^4$/year)','MarkerIndices',min(ind+2,length(t0_list)))
-ylim([2.35 2.6])
-ylabel('Cases per person per year')
+ylim([2.35 2.6]);
+xlim([0 12]);
+ylabel('Cases per person per year');
 ll = legendUnq(h);
-xlabel('Starting month of vaccination')
-legend(ll,'Location','northeast')
-annotation( 'textbox', 'String', '(c)', 'EdgeColor', 'none', ...
-    'Position', [0,1,0,0] );
-saveas(gcf,'Results/season_vacc/vac_cases_counts.eps','epsc')
+xlabel('Starting month of vaccination');
+legend(ll,'Location','southeast');
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,0,temp_ax(end)+2,'(C)','Units','characters');
+save_string = strcat('fig6_','C','.svg');
+saveas(gcf,save_string);
 
 %% plotting (target pop)
 % plot_year_ind = [1,2,10];

@@ -2,7 +2,7 @@ global P
 
 % numerical config
 tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
-dt = 5; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
+dt = 2; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
 Malaria_parameters_baseline;
@@ -32,14 +32,18 @@ legend('$\phi(\tilde{C}_{H})$','$\rho(\tilde{C}_{H})$','$\psi(\tilde{C}_{H})$','
 axis([0 max(cc) 0 1])
 xlabel('$\tilde{C}_{H}$')
 ylabel('Probability')
-annotation( 'textbox', 'String', '(a)', 'EdgeColor', 'none', ...
-            'Position', [0,1,0,0] );
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+0.5,'(A)','Units','characters');
 xlim([0 10]);
 xticks([0 2 4 6 8 10]);
 ylim([0 1]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
-title('Calibrated linking functions');
-
+title('Link functions');
+save_string = strcat('fig8_','A','.svg');
+saveas(gcf,save_string);
 %% plotting heatmap (age, EIR, immunity level)
 tfinal = 20*365; age_max = 100*365; P.age_max = age_max;
 dt = 10; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
@@ -78,13 +82,17 @@ xlim([0 20])
 ylim([0 max(yy)])
 xlabel('Age (years)')
 ylabel('aEIR')
-title('Immunity level per person');
+title('Immunity p.p.');
 set(gca,'YDir','normal');
 colormap jet
 colorbar('Ticks',0:2:15);
-annotation( 'textbox', 'String', '(b)', 'EdgeColor', 'none', ...
-            'Position', [0,1,0,0] );
-
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+2.5,'(B)','Units','characters');
+save_string = strcat('fig8_','B','.svg');
+saveas(gcf,save_string);
 %% plotting heatmap (age, EIR, rho)
 figure_setups; hold on; grid off
 set(gcf,'Position',[353   307   552   446])
@@ -92,13 +100,17 @@ zz_rho = sigmoid_prob(zz, 'rho');
 imagesc(xx,yy,zz_rho')
 xlabel('Age (years)')
 ylabel('aEIR')
-title('Susceptibility ($\rho$)');
+title('Susceptibility');
 set(gca,'YDir','normal');
 colormap jet
 colorbar('Ticks',0:0.2:1);
 xlim([0 20])
 ylim([0 max(yy)])
 clim([0 max(max(zz_rho))]);
-annotation( 'textbox', 'String', '(c)', 'EdgeColor', 'none', ...
-            'Position', [0,1,0,0] );
-
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+2.5,'(C)','Units','characters');
+save_string = strcat('fig8_','C','.svg');
+saveas(gcf,save_string);
