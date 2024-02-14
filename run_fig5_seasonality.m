@@ -52,6 +52,11 @@ EIR_final = EIR_tot(end);
 
 %% plotting
 plot_seasonality;
-if flag_save; saveas(gcf,[direc,'SA_seasonal_curves.eps'],'epsc'); end
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an '(A)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
+if flag_save; saveas(gcf,[direc,'SA_seasonal_curves_A.eps'],'epsc'); end
 
 

@@ -17,6 +17,7 @@ global P
 % Directory for outputting SA results (sample, data matrices, plots)
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
+% direc = 'D:/Results_local_SA/SA_22POI_eFAST/';
 direc = 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/';
 flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
@@ -157,7 +158,7 @@ palpha = 0.05; % alpha for t-test
 QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
-
+subfigure_strings = ["(C)","(B)","(E)","(D)","(F)"];
 for iQOI = 1:Size_QOI_plot
     mylinestyles = ["-"; "--"; ":"; "-."];
     mycolors = lines(5);
@@ -180,8 +181,15 @@ for iQOI = 1:Size_QOI_plot
         end
         plot(time_pts_fine,Sti_vec_fine,'color', mycolors(color_style,:),'LineStyle',mylinestyles(line_style),'DisplayName',lP_list_name{POI_index(iPOI)})
     end
-    legend('Orientation','horizontal','NumColumns',10)
+    % legend('Orientation','horizontal','NumColumns',10)
     % legend('Location','eastoutside')
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an '(A)' right at the top left of the axes
+    str_temp = subfigure_strings(iQOI);
+    text(ax,-12,temp_ax(end)+2,str_temp,'Units','characters');
+    pause
     if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'.eps'],'epsc'); end
     % if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'_all.eps'],'epsc'); end
 end
