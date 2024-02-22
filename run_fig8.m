@@ -15,7 +15,7 @@ NH = trapz(PH)*P.da;
 Ctot_pp = Ctot./PH;
 
 figure_setups; 
-set(gcf,'Position',[353   307   552   446]);
+%set(gcf,'Position',[353   307   552   446]);
 hold on;
 cc = linspace(0,max(Ctot_pp),100);
 phi_curve = sigmoid_prob(cc, 'phi');
@@ -76,7 +76,7 @@ end
 figure_setups; 
 hold on; 
 grid off;
-set(gcf,'Position',[353   307   552   446])
+%set(gcf,'Position',[353   307   552   446])
 imagesc(xx,yy,zz')
 xlim([0 20])
 ylim([0 max(yy)])

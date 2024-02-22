@@ -51,14 +51,14 @@ t1 = t0_list(ind1); t11 = t1+1;
 t2 = t0_list(ind2); t22 = t2+3;
 t3 = t0_list(ind3); t33 = t3+6;
 %%
-h = figure_setups;
+h = figure_setups_3;
 hold on
 ind = 1:10:length(t);
 yyaxis left
 p1 = plot(t/30,NM,'-^','MarkerIndices',ind,'DisplayName','Mosquitoes');
 ylim([0 3*10^8])
 yticks([0 1*10^8 2*10^8 3*10^8]);
-ylabel('\# of mosquitoes')
+ylabel('Mosquitoes')
 yyaxis right
 p2 = plot(t/30,EIR_tot,'-o','MarkerIndices',ind,'DisplayName','EIR');
 ylabel('EIR');
@@ -73,16 +73,18 @@ f3 = plot([t3,t33],[60, 60],'k:','DisplayName','6-month');
 xlim([0 12])
 ll = legendUnq(h);
 xlabel('Month')
+xticks([2 5 8 11])
+xticklabels({'Feb.','May','Aug.','Nov.'});
 legend(ll,'Location','southeast');
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+2,'(B)','Units','characters');
+text(ax,0,temp_ax(end)+3,'(B)','Units','characters');
 save_string = strcat('fig6_','B','.svg');
 saveas(gcf,save_string);
 %%
-figure_setups;
+figure_setups_3;
 hold on
 plot(t0_list,Data_low1.cases_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
 plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
@@ -90,40 +92,45 @@ plot(t0_list,Data_low6.cases_per_vacc_target(:,plot_year_ind),'k:','DisplayName'
 plot(t0_list,Data_low1.cases_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
 xlim([0 12])
 ylim([0.35 0.7])
-xlabel('Starting month of vaccination')
-ylabel('Cases prevented per year per vac ')
+xlabel('Vac. start month');
+ylabel('Cases prevented per vac ')
 legend('Location','southwest');
 yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
+xticks([2 5 8 11])
+xticklabels({'Feb.','May','Aug.','Nov.'});
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+2,'(A)','Units','characters');
+text(ax,0,temp_ax(end)+3,'(A)','Units','characters');
 save_string = strcat('fig6_','A','.svg');
 saveas(gcf,save_string);
 %%
-h = figure_setups;
+h = figure_setups_3;
 yyaxis left
 hold on
 ind = 1:4:length(t0_list);
-plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),':^','DisplayName','low vac count ($1.2\times 10^4$/year)','MarkerIndices',ind)
-plot(t0_list,Data_high3.cases_per_vacc_target(:,plot_year_ind),'--o','DisplayName','high vac count ($6\times 10^4$/year)','MarkerIndices',min(ind+2,length(t0_list)))
+plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),':^','DisplayName','low vac count (3 months)','MarkerIndices',ind)
+plot(t0_list,Data_high3.cases_per_vacc_target(:,plot_year_ind),'--o','DisplayName','high vac count (3 months)','MarkerIndices',min(ind+2,length(t0_list)))
 ylim([0.35 0.8])
-ylabel('Cases prevented per year per vac ')
+ylabel('Cases prevented per vac');
 yyaxis right
-plot(t0_list,Data_low3.cases_pp_py_target(:,plot_year_ind),':^','DisplayName','low vac count ($1.2\times 10^4$/year)','MarkerIndices',ind)
-plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),'--o','DisplayName','high vac count ($6\times 10^4$/year)','MarkerIndices',min(ind+2,length(t0_list)))
+plot(t0_list,Data_low3.cases_pp_py_target(:,plot_year_ind),':^','MarkerIndices',ind)
+plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),'--o','MarkerIndices',min(ind+2,length(t0_list)))
 ylim([2.35 2.6]);
 xlim([0 12]);
-ylabel('Cases per person per year');
+xticks([2 5 8 11])
+xticklabels({'Feb.','May','Aug.','Nov.'});
+ylabel('Cases per person');
 ll = legendUnq(h);
 xlabel('Starting month of vaccination');
 legend(ll,'Location','southeast');
+%xticklabels(month)
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+2,'(C)','Units','characters');
+text(ax,0,temp_ax(end)+3,'(C)','Units','characters');
 save_string = strcat('fig6_','C','.svg');
 saveas(gcf,save_string);
 

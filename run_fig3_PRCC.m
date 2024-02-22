@@ -17,7 +17,7 @@ flag_save = 1; % flag for saving the results or not (Note: it will overwrite pre
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -143,6 +143,18 @@ for iQOI = [1 5] % 1:Size_QOI_plot
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     xticklabels(lP_list_name)
     grid off
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an 'a)' right at the top left of the axes
+    if iQOI == 1
+        text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
+        save_string = strcat('fig3_PRCC_','A','.svg');
+    else
+        text(ax,-12,temp_ax(end)+2,'(B)','Units','characters');
+        save_string = strcat('fig3_PRCC_','B','.svg');
+    end
+    saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
 end
 

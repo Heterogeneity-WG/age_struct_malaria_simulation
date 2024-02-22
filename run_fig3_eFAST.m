@@ -18,7 +18,7 @@ global P
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
 direc = 'Data_SA/Results_local_SA_no vac/SA_22POI_eFAST/';
-flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
@@ -182,7 +182,31 @@ for iQ = [2 3 4 6 7 8] % 1:Size_QOI_plot
     grid off
     legend('First Order','Total Order')
     temp = k+0.5;
-    plot([0.5 temp],[0.1, 0.1],':','Linewidth',1.5,'Color', 0.4*[1 1 1])
+    plot([0.5 temp],[0.1, 0.1],':','Linewidth',1.5,'Color', 0.4*[1 1 1]);
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an 'a)' right at the top left of the axes
+    if iQ == 2
+        text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
+        save_string = strcat('fig3_eFAST_','C','.svg');
+    elseif iQ == 3
+        text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
+        save_string = strcat('fig3_eFAST_','E','.svg');
+    elseif iQ == 4
+        text(ax,-12,temp_ax(end)+3,'(G)','Units','characters');
+        save_string = strcat('fig3_eFAST_','G','.svg');
+    elseif iQ == 6
+        text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
+        save_string = strcat('fig3_eFAST_','D','.svg');
+    elseif iQ == 7
+        text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
+        save_string = strcat('fig3_eFAST_','F','.svg');
+    elseif iQ == 8
+        text(ax,-12,temp_ax(end)+3,'(H)','Units','characters');
+        save_string = strcat('fig3_eFAST_','H','.svg');
+    end
+    saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
 end
 

@@ -1,4 +1,4 @@
-%% Figure A.1 (supplement for Figure 4) 
+%% Figure A.1 (supplement for Figure 4)
 % global SA (with vaccination-related parameters) using eFAST
 % 'Data_SA/Results_local_SA_vac/SA_17POI_eFAST/'
 
@@ -183,6 +183,24 @@ for iQ = [1 2 5 6] % 1:Size_QOI_plot
     legend('First Order','Total Order')
     temp = k+0.5;
     plot([0.5 temp],[0.1, 0.1],':','Linewidth',1.5,'Color', 0.4*[1 1 1])
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an 'a)' right at the top left of the axes
+    if iQ == 1
+        text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
+        save_string = strcat('figA1_','C','.svg');
+    elseif iQ == 2
+        text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
+        save_string = strcat('figA1_','B','.svg');
+    elseif iQ == 5
+        text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
+        save_string = strcat('figA1_','F','.svg');
+    else
+        text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
+        save_string = strcat('figA1_','E','.svg');
+    end
+    saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
 end
 

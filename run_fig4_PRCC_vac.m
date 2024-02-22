@@ -134,11 +134,11 @@ for iQOI = [2 6] % 1:Size_QOI_plot
     ylim([-1.1 1.1])
     xtips = b.XEndPoints;
     ytips = b.YEndPoints;
-    ytips(PRCC(:,1,QOI_plot(iQOI))<0) = ytips(PRCC(:,1,QOI_plot(iQOI))<0)-0.15;
+    ytips(PRCC(:,1,QOI_plot(iQOI))<0) = ytips(PRCC(:,1,QOI_plot(iQOI))<0)-0.25;
     labels = cell(1, length(lP_list_name));
     labels(stat_p(:,1,QOI_plot(iQOI))<palpha) = {'*'};
     text(xtips,ytips,labels,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom','fontsize',14)
+        'VerticalAlignment','bottom','fontsize',35)
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     xticklabels(lP_list_name)
     grid off

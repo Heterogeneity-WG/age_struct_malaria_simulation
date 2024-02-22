@@ -64,7 +64,7 @@ subfigure_strings1 = ["(A)","(B)","(C)"];
 % yticks([0 5 10 15 20]);
 % xticks([0 1 2 3]);
 
-figure_setups;
+figure_setups_3;
 ax = imagesc(t/365,a/365,DH./(AH+DH));
 clim([0 1]);
 colorbar;
@@ -72,7 +72,7 @@ xlim([0 3]);
 ylim([0 20]);
 xlabel('Time (years)');
 ylabel('Age (years)');
-title('Symptomatic infections');
+%title('Symptomatic infections');
 set(gca,'YDir','normal')
 colormap jet;
 str_temp = subfigure_strings1(immunity_feedback);
@@ -80,7 +80,7 @@ ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+2,str_temp,'Units','characters');
+text(ax,0,temp_ax(end)+3,str_temp,'Units','characters');
 grid off;
 yticks([0 5 10 15 20]);
 xticks([0 1 2 3]);
@@ -90,10 +90,11 @@ saveas(gcf,save_string);
 subfigure_strings2 = ["(D)","(E)","(F)"];
 str_temp = subfigure_strings2(immunity_feedback);
 
-[~,age2] = min(abs(P.a-2*365/P.da));
-[~,age10] = min(abs(P.a-10*365/P.da));
-[~,age20] = min(abs(P.a-20*365/P.da));
-figure_setups;
+[~,age2] = min(abs(P.a-2*365));
+[~,age10] = min(abs(P.a-10*365));
+[~,age20] = min(abs(P.a-20*365));
+
+figure_setups_3;
 temp_plot = AH./(PH); 
 plot(t/365,temp_plot(age2,:),'Color',[0.9290, 0.6940, 0.1250]);
 hold on;
@@ -116,7 +117,7 @@ ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+2,str_temp,'Units','characters');
+text(ax,0,temp_ax(end)+3,str_temp,'Units','characters');
 % legend('Age 2 (asymptomatic)','Age 10 (asymptomatic)','Age 20 (asymptomatic)'...
 %      ,'Age 2 (symptomatic)','Age 10 (symptomatic)','Age 20 (symptomatic)'...
 %      ,'NumColumns', 2);
