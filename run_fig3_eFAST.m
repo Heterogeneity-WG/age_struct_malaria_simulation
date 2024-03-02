@@ -136,8 +136,9 @@ s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha
 
 %% Sorting
 if Size_timepts==1
-    lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
-        'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
+    lP_order = {'dac','rD','psir2','cS','uc','muM','betaM','cA','rhos2',...
+        'psis2','rA','cE','betaD','rhor2','sigma','m','betaA','cD',...
+        'phis2','phir2','cU','v0'};
 else % ordering for time-series SA plots
     lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
         'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
@@ -156,7 +157,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQ = [2 3 4 6 7 8] % 1:Size_QOI_plot
+for iQ = [2 4 6 8] % 1:Size_QOI_plot
     figure_setups; hold on
     model_series = [s_struct.Si(:,1,iQ)';s_struct.Sti(:,1,iQ)']';
     b = bar(X,model_series,'FaceColor','flat');
@@ -177,7 +178,10 @@ for iQ = [2 3 4 6 7 8] % 1:Size_QOI_plot
     labels2(s_struct.p_Sti(:,1,1,iQ)<palpha) = {'*'};
     text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
     title(['QOI = ',lQ_title{iQ}])
+    ax = gca;
+    ax.XAxis.FontSize = 26;
     xticklabels(lP_list_name)
+    xtickangle(90)
     ylim([0 0.6])
     grid off
     legend('First Order','Total Order')
@@ -190,21 +194,15 @@ for iQ = [2 3 4 6 7 8] % 1:Size_QOI_plot
     if iQ == 2
         text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
         save_string = strcat('fig3_eFAST_','C','.svg');
-    elseif iQ == 3
+    elseif iQ == 4
         text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
         save_string = strcat('fig3_eFAST_','E','.svg');
-    elseif iQ == 4
-        text(ax,-12,temp_ax(end)+3,'(G)','Units','characters');
-        save_string = strcat('fig3_eFAST_','G','.svg');
     elseif iQ == 6
         text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
         save_string = strcat('fig3_eFAST_','D','.svg');
-    elseif iQ == 7
+    elseif iQ == 8
         text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
         save_string = strcat('fig3_eFAST_','F','.svg');
-    elseif iQ == 8
-        text(ax,-12,temp_ax(end)+3,'(H)','Units','characters');
-        save_string = strcat('fig3_eFAST_','H','.svg');
     end
     saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end

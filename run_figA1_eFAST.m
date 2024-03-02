@@ -136,8 +136,9 @@ s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha
 
 %% Sorting
 if Size_timepts==1
-    lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
-        'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
+    lP_order = {'dac','rD','psir2','cS','uc','muM','betaM','cA','rhos2',...
+        'psis2','rA','cE','betaD','rhor2','sigma','m','betaA','cD',...
+        'phis2','phir2','cU','v0','w','etas'};
 else % ordering for time-series SA plots
     lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
         'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
@@ -191,14 +192,14 @@ for iQ = [1 2 5 6] % 1:Size_QOI_plot
         text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
         save_string = strcat('figA1_','C','.svg');
     elseif iQ == 2
+        text(ax,-12,temp_ax(end)+3,'(A)','Units','characters');
+        save_string = strcat('figA1_','A','.svg');
+    elseif iQ == 5
+        text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
+        save_string = strcat('figA1_','D','.svg');
+    else
         text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
         save_string = strcat('figA1_','B','.svg');
-    elseif iQ == 5
-        text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
-        save_string = strcat('figA1_','F','.svg');
-    else
-        text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
-        save_string = strcat('figA1_','E','.svg');
     end
     saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
