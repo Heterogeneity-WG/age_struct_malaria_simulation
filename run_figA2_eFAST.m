@@ -18,8 +18,9 @@ global P
 % Directory for outputting SA results (sample, data matrices, plots)
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
+% direc = 'D:/Results_local_SA/SA_22POI_eFAST/';
 direc = 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/';
-flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+flag_save =1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
@@ -173,8 +174,8 @@ for iQOI = 1:Size_QOI_plot
         color_style = mod(POI_index(iPOI),5); if color_style==0; color_style=5; end
         line_style = ceil(POI_index(iPOI)/5); if line_style==5; line_style=1; end
         if iPOI>=21
-            mycolors(6,:) = [0.3010 0.7450 0.9330];
-            color_style = 6;
+            if iPOI == 21;mycolors(6,:) = [0.3010 0.7450 0.9330]; color_style = 6; end
+            if iPOI == 22;mycolors(6,:) = [0.6350 0.0780 0.1840]; color_style = 6; end
         end
         plot(time_pts_fine,Sti_vec_fine,'color', mycolors(color_style,:),'LineStyle',mylinestyles(line_style),'DisplayName',lP_list_name{POI_index(iPOI)})
     end

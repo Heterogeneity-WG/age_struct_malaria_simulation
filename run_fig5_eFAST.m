@@ -19,7 +19,7 @@ global P
 % otherwise, it will generate new results (could time and storage consuming)
 % direc = 'D:/Results_local_SA/SA_22POI_eFAST/';
 direc = 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/';
-flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
@@ -188,8 +188,7 @@ for iQOI = 1:Size_QOI_plot
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an '(A)' right at the top left of the axes
     str_temp = subfigure_strings(iQOI);
-    text(ax,-12,temp_ax(end)+2,str_temp,'Units','characters');
-    pause
+    text(ax,-12,temp_ax(end)+2,str_temp,'Units','characters');   
     if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'.eps'],'epsc'); end
     % if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'_all.eps'],'epsc'); end
 end

@@ -10,7 +10,7 @@ global P
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
 direc = 'Data_SA/Results_local_SA_time/';
-flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 %% numerical config
 age_max = 100*365; % max ages in days
@@ -52,11 +52,17 @@ EIR_final = EIR_tot(end);
 
 %% plotting
 plot_seasonality;
+yyaxis left
+ylabel('EIR/death rate')
+yyaxis right
+ylabel('Proportion')
+legend('FontSize',30)
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an '(A)' right at the top left of the axes
 text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
 if flag_save; saveas(gcf,[direc,'SA_seasonal_curves_A.eps'],'epsc'); end
+
 
 
