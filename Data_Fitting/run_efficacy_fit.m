@@ -52,16 +52,20 @@ options = optimset('Display','iter','TolX',10^-8,'MaxIter',80);
 [x,fval] = fmincon(@(x) fun_efficacy(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0),x0,[],[], [], [], lb, ub, [], options);
 
 %%
-
+x = [0.82,1/(0.41*365)];
 figure_setups; hold on
-[~, xdata,ydata,yrun0] = fun_efficacy(x0,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
-[~, ~,~,yrun1] = fun_efficacy(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
-scatter(xdata/365,ydata,'filled')
-plot(xdata/365,yrun0,'*-')
-plot(xdata/365,yrun1,'*-')
-legend('data - Penny','fitting - initial','fitting - final')
-axis([0 1550/365 -0.3 0.8])
-title('Fit to point data of efficacy')
+% [~, xdata,ydata,yrun0,~,~] = fun_efficacy(x0,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
+[~, ~,~,yrun1,t,eff] = fun_efficacy(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0);
+scatter(xdata/365,ydata,100,'filled')
+% plot(xdata/365,yrun0,'*-','LineWidth',3)
+% plot(xdata/365,yrun1,'*-','LineWidth',3)
+plot(t/365,eff,'-','LineWidth',3)
+% legend('data - Penny','fitting - initial','fitting - final')
+legend('data','fitted')
+axis([0 3 -0.2 1])
+ylabel('Efficacy against clinical malaria')
+xlabel('Time since vaccination (years)')
+% title('Fit to point data of efficacy')
 
 
 % figure_setups; hold on

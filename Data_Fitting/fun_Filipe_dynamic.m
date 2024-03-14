@@ -46,6 +46,7 @@ for ibeta = 1:length(betaM_list)
     Z_data = F(X,Y); % rho from data
     res_list = [res_list; abs(Z_data(:)-Z_samp(:))];
     EIR_list = [EIR_list; EIR_final];
+    
 end
 w = ones(size(res_list));%./(res+eps);
 err = sum(w.*(res_list.^2))/length(res_list);

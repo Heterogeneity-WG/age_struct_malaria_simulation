@@ -1,4 +1,4 @@
-function [err, xdata,ydata,yrun] = fun_efficacy(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0)
+function [err, xdata,ydata,yrun, t,eff] = fun_efficacy(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0)
 
 global P 
 
