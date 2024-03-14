@@ -67,7 +67,7 @@ subfigure_strings1 = ["(A)","(B)","(C)"];
 figure_setups_3;
 ax = imagesc(t/365,a/365,DH./(AH+DH));
 clim([0 1]);
-colorbar;
+%colorbar;
 xlim([0 3]);
 ylim([0 20]);
 xlabel('Time (years)');
@@ -112,6 +112,7 @@ ylim([0 1]);
 xlim([0 3]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
 xticks([0 1 2 3]);
+ylabel('Proportion infected');
 grid on;
 ax=gca;
 % read out the position of the axis in the unit "characters"
