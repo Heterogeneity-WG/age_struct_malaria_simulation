@@ -5,17 +5,17 @@ clearvars
 clc
 % R[POIs, N]: matrix of ranks; (data replace by their ranks - from smallest to largest, tiedrank in MATLAB)
 % PRCC[POI,timepoints,QOI]
-NS_list = [100,200,500,1000];
-k = 18; % k = 16 for vaccine_no; k = 18 for vaccine_yes
-nQ = 13; % # of QOIs
+NS_list = [100,200,500, 1000];
+k = 22; 
+nQ = 8; 
 rT_PRCC(length(NS_list)-1,nQ) = 0; 
 p_PRCC(length(NS_list)-1,nQ) = 0;
-
+direc = 'D:/Results_local_SA_no vac/Results/';
 for iNS = 1:length(NS_list)-1
     NS1 = NS_list(iNS);
     NS2 = NS_list(iNS+1);
-    Data1 = load(['Results/vaccine_yes/PRCC_result_',num2str(NS1),'_',num2str(k),'.mat'],'PRCC');
-    Data2 = load(['Results/vaccine_yes/PRCC_result_',num2str(NS2),'_',num2str(k),'.mat'],'PRCC');
+    Data1 = load([direc,'PRCC_result_',num2str(NS1),'_',num2str(k),'.mat'],'PRCC');
+    Data2 = load([direc,'PRCC_result_',num2str(NS2),'_',num2str(k),'.mat'],'PRCC');
     for iQ = 1:nQ 
         PRCC_1 = Data1.PRCC(:,1,iQ);
         PRCC_2 = Data2.PRCC(:,1,iQ); 

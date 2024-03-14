@@ -6,17 +6,16 @@ clc
 % R[POIs, N]: matrix of ranks; (data replace by their ranks - from smallest to largest, tiedrank in MATLAB)
 % eFAST: SI[POI,timepoints,QOI]; SI[POI,timepoints,QOI] 
 NS_list = [65, 129, 257, 513];
-k = 18; % k = 16 for vaccine_no; k = 18 for vaccine_yes
-NR = 5;
-nQ = 13; % # of QOIs
+k = 22; 
+nQ = 8; 
 rT_si(length(NS_list)-1,nQ) = 0; rT_sti = rT_si;
 p_si(length(NS_list)-1,nQ) = 0; p_sti = p_si;
-
+direc = 'D:/Results_local_SA_no vac/Results/';
 for iNS = 1:length(NS_list)-1
     NS1 = NS_list(iNS);
     NS2 = NS_list(iNS+1);
-    Data1 = load(['Results/vaccine_yes/eFAST_result_',num2str(NS1),'_',num2str(k),'.mat'],'s_struct');
-    Data2 = load(['Results/vaccine_yes/eFAST_result_',num2str(NS2),'_',num2str(k),'.mat'],'s_struct');
+    Data1 = load([direc,'eFAST_result_',num2str(NS1),'_',num2str(k),'.mat'],'s_struct');
+    Data2 = load([direc,'eFAST_result_',num2str(NS2),'_',num2str(k),'.mat'],'s_struct');
     for iQ = 1:nQ 
         Si_1 = Data1.s_struct.Si(:,1,iQ); Sti_1 = Data1.s_struct.Sti(:,1,iQ);
         Si_2 = Data2.s_struct.Si(:,1,iQ); Sti_2 = Data2.s_struct.Sti(:,1,iQ);
