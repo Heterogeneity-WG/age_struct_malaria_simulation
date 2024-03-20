@@ -74,7 +74,7 @@ xlim([0 12])
 ll = legendUnq(h);
 xlabel('Month')
 xticks([2 5 8 11])
-xticklabels({'Feb.','May','Aug.','Nov.'});
+xticklabels({'Mar.','June','Sep.','Dec.'});
 legend(ll,'Location','southeast');
 ax=gca;
 % read out the position of the axis in the unit "characters"
@@ -87,17 +87,29 @@ saveas(gcf,save_string);
 figure_setups_3;
 hold on
 plot(t0_list,Data_low1.cases_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
+[~, max_pos] = max(Data_low1.cases_per_vacc_target(:,plot_year_ind));
+
 plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
+[~, max_pos1] = max(Data_low3.cases_per_vacc_target(:,plot_year_ind));
+
 plot(t0_list,Data_low6.cases_per_vacc_target(:,plot_year_ind),'k:','DisplayName','6-month');
+[~, max_pos2] = max(Data_low6.cases_per_vacc_target(:,plot_year_ind));
+
 plot(t0_list,Data_low1.cases_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
-xlim([0 12])
-ylim([0.35 0.7])
+
+xlim([0 12]);
+ylim([0.35 0.7]);
 xlabel('Vac. start month');
-ylabel('Cases prevented per vac ')
+ylabel('Cases prevented per vac ');
 legend('Location','southwest');
 yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
-xticks([2 5 8 11])
-xticklabels({'Feb.','May','Aug.','Nov.'});
+xticks([2 5 8 11]);
+xticklabels({'Mar.','June','Sep.','Dec.'});
+
+scatter(t0_list(max_pos),Data_low1.cases_per_vacc_target(max_pos,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos1),Data_low3.cases_per_vacc_target(max_pos1,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos2),Data_low6.cases_per_vacc_target(max_pos2,plot_year_ind),300,'d','filled','magenta');
+
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
@@ -120,7 +132,7 @@ plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),'--o','MarkerIndices
 ylim([2.35 2.6]);
 xlim([0 12]);
 xticks([2 5 8 11])
-xticklabels({'Feb.','May','Aug.','Nov.'});
+xticklabels({'Mar.','June','Sep.','Dec.'});
 ylabel('Cases per person');
 ll = legendUnq(h);
 xlabel('Starting month of vaccination');
@@ -134,52 +146,57 @@ text(ax,0,temp_ax(end)+3,'(C)','Units','characters');
 save_string = strcat('fig6_','C','.svg');
 saveas(gcf,save_string);
 
-%% plotting (target pop)
-% plot_year_ind = [1,2,10];
-% mat_color = [0 0.4470 0.7410;0.9290 0.6940 0.1250; 0.6350 0.0780 0.1840];
-% figure_setups;  % plot cases prevented per vacc
-% h = subplot(1,2,1);
-% f1 = plot(t0_list,Data_low1.cases_per_vacc_target_constant(:,plot_year_ind),'-','DisplayName','year-long (target pop)');
-% hold on; grid on
-% f2 = plot(t0_list,Data_low1.cases_per_vacc_target(:,plot_year_ind),'--','DisplayName',' seasonal (target pop)');
-% f3 = plot(t0_list,Data_low1.cases_per_vacc_target_baseline(:,plot_year_ind),':','DisplayName','no vacc (target pop)');
-% xlabel('vacc start month')
-% ll = legendUnq(h);
-% legend(ll,'Location','best')
-% ylabel('cases prev. per vacc')
-% xlim([0 12])
-% ylim([0 0.8])
-% set(f1, {'color'}, num2cell(mat_color,2));
-% set(f2, {'color'}, num2cell(mat_color,2));
-% set(f3, {'color'}, num2cell(mat_color,2));
-%
-% h = subplot(1,2,2); % plot death prevented per vacc
-% f1 = plot(t0_list,Data_low1.death_per_vacc_target_constant(:,plot_year_ind),'-','DisplayName','year-long (target pop)');
-% hold on; grid on
-% f2 = plot(t0_list,Data_low1.death_per_vacc_target(:,plot_year_ind),'--','DisplayName','seasonal (target pop)');
-% f3 = plot(t0_list,Data_low1.death_per_vacc_target_baseline(:,plot_year_ind),':','DisplayName',' no vacc (target pop)');
-% xlabel('vacc start month')
-% ll = legendUnq(h);
-% legend(ll,'Location','best')
-% ylabel('death prev. per vac')
-% xlim([0 12])
-% ylim([0 1.5/1000])
-% set(f1, {'color'}, num2cell(mat_color,2));
-% set(f2, {'color'}, num2cell(mat_color,2));
-% set(f3, {'color'}, num2cell(mat_color,2));
+%% Plotting of deaths prevented in the target age range
+figure_setups_3;
+hold on
+plot(t0_list,Data_low1.death_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
+[~, max_pos] = max(Data_low1.death_per_vacc_target(:,plot_year_ind));
 
-%%
-% h = subplot(1,3,3);
-% f1 = plot(t0_list,Data_low1.cases_pp_py_target_constant(:,plot_year_ind),'-','DisplayName','year-long (target pop)');
-% hold on; grid on
-% f2 = plot(t0_list,Data_low1.cases_pp_py_target(:,plot_year_ind),'--','DisplayName','seasonal (target pop)');
-% f3 = plot(t0_list,Data_low1.cases_pp_py_target_baseline(:,plot_year_ind),':','DisplayName',' no vacc (target pop)');
-% xlabel('vacc start month')
-% ll = legendUnq(h);
-% legend(ll,'Location','best')
-% ylabel('cases per person per year')
-% xlim([0 12])
-% ylim([2.4 2.65])
-% set(f1, {'color'}, num2cell(mat_color,2));
-% set(f2, {'color'}, num2cell(mat_color,2));
-% set(f3, {'color'}, num2cell(mat_color,2));
+plot(t0_list,Data_low3.death_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
+[~, max_pos1] = max(Data_low3.death_per_vacc_target(:,plot_year_ind));
+
+plot(t0_list,Data_low6.death_per_vacc_target(:,plot_year_ind),'k:','DisplayName','6-month');
+[~, max_pos2] = max(Data_low6.death_per_vacc_target(:,plot_year_ind));
+
+plot(t0_list,Data_low1.death_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
+
+xlim([0 12]);
+%ylim([0.35 0.7]);
+xlabel('Vac. start month');
+ylabel('Deaths prevented per vac');
+legend('Location','southwest');
+%yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
+xticks([2 5 8 11]);
+xticklabels({'Mar.','June','Sep.','Dec.'});
+title('5 - 17 months cohort');
+
+scatter(t0_list(max_pos),Data_low1.death_per_vacc_target(max_pos,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos1),Data_low3.death_per_vacc_target(max_pos1,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos2),Data_low6.death_per_vacc_target(max_pos2,plot_year_ind),300,'d','filled','magenta');
+%% Plotting of cases prevented for the full population
+figure_setups_3;
+hold on
+plot(t0_list,Data_low1.cases_per_vacc_full(:,plot_year_ind),'k-','DisplayName','1-month');
+[~, max_pos] = max(Data_low1.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low3.cases_per_vacc_full(:,plot_year_ind),'k-.','DisplayName','3-month');
+[~, max_pos1] = max(Data_low3.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low6.cases_per_vacc_full(:,plot_year_ind),'k:','DisplayName','6-month');
+[~, max_pos2] = max(Data_low6.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low1.cases_per_vacc_full_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
+
+xlim([0 12]);
+%ylim([0.35 0.7]);
+xlabel('Vac. start month');
+ylabel('cases prevented per vac ');
+legend('Location','southwest');
+%yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
+xticks([2 5 8 11]);
+xticklabels({'Mar.','June','Sep.','Dec.'});
+title('Full Population');
+
+scatter(t0_list(max_pos),Data_low1.cases_per_vacc_full(max_pos,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos1),Data_low3.cases_per_vacc_full(max_pos1,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos2),Data_low6.cases_per_vacc_full(max_pos2,plot_year_ind),300,'d','filled','magenta');

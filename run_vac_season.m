@@ -28,8 +28,10 @@ Malaria_parameters_transform_vac;
 t0_list= (0:0.5:12)';
 nyear  = 10; % implement vaccination strategy for nyear
 vac_period = 6; % seasonal vacc implementation period (months)
-vac_param_annual = 1.2*10^5*0.1; % annual vacc number % target population total = 2.56*10^5; 
-% pick 1.2*10^5*0.1 to avoid negative SH
+vac_param_annual = 6*10^4; % annual vacc number % target population total = 2.56*10^5;
+% pick 1.2*10^4 baseline acc count to avoid negative SH
+
+% NB "low vacc" = 1.2*10^4, "high vacc = 6*10^4" 
 
 % allocation
 cases_py_target = NaN(length(t0_list),nyear);
@@ -70,7 +72,7 @@ for it = 1:length(t0_list)
     tnow = 0;
     SH0 = SHEE; EH0 = EHEE; DH0 = DHEE; AH0 = AHEE; VH0 = VHEE; UH0 = UHEE; SM0 = SMEE; EM0 = EMEE; IM0 = IMEE; Cm0 = CmEE; Cac0 = CacEE; Cv0 = CvEE; Ctot0 = CtotEE; MH0 = MHEE;
     %% initial run (no vacc)
-    P.v0 = 0; 
+    P.v0 = 0;
     Malaria_parameters_transform_vac;
     tconti = t0_list(it)*30;
     vac_season_time_evolution_init;
