@@ -9,6 +9,7 @@ if ~exist('Results/season_vacc','dir')
     return
 end
 
+Data_verylow3 = load('Results/season_vacc/season_vacc_3_verylow.mat');
 Data_low1 = load('Results/season_vacc/season_vacc_1_low.mat');
 Data_low3 = load('Results/season_vacc/season_vacc_3_low.mat');
 Data_low6 = load('Results/season_vacc/season_vacc_6_low.mat');
@@ -42,7 +43,7 @@ EIR_final = EIR_tot(end);
 %%
 t0_list = Data_low1.t0_list;
 mat_color = [0 0.4470 0.7410;0.9290 0.6940 0.1250; 0.6350 0.0780 0.1840];
-plot_year_ind = 10;
+plot_year_ind = 2; % study vaccination impact in year two of the program
 
 [Opt1,ind1] = max(Data_low1.cases_per_vacc_target(:,plot_year_ind));
 [Opt2,ind2] = max(Data_low3.cases_per_vacc_target(:,plot_year_ind));
@@ -122,27 +123,36 @@ h = figure_setups_3;
 yyaxis left
 hold on
 ind = 1:4:length(t0_list);
-plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),':^','DisplayName','low vac count (3 months)','MarkerIndices',ind)
-plot(t0_list,Data_high3.cases_per_vacc_target(:,plot_year_ind),'--o','DisplayName','high vac count (3 months)','MarkerIndices',min(ind+2,length(t0_list)))
-ylim([0.35 0.8])
+% plot(t0_list,Data_verylow3.cases_per_vacc_target(:,plot_year_ind),':*',...
+%     'DisplayName','v. low vac count','MarkerIndices',ind,'MarkerSize',15);
+plot(t0_list,Data_low3.cases_per_vacc_target(:,plot_year_ind),':^',...
+    'DisplayName','low vac count','MarkerIndices',ind,'MarkerSize',15);
+plot(t0_list,Data_high3.cases_per_vacc_target(:,plot_year_ind),':o',...
+    'DisplayName','high vac count','MarkerIndices',min(ind+2,length(t0_list)),'MarkerSize',15);
+title('3-month Programs');
+%ylim([0.30 0.8])
 ylabel('Cases prevented per vac');
 yyaxis right
-plot(t0_list,Data_low3.cases_pp_py_target(:,plot_year_ind),':^','MarkerIndices',ind)
-plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),'--o','MarkerIndices',min(ind+2,length(t0_list)))
-ylim([2.35 2.6]);
+% plot(t0_list,Data_verylow3.cases_pp_py_target(:,plot_year_ind),...
+%     '--*','MarkerIndices',ind,'MarkerSize',15);
+plot(t0_list,Data_low3.cases_pp_py_target(:,plot_year_ind),...
+    ':^','MarkerIndices',ind,'MarkerSize',15);
+plot(t0_list,Data_high3.cases_pp_py_target(:,plot_year_ind),...
+    ':o','MarkerIndices',min(ind+2,length(t0_list)),'MarkerSize',15);
+ylim([2.35 2.65]);
 xlim([0 12]);
 xticks([2 5 8 11])
 xticklabels({'Mar.','June','Sep.','Dec.'});
 ylabel('Cases per person');
 ll = legendUnq(h);
-xlabel('Starting month of vaccination');
+xlabel('Vac. start month');
 legend(ll,'Location','southeast');
 %xticklabels(month)
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an 'a)' right at the top left of the axes
-text(ax,0,temp_ax(end)+3,'(C)','Units','characters');
+text(ax,0,temp_ax(end)+2,'(C)','Units','characters');
 save_string = strcat('fig6_','C','.svg');
 saveas(gcf,save_string);
 

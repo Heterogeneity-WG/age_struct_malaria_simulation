@@ -27,11 +27,11 @@ Malaria_parameters_transform_vac;
 
 t0_list= (0:0.5:12)';
 nyear  = 10; % implement vaccination strategy for nyear
-vac_period = 6; % seasonal vacc implementation period (months)
-vac_param_annual = 6*10^4; % annual vacc number % target population total = 2.56*10^5;
+vac_period = 3; % seasonal vacc implementation period (months)
+vac_param_annual = (1.2*10^4)/100; % annual vacc number % target population total = 2.56*10^5;
 % pick 1.2*10^4 baseline acc count to avoid negative SH
 
-% NB "low vacc" = 1.2*10^4, "high vacc = 6*10^4" 
+% NB "low vacc" = 1.2*10^4, "high vacc = 6*10^4"
 
 % allocation
 cases_py_target = NaN(length(t0_list),nyear);
@@ -152,10 +152,12 @@ death_per_vacc_full_constant = (death_py_full_baseline-death_py_full_constant)./
 
 %% saving data
 direc = 'Results/season_vacc/';
-if vac_param_annual == 1.2*10^5*0.5 % high vacc count
+if vac_param_annual == 6*10^4 % high vacc count
     filename = [direc,'season_vacc_',num2str(vac_period),'_high.mat'];
-elseif vac_param_annual == 1.2*10^5*0.1 % low vacc count
+elseif vac_param_annual == 1.2*10^4 % low vacc count
     filename = [direc,'season_vacc_',num2str(vac_period),'_low.mat'];
+elseif vac_param_annual == (1.2*10^4)/100 % very low vacc count
+    filename = [direc,'season_vacc_',num2str(vac_period),'_verylow.mat'];
 else
     keyboard;
 end

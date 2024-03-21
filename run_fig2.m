@@ -67,7 +67,7 @@ for immunity_feedback = 2:3 % select the immune feedback scenario
     % plotting AH and DH over the target age ranges, plotting age cohort
     % dynamics
 
-    %plot_EIR_time;
+    plot_EIR_time;
     % plot_human_prop_time; % human proportion in time (total and by age group)
     % plot_human_popsize_time; % human pop size in time (total and by age group)
     % plot_human_pop_age_tfinal; % age distributions (in prop and size) at final time (and movie)
