@@ -109,8 +109,8 @@ end
 
 %% Sorting
 if Size_timepts==1
-    lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
-        'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
+    lP_order = {'dac','rD','psir2','cS','uc','muM','betaM','cA','rhos2','psis2','rA',...
+        'cE','betaD','rhor2','sigma','m','betaA','cD','phis2','phir2','cU','v0','w','etas'};
 else % ordering for time-series SA plots
     lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
         'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
@@ -128,7 +128,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQOI = [2 6] % 1:Size_QOI_plot
+for iQOI = [3 7] % 1:Size_QOI_plot
     figure_setups; hold on
     b = bar(X,PRCC(:,1,QOI_plot(iQOI)));
     ylim([-1.1 1.1])
@@ -146,7 +146,7 @@ for iQOI = [2 6] % 1:Size_QOI_plot
     % read out the position of the axis in the unit "characters"
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an 'a)' right at the top left of the axes
-    if iQOI == 2
+    if iQOI == 3
         text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
         save_string = strcat('fig4_','A','.svg');
     else

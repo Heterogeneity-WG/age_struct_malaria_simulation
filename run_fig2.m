@@ -17,7 +17,7 @@ P.a = a;
 P.na = na;
 P.da = da;
 
-for immunity_feedback = 1:3 % select the immune feedback scenario
+for immunity_feedback = 2:3 % select the immune feedback scenario
     Malaria_parameters_baseline;
     Malaria_parameters_transform;
     Malaria_parameters_transform_vac;

@@ -47,7 +47,7 @@ cases_pp_py = trapz(cases(ind22:ind11))*P.dt/mean(pop(ind22:ind11));
 % title(['Incidence pp per year = ', num2str(cases_pp_py)]);
 
 %% Heatmaps of population disease burden over 3 seasons (years)
-subfigure_strings1 = ["(A)","(B)","(C)"];
+subfigure_strings1 = ["(N/A)","(A)","(B)"];
 
 % figure_setups; 
 % imagesc(t/365,a/365,AH./PH);
@@ -66,8 +66,8 @@ subfigure_strings1 = ["(A)","(B)","(C)"];
 
 figure_setups_3;
 ax = imagesc(t/365,a/365,DH./(AH+DH));
-clim([0 1]);
-%colorbar;
+clim([0 0.6]);
+colorbar;
 xlim([0 3]);
 ylim([0 20]);
 xlabel('Time (years)');
@@ -87,7 +87,7 @@ xticks([0 1 2 3]);
 save_string = strcat('fig2_',str_temp,'.svg');
 saveas(gcf,save_string);
 %%
-subfigure_strings2 = ["(D)","(E)","(F)"];
+subfigure_strings2 = ["(N/A)","(C)","(D)"];
 str_temp = subfigure_strings2(immunity_feedback);
 
 [~,age2] = min(abs(P.a-2*365));
@@ -108,7 +108,7 @@ plot(t/365,temp_plot(age20,:),':','Color',[0.8500, 0.3250, 0.0980]);
 hold off;
 
 xlabel('Time (years)');
-ylim([0 1]);
+ylim([0 0.6]);
 xlim([0 3]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
 xticks([0 1 2 3]);

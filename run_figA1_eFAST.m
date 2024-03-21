@@ -157,8 +157,9 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQ = [1 2 5 6] % 1:Size_QOI_plot
-    figure_setups; hold on
+for iQ = [1 3 5 7] % 1:Size_QOI_plot
+    figure_setups; 
+    hold on;
     model_series = [s_struct.Si(:,1,iQ)';s_struct.Sti(:,1,iQ)']';
     b = bar(X,model_series,'FaceColor','flat');
     b(1).FaceColor = 0.75*[1 1 1]; % light gray
@@ -191,13 +192,13 @@ for iQ = [1 2 5 6] % 1:Size_QOI_plot
     if iQ == 1
         text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
         save_string = strcat('figA1_','C','.svg');
-    elseif iQ == 2
+    elseif iQ == 3
         text(ax,-12,temp_ax(end)+3,'(A)','Units','characters');
         save_string = strcat('figA1_','A','.svg');
     elseif iQ == 5
         text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
         save_string = strcat('figA1_','D','.svg');
-    else
+    elseif iQ == 7
         text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
         save_string = strcat('figA1_','B','.svg');
     end
