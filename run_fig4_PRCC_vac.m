@@ -17,7 +17,7 @@ flag_save = 1; % flag for saving the results or not (Note: it will overwrite pre
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 5;
+dt = 5; % time/age step size in days, default = 5;
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -30,8 +30,8 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % code will calculate PRCC results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-09-24','EE-death-02-10','EE-death-10+',...
-    'EE-DA','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
+lQ = {'EE-death','EE-death-05-17','EE-death-09-24','EE-death-02-10','EE-death-10+',...
+    'EE-DA','EE-DA-05-17','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
@@ -40,7 +40,9 @@ Malaria_parameters_baseline;
 Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
 Malaria_parameters_transform_SA;
 Malaria_parameters_transform_SA_once;
-pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
+pmin = NaN(length(lP_list),1); 
+pmax = pmin; 
+pmean = pmin;
 for iP = 1:length(lP_list)
     pmin(iP,1) = P.([lP_list{iP},'_lower']);
     pmax(iP,1) = P.([lP_list{iP},'_upper']);
@@ -128,7 +130,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQOI = [3 7] % 1:Size_QOI_plot
+for iQOI = [2 7] % 1:Size_QOI_plot
     figure_setups; hold on
     b = bar(X,PRCC(:,1,QOI_plot(iQOI)));
     ylim([-1.1 1.1])
@@ -146,7 +148,7 @@ for iQOI = [3 7] % 1:Size_QOI_plot
     % read out the position of the axis in the unit "characters"
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an 'a)' right at the top left of the axes
-    if iQOI == 3
+    if iQOI == 2
         text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
         save_string = strcat('fig4_','A','.svg');
     else

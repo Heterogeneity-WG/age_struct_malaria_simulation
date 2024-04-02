@@ -54,6 +54,7 @@ end
 Q_val = NaN(length(time_points),length(lQ));
 ind0210y = age_range_ind(a,2,10);
 ind0924m = age_range_ind(a,9/12,24/12);
+ind0517m = age_range_ind(a,5/12,17/12);
 
 for iQ = 1:length(lQ)
     switch lQ{iQ}
@@ -71,12 +72,16 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(DH(ind0210y,:),1)*da;
         case 'EE-D-09-24'
             Q_val(:,iQ) = trapz(DH(ind0924m,:),1)*da;
+        case 'EE-D-05-17'
+            Q_val(:,iQ) = trapz(DH(ind0517m,:),1)*da;
         case 'EE-DA'
             Q_val(:,iQ) = trapz(DH+AH,1)*da;
         case 'EE-DA-02-10'
             Q_val(:,iQ) = trapz(DH(ind0210y,:)+AH(ind0210y,:),1)*da;
         case 'EE-DA-09-24'
             Q_val(:,iQ) = trapz(DH(ind0924m,:)+AH(ind0924m,:),1)*da;
+        case 'EE-DA-05-17'
+            Q_val(:,iQ) = trapz(DH(ind0517m,:)+AH(ind0517m,:),1)*da;
         case 'EE-DA-10+'
             Q_val(:,iQ) = trapz(DH(ind0210y(end)+1:end,:)+AH(ind0210y(end),:),1)*da;
         case 'EE-D-frac'
@@ -93,6 +98,8 @@ for iQ = 1:length(lQ)
             Q_val(:,iQ) = trapz(MH(ind0210y,:),1)*da;
         case 'EE-death-09-24' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0924m,:),1)*da;
+        case 'EE-death-05-17' % Cumulative disease-induced mortality, diagnostic eqn MH
+            Q_val(:,iQ) = trapz(MH(ind0517m,:),1)*da;
         case 'EE-death-10+' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = trapz(MH(ind0210y(end)+1:end,:),1)*da;    
         case 'EE-EIR'

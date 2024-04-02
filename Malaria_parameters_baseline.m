@@ -10,7 +10,7 @@ P.verbose = 1; % turn on the warning messages. Error messages from the check rou
 Malaria_parameters_baseline_Nanoro;
 
 % for Siaya (Kenya), EIR has modes at May and November
-% Malaria_parameters_baseline_Siaya;
+%Malaria_parameters_baseline_Siaya;
 
 % turn off seasonlity
 % P.ss_c = 1; P.ss_S0 = 1;
