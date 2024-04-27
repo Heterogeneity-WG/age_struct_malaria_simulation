@@ -1,5 +1,6 @@
 %% seasonality parameters  - White et al 2015 supp Table S6
 % % for Nanoro (Burkina Faso), EIR peaks at August
+disp('Nanoro seasonality profile loaded')
 P.ss_v =  0.55; % v = 1 or 0 -> one peak; (0,1) -> two peaks
 P.ss_c = 0.02;
 

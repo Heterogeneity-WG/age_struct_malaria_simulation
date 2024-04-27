@@ -45,7 +45,6 @@ time_points = length(t); % default # time_points = at tfinal, unless if wants to
 lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
-Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
 Malaria_parameters_transform_SA;
 Malaria_parameters_transform_SA_once;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -136,9 +135,9 @@ s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha
 
 %% Sorting
 if Size_timepts==1
-    lP_order = {'dac','rD','psir2','cS','uc','muM','betaM','cA','rhos2',...
-        'psis2','rA','cE','betaD','rhor2','sigma','m','betaA','cD',...
-        'phis2','phir2','cU','v0','w','etas'};
+    lP_order = {'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+        'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+        'm','phir2','phis2','cU','v0','w','etas'};
 else % ordering for time-series SA plots
     lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
         'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
@@ -180,7 +179,7 @@ for iQ = [1 2 6 7] % 1:Size_QOI_plot
     text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
     title(['QOI = ',lQ_title{iQ}])
     xticklabels(lP_list_name)
-    ylim([0 0.6])
+    ylim([0 0.5])
     grid off
     legend('First Order','Total Order')
     temp = k+0.5;
@@ -195,7 +194,7 @@ for iQ = [1 2 6 7] % 1:Size_QOI_plot
     elseif iQ == 2
         text(ax,-12,temp_ax(end)+3,'(A)','Units','characters');
         save_string = strcat('figA1_','A','.svg');
-    elseif iQ == 5
+    elseif iQ == 6
         text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
         save_string = strcat('figA1_','D','.svg');
     elseif iQ == 7

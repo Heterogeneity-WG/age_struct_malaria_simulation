@@ -1,5 +1,6 @@
 %% seasonality parameters  - White et al 2015 supp Table S6
 % for Siaya (Kenya), EIR has modes at May and November
+disp('Siaya seasonality profile loaded')
 P.ss_v =  0.393; % v = 1 or 0 -> one peak; (0,1) -> two peaks
 P.ss_c = 0.31;
 P.ss_k1 = 4.08;

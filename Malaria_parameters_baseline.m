@@ -5,16 +5,6 @@ P.balance_mortality = 0; % balanced mortality or not
 P.balance_fertility = 0; % balanced fertility or not
 P.verbose = 1; % turn on the warning messages. Error messages from the check routines will display regardless
 
-%% seasonality parameters  - White et al 2015 supp Table S6
-% % for Nanoro (Burkina Faso), EIR peaks at August
-Malaria_parameters_baseline_Nanoro;
-
-% for Siaya (Kenya), EIR has modes at May and November
-%Malaria_parameters_baseline_Siaya;
-
-% turn off seasonlity
-% P.ss_c = 1; P.ss_S0 = 1;
-% 
 %% system configuration
 P.lMsystem = 'full'; % 'full' or 'ss'  full mosquito system or keep at quasi-SS
 P.lMHfix = 'off'; % 'off' (default) or 'on' turn on/off the assumption on fixed mosquito-human ratio; off -> constant mosquito population; on -> exponentially grow with NH

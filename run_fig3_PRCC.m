@@ -38,7 +38,6 @@ lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psi
     'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
-Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
 Malaria_parameters_transform_SA;
 Malaria_parameters_transform_SA_once;
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -110,9 +109,9 @@ end
 
 %% Sorting
 if Size_timepts==1
-    lP_order = {'dac','rD','psir2','cS','uc','muM','betaM','cA','rhos2',...
-        'psis2','rA','cE','betaD','rhor2','sigma','m','betaA','cD',...
-        'phis2','phir2','cU','v0'};
+    lP_order = {'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+        'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+        'm','phir2','phis2','cU','v0'};
 else % ordering for time-series SA plots
     lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
         'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
