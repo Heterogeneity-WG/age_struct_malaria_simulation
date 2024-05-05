@@ -9,10 +9,16 @@ P.zeta_fun = @(a) 1-0.85*exp(-a/8/365); %ones(size(a));
 P.zeta = P.zeta_fun(a);
 
 %% seasonality function
-
-P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u1)))./2).^P.ss_k1+...
-    (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u2)))./2).^P.ss_k2);
-P.gM_fun = @(t) 0.5*P.NN*P.ss_S(t); % recruitment rate of mosquitoes;
+if sum(contains(fieldnames(P),'ss_S0')) && sum(contains(fieldnames(P),'ss_v')) % check if seasonality is turned on
+    P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u1)))./2).^P.ss_k1+...
+        (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u2)))./2).^P.ss_k2);
+    P.gM_fun = @(t) 0.5*P.NN*P.ss_S(t);
+else
+    P.gM_fun = @(t) 0.5*P.NN;
+end
+% P.ss_S = @(t) P.ss_S0*(P.ss_c+P.ss_v*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u1)))./2).^P.ss_k1+...
+%     (1-P.ss_v)*(1-P.ss_c)*((1+cos(2*pi*((t+P.ss_t0)/365-P.ss_u2)))./2).^P.ss_k2);
+% P.gM_fun = @(t) 0.5*P.NN*P.ss_S(t); % recruitment rate of mosquitoes;
 
 %%
 P.c2 = P.c1; % weight for maternal immunity
