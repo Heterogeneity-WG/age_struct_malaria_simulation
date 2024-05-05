@@ -22,13 +22,14 @@ P.da = da;
 %% seasonal vac with constant vac rates
 % model parameters
 Malaria_parameters_baseline;
+Malaria_parameters_baseline_Siaya; % choose seasonality profile here
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
 t0_list= (0:0.5:12)';
 nyear  = 10; % implement vaccination strategy for nyear
-vac_period = 1; % seasonal vacc implementation period (months)
-vac_param_annual = (1.2*10^4); % annual vacc number % target population total = 2.56*10^5;
+vac_period = 3; % seasonal vacc implementation period (months)
+vac_param_annual = (6*10^4); % annual vacc number % target population total = 2.56*10^5;
 % pick 1.2*10^4 baseline acc count to avoid negative SH
 
 % NB "low vacc" = 1.2*10^4, "high vacc = 6*10^4"
@@ -79,7 +80,8 @@ for it = 1:length(t0_list)
     for iyear = 1:nyear
         % vac on - at the prescribed month and continue for three months
         vac_param = vac_param_annual/(vac_period*30);
-        P.v0 = vac_param; Malaria_parameters_transform_vac;
+        P.v0 = vac_param; 
+        Malaria_parameters_transform_vac;
         tconti = vac_period*30;
         vac_season_time_evolution_init;
         % vac off - simulate the rest of the full year
@@ -104,7 +106,8 @@ for it = 1:length(t0_list)
     tconti = t0_list(it)*30;
     vac_season_time_evolution_init;
     for iyear = 1:nyear
-        P.v0 = 0; Malaria_parameters_transform_vac;
+        P.v0 = 0; 
+        Malaria_parameters_transform_vac;
         tconti = 365;
         vac_season_time_evolution_init;
         [cases_py_target_baseline(it,iyear), cases_pp_py_target_baseline(it,iyear), vac_py_target_baseline(it,iyear),...

@@ -16,7 +16,7 @@ P.dummy = 1; P.dummy_lower = 0.65; P.dummy_upper = 2.1; % dummy parameter for gl
 % RTS,S in Kenya --> Homa bay, Kisumu, Migori, Siaya, Busia, Bungoma, Vihiga, and Kakamega counties from wiki 2019 census
 P.NN = 1131950+1155574+1116436+993183+893681+1670570+590013+1867579; % total Kenya population = 47,564,296; P.NN = 9,418,986; 
 % (5, 17) =216,893;  cohort = 8500
-P.v0 = 0; 
+P.v0 = 0;
 % P.v0 = 1.2*10^5/365; 
 P.v0_lower = 0; P.v0_upper = 1.2*10^5*2.1/365; % vaccination rate 
 P.v0s = P.v0; P.v0c = P.v0;
