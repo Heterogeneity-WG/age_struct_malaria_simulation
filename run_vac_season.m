@@ -9,7 +9,7 @@ tic
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 1; % time/age step size in days, default = 5;
+dt = 0.5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
@@ -22,12 +22,12 @@ P.da = da;
 %% seasonal vac with constant vac rates
 % model parameters
 Malaria_parameters_baseline;
-Malaria_parameters_baseline_Siaya; % choose seasonality profile here
+Malaria_parameters_baseline_Nanoro; % choose seasonality profile here
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
 t0_list= (0:0.5:12)';
-nyear  = 10; % implement vaccination strategy for nyear
+nyear  = 2; % implement vaccination strategy for nyear
 vac_period = 3; % seasonal vacc implementation period (months)
 vac_param_annual = (6*10^4); % annual vacc number % target population total = 2.56*10^5;
 % pick 1.2*10^4 baseline acc count to avoid negative SH

@@ -7,7 +7,7 @@ tic
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 5; % time/age step size in days, default = 5;
+dt = 0.5; % time/age step size in days, default = 1;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
