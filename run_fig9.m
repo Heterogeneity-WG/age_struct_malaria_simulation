@@ -6,7 +6,6 @@ dt = 2; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = l
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
 Malaria_parameters_baseline;
-P.ss_c = 1; P.ss_S0 = 1; % turn off seasonality
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
