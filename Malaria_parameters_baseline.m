@@ -55,12 +55,29 @@ P.rhor2 = x_fit(4);
 P.psis2 = x_fit(5);
 P.psir2 = x_fit(6);
 
+% dynamic
 P.phif0 = 0.01; 
 P.phif1 = 1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
 P.psif0 = 0.01; 
 P.psif1 = 1; 
+
+% fixed high immunity scenario
+% P.phif0 = 0.908066527085272; % value at zero
+% P.phif1 = 0.908066527085272; % value at L (function saturates to this value)
+% P.rhof0 = 0.090858132882051; % value at zero
+% P.rhof1 = 0.090858132882051; % value at L (function saturates to this value
+% P.psif0 = 0.082503847123926; % value at zero
+% P.psif1 = 0.082503847123926; % value at L (function saturates to this value)
+
+% fixed low immunity scenario
+% P.phif0 = 0.270581008833871; % value at zero
+% P.phif1 = 0.270581008833871; % value at L (function saturates to this value)
+% P.rhof0 = 0.932188361414638; % value at zero
+% P.rhof1 = 0.932188361414638; % value at L (function saturates to this value)
+% P.psif0 = 0.749277341090716; % value at zero
+% P.psif1 = 0.749277341090716; % value at L (function saturates to this value)
 
 P.phis2_lower = P.phis2*0.65; P.phis2_upper = P.phis2*2.1;
 P.phir2_lower = P.phir2*0.65; P.phir2_upper = P.phir2*2.1;
