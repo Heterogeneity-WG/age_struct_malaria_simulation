@@ -67,7 +67,7 @@ subfigure_strings1 = ["(N/A)","(A)","(B)"];
 figure_setups_3;
 ax = imagesc(t/365,a/365,DH./(AH+DH));
 clim([0 0.6]);
-colorbar;
+%colorbar;
 xlim([0 3]);
 ylim([0 20]);
 xlabel('Time (years)');
@@ -91,20 +91,27 @@ subfigure_strings2 = ["(N/A)","(C)","(D)"];
 str_temp = subfigure_strings2(immunity_feedback);
 
 [~,age2] = min(abs(P.a-2*365));
+[~,age3] = min(abs(P.a-3*365));
 [~,age10] = min(abs(P.a-10*365));
+[~,age11] = min(abs(P.a-11*365));
 [~,age20] = min(abs(P.a-20*365));
+[~,age21] = min(abs(P.a-21*365));
 
 figure_setups_3;
-temp_plot = AH./(PH); 
-plot(t/365,temp_plot(age2,:),'Color',[0.9290, 0.6940, 0.1250]);
+temp_plot_2to3 = sum(AH(age2:age3,:),1)./sum(PH(age2:age3,:),1); 
+temp_plot_10to11 = sum(AH(age10:age11,:),1)./sum(PH(age10:age11,:),1); 
+temp_plot_20to21 = sum(AH(age20:age21,:),1)./sum(PH(age20:age21,:),1); 
+plot(t/365,temp_plot_2to3,'Color',[0.9290, 0.6940, 0.1250]);
 hold on;
-plot(t/365,temp_plot(age10,:),'-.','Color',[0.9290, 0.6940, 0.1250]);
-plot(t/365,temp_plot(age20,:),':','Color',[0.9290, 0.6940, 0.1250]);
+plot(t/365,temp_plot_10to11,'--','Color',[0.9290, 0.6940, 0.1250]);
+plot(t/365,temp_plot_20to21,':','Color',[0.9290, 0.6940, 0.1250]);
 
-temp_plot = DH./(PH); 
-plot(t/365,temp_plot(age2,:),'Color',[0.8500, 0.3250, 0.0980]);
-plot(t/365,temp_plot(age10,:),'-.','Color',[0.8500, 0.3250, 0.0980]);
-plot(t/365,temp_plot(age20,:),':','Color',[0.8500, 0.3250, 0.0980]);
+temp_plot_2to3 = sum(DH(age2:age3,:),1)./sum(PH(age2:age3,:),1); 
+temp_plot_10to11 = sum(DH(age10:age11,:),1)./sum(PH(age10:age11,:),1); 
+temp_plot_20to21 = sum(DH(age20:age21,:),1)./sum(PH(age20:age21,:),1); 
+plot(t/365,temp_plot_2to3,'Color',[0.8500, 0.3250, 0.0980]);
+plot(t/365,temp_plot_10to11,'--','Color',[0.8500, 0.3250, 0.0980]);
+plot(t/365,temp_plot_20to21,':','Color',[0.8500, 0.3250, 0.0980]);
 hold off;
 
 xlabel('Time (years)');
