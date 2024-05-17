@@ -19,13 +19,13 @@ global P
 % otherwise, it will generate new results (could time and storage consuming)
 % direc = 'D:/Results_local_SA/SA_22POI_eFAST/';
 direc = 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/';
-flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 20 for SA (=5 for individual simulation);
+dt = 1; % time/age step size in days, default = 1 for SA
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -118,7 +118,7 @@ else
                     P.(lP_list{index_w}) = 1/X(run_num,index_w);
                 end
                 Malaria_parameters_transform_SA; % update dependent parameters
-                Q_val = QOI_value_SA(lQ,time_points,ind,'eFAST',direc); % calculate QOI values
+                Q_val = QOI_value_SA_2(lQ,time_points,ind,'eFAST',direc); % calculate QOI values
                 Y(run_num,:,:,i,L) = Q_val;
             end
         end
@@ -130,14 +130,16 @@ end
 toc
 
 %% eFAST on output matrix Y
+% load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y'); 
 var = 1:length(lQ); % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);
 [CVsi, CVsti] = CVmethod(Si, rangeSi,Sti,rangeSti,var); % Coeff. of Variance;
 % SI[POI,timepoints,QOI]
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi
-
+% save([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct'); 
 %% Sorting
+% load([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct'); 
 if Size_timepts==1
     lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
         'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
@@ -162,12 +164,12 @@ subfigure_strings = ["(C)","(B)","(E)","(D)","(F)"];
 for iQOI = 1:Size_QOI_plot
     mylinestyles = ["-"; "--"; ":"; "-."];
     mycolors = lines(5);
-    figure_setups_2; hold on;
+    figure_setups_4; hold on;
     xlabel('years')
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     ylim([0 1.1])
-    POI_index = [1 3 7 15 19];
-    for iPOI = 1:length(POI_index)
+    POI_index = [1 3 7 15 19]; % or full set -> 1:length(lP_list)
+    for iPOI = 1:length(POI_index) 
         Sti_vec = s_struct.Sti(POI_index(iPOI),:,QOI_plot(iQOI))';
         time_pts = t(time_points)/365;
         Sti_fun = csape(time_pts,Sti_vec,'not-a-knot');
