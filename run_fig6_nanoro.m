@@ -166,57 +166,57 @@ save_string = strcat('fig6_nanoro','C','.svg');
 saveas(gcf,save_string);
 
 %% Plotting of deaths prevented in the target age range
-% figure_setups_3;
-% hold on
-% plot(t0_list,Data_low1.death_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
-% [~, max_pos] = max(Data_low1.death_per_vacc_target(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low3.death_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
-% [~, max_pos1] = max(Data_low3.death_per_vacc_target(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low6.death_per_vacc_target(:,plot_year_ind),'k:','DisplayName','6-month');
-% [~, max_pos2] = max(Data_low6.death_per_vacc_target(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low1.death_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
-% 
-% xlim([0 12]);
-% %ylim([0.35 0.7]);
-% xlabel('Vac. start month');
-% ylabel('Deaths prevented per vac');
-% legend('Location','southwest');
-% %yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
-% xticks([2 5 8 11]);
-% xticklabels({'Mar.','Jun.','Sep.','Dec.'});
-% title('5 - 17 months cohort');
-% 
-% scatter(t0_list(max_pos),Data_low1.death_per_vacc_target(max_pos,plot_year_ind),300,'d','filled','magenta');
-% scatter(t0_list(max_pos1),Data_low3.death_per_vacc_target(max_pos1,plot_year_ind),300,'d','filled','magenta');
-% scatter(t0_list(max_pos2),Data_low6.death_per_vacc_target(max_pos2,plot_year_ind),300,'d','filled','magenta');
+figure_setups_3;
+hold on
+plot(t0_list,Data_low1.death_per_vacc_target(:,plot_year_ind),'k-','DisplayName','1-month');
+[~, max_pos] = max(Data_low1.death_per_vacc_target(:,plot_year_ind));
+
+plot(t0_list,Data_low3.death_per_vacc_target(:,plot_year_ind),'k-.','DisplayName','3-month');
+[~, max_pos1] = max(Data_low3.death_per_vacc_target(:,plot_year_ind));
+
+plot(t0_list,Data_low6.death_per_vacc_target(:,plot_year_ind),'k:','DisplayName','6-month');
+[~, max_pos2] = max(Data_low6.death_per_vacc_target(:,plot_year_ind));
+
+plot(t0_list,Data_low1.death_per_vacc_target_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
+
+xlim([0 12]);
+%ylim([0.35 0.7]);
+xlabel('Vac. start month');
+ylabel('Deaths prevented per vac');
+legend('Location','southwest');
+%yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
+xticks([2 5 8 11]);
+xticklabels({'Mar.','Jun.','Sep.','Dec.'});
+title('5 - 17 months cohort');
+
+scatter(t0_list(max_pos),Data_low1.death_per_vacc_target(max_pos,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos1),Data_low3.death_per_vacc_target(max_pos1,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos2),Data_low6.death_per_vacc_target(max_pos2,plot_year_ind),300,'d','filled','magenta');
 
 %% Plotting of cases prevented for the full population
-% figure_setups_3;
-% hold on
-% plot(t0_list,Data_low1.cases_per_vacc_full(:,plot_year_ind),'k-','DisplayName','1-month');
-% [~, max_pos] = max(Data_low1.cases_per_vacc_full(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low3.cases_per_vacc_full(:,plot_year_ind),'k-.','DisplayName','3-month');
-% [~, max_pos1] = max(Data_low3.cases_per_vacc_full(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low6.cases_per_vacc_full(:,plot_year_ind),'k:','DisplayName','6-month');
-% [~, max_pos2] = max(Data_low6.cases_per_vacc_full(:,plot_year_ind));
-% 
-% plot(t0_list,Data_low1.cases_per_vacc_full_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
-% 
-% xlim([0 12]);
-% ylim([0.35 0.7]);
-% xlabel('Vac. start month');
-% ylabel('cases prevented per vac ');
-% legend('Location','southwest');
-% yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
-% xticks([2 5 8 11]);
-% xticklabels({'Mar.','Jun.','Sep.','Dec.'});
-% title('Full Population');
-% 
-% scatter(t0_list(max_pos),Data_low1.cases_per_vacc_full(max_pos,plot_year_ind),300,'d','filled','magenta');
-% scatter(t0_list(max_pos1),Data_low3.cases_per_vacc_full(max_pos1,plot_year_ind),300,'d','filled','magenta');
-% scatter(t0_list(max_pos2),Data_low6.cases_per_vacc_full(max_pos2,plot_year_ind),300,'d','filled','magenta');
+figure_setups_3;
+hold on
+plot(t0_list,Data_low1.cases_per_vacc_full(:,plot_year_ind),'k-','DisplayName','1-month');
+[~, max_pos] = max(Data_low1.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low3.cases_per_vacc_full(:,plot_year_ind),'k-.','DisplayName','3-month');
+[~, max_pos1] = max(Data_low3.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low6.cases_per_vacc_full(:,plot_year_ind),'k:','DisplayName','6-month');
+[~, max_pos2] = max(Data_low6.cases_per_vacc_full(:,plot_year_ind));
+
+plot(t0_list,Data_low1.cases_per_vacc_full_constant(:,plot_year_ind),'r','DisplayName','year-long vac');
+
+xlim([0 12]);
+ylim([0.5 1.5]);
+xlabel('Vac. start month');
+ylabel('cases prevented per vac ');
+legend('Location','southwest');
+yticks([0.3 0.4 0.5 0.6 0.7 0.8]);
+xticks([2 5 8 11]);
+xticklabels({'Mar.','Jun.','Sep.','Dec.'});
+title('Full Population');
+
+scatter(t0_list(max_pos),Data_low1.cases_per_vacc_full(max_pos,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos1),Data_low3.cases_per_vacc_full(max_pos1,plot_year_ind),300,'d','filled','magenta');
+scatter(t0_list(max_pos2),Data_low6.cases_per_vacc_full(max_pos2,plot_year_ind),300,'d','filled','magenta');
