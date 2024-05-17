@@ -1,4 +1,4 @@
-function Q_val = QOI_value_SA_2(lQ,time_points,run_num,lmethod,direc)
+function Q_val = QOI_value_SA_3(lQ,time_points,run_num,lmethod,direc)
 % compress saving output, trapz on the age dimension to reduce storage
 global P
 
@@ -12,12 +12,23 @@ for iQ = 1:length(lQ)
     end
 end
 
+flag_run = 0;
+
 if flag_EE
     if ~exist([direc, lmethod,'_',num2str(run_num),'.mat'],'file')
-        if run_num == 1
-            disp('Ready to generate new results? Could be time and storage consuming...If so, press Continue')
-            keyboard
-        end
+        % if run_num == 1
+        %     disp('Ready to generate new results? Could be time and storage consuming...If so, press Continue')
+        %     keyboard
+        % end
+        flag_run = 1;
+        done = NaN;
+        % save dummy file for placeholder
+        save([direc,lmethod,'_',num2str(run_num),'.mat'],'done');
+    else % file exists, can move on
+        flag_run = 0;
+    end
+
+    if flag_run == 1
         temp_v0 = P.v0;
         % find malaria EE
         P.v0 = 0;
@@ -41,9 +52,15 @@ if flag_EE
         EIR_age = bH.*IM./NM*365;
         EIR_tot = trapz(EIR_age.*PH,1)*P.da./NH;
         save([direc,lmethod,'_',num2str(run_num),'.mat'],'AH_tot','DH_tot','muDH_tot','EIR_tot');
-    else
-        % load quantities - already integrated over age dimension
-        load([direc,lmethod,'_',num2str(run_num),'.mat'],'AH_tot','DH_tot','muDH_tot','EIR_tot');
+    else % if file already exists
+        if ~isempty(who('-file', [direc,lmethod,'_',num2str(run_num),'.mat'], 'AH_tot'))
+            % load quantities - already integrated over age dimension
+            load([direc,lmethod,'_',num2str(run_num),'.mat'],'AH_tot','DH_tot','muDH_tot','EIR_tot');
+        else
+            % file started but interrupted
+            Q_val = NaN;
+            return
+        end
     end   
 end
 

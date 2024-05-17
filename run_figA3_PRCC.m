@@ -12,13 +12,14 @@ global P
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
 direc = 'Data_SA/Results_local_SA_time/SA_22POI_PRCC/';
-flag_save = 0; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+% direc = 'C:/Users/lbs042/Downloads/Results_local_SA/SA_22POI_PRCC/';
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 5;
+dt = 1; % time/age step size in days, default = 1 for SA;
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -93,7 +94,7 @@ else
             P.(lP_list{index_w}) = 1/X(run_num,index_w);
         end
         Malaria_parameters_transform_SA; % update dependent parameters
-        Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
+        Q_val = QOI_value_SA_2(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
         Y(run_num,:,:) = Q_val;
     end
     % Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
@@ -135,7 +136,7 @@ Size_QOI_plot = length(QOI_plot);
 for iQOI = 1:Size_QOI_plot
     mylinestyles = ["-"; "--"; ":"; "-."];
     mycolors = lines(5);
-    figure_setups_2; hold on;
+    figure_setups_4; hold on;
     xlabel('years')
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     ylim([-1 1])
