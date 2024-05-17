@@ -123,6 +123,22 @@ PRCC = PRCC([index;k],:,:);
 stat_p = stat_p(index,:,:,:);
 lP_list = lP_list([index;k]);
 
+%% Plotting POIs vs. QOIs: check monotonic relationships
+for itime = 1:Size_timepts
+    figure_setups;
+    for j = 1:k
+        for iQOI = 1:Size_QOI
+            subplot(Size_QOI,k,(iQOI-1)*k+j)
+            plot(X(:,j),Y(:,itime,iQOI),'.')
+            xlabel(lP_list{j},'fontsize',14)
+            ylabel(lQ{iQOI},'fontsize',14)
+            set(gca,'fontsize',14)
+            xlim([pmin(j) pmax(j)])
+        end
+    end
+    sgtitle(['Check monotonic relationships (rows = QOIs, columns = POIs)'])
+end
+
 %% PRCC plot
 X = categorical(lP_list);
 X = reordercats(X,lP_list);
