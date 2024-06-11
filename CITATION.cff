@@ -16,5 +16,5 @@ authors:
   - family-names: Zhao
     given-names: Lihong
 title: "Modelimg immunity to Malaria with an age-structured PDE framework"
-date-released: 
-url: ""
+date-released: June 2024
+url: "https://github.com/Heterogeneity-WG/age_struct_malaria_simulation"
