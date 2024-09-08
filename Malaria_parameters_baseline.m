@@ -93,7 +93,6 @@ P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH 
 P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 
 P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes
-% P.MHm = P.gM/P.muM/P.NN; % assume NH = 1; % mosquito/human ratio
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes
 %% muH: non-malaria related mortality rate parameters
 % use GHO life tables, nMx data

@@ -258,7 +258,7 @@ lamH = FOI_H(bH,IM,NM);
 rho = sigmoid_prob(Ctot./PH, 'rho'); % prob. of severely infected, EH -> DH
 psi = sigmoid_prob(Ctot./PH, 'psi'); % prob. AH -> DH
 temp1 = psi.*lamH.*AH; % AH -> DH
-temp2 = rho.*P.h.*EH;% EH -> DH, number of new cases - rate
+temp2 = rho.*P.h.*EH;% EH -> DH, number of new (symptomatic) cases - rate
 
 if strcmp(lage,'target')
     [~,ind1] = min(abs(P.a-5*30)); %[5,17] in White paper % [7 19] previous setting from RTS,S trial?
