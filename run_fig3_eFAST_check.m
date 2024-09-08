@@ -1,4 +1,5 @@
-%% Figure 5, global SA time series using eFAST (selected eFAST curves)
+%% Figure 3, global SA time series using eFAST (selected eFAST curves) for cluster
+% to check if any NAN runs
 % 'Data_SA/Results_local_SA_time/SA_22POI_eFAST/'
 
 % adapted from

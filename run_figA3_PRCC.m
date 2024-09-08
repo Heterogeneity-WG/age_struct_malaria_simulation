@@ -103,6 +103,7 @@ end
 toc
 
 %% PRCC on output matrix Y
+load([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y');
 PRCC = NaN(k,Size_timepts,Size_QOI); stat_p = PRCC;
 for itime = 1:Size_timepts
     for iQOI = 1:Size_QOI
@@ -110,9 +111,12 @@ for itime = 1:Size_timepts
         PRCC(:,itime,iQOI) = rho(1:end-1,end); % correlations between parameters and QOI
         stat_p(:,itime,iQOI) = p(1:end-1,end); % associated p-value
     end
+    itime
 end
+save([direc,'PRCC_result_PRCCstats_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p');
 
 %% Sorting
+load([direc,'PRCC_result_PRCCstats_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p');
 if Size_timepts==1
     lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
         'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};

@@ -17,7 +17,7 @@ flag_save = 1; % flag for saving the results or not (Note: it will overwrite pre
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 5; % time/age step size in days, default = 5;
+dt = 1; % time/age step size in days, default = 5;
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -108,38 +108,25 @@ for itime = 1:Size_timepts
 end
 
 %% Sorting
-if Size_timepts==1
-    lP_order = {'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-        'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-        'm','phir2','phis2','cU','v0'};
-else % ordering for time-series SA plots
-    lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
-        'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
-end
+lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+    'm','phir2','phis2','cU','v0','w','etas'});
+
 [~,index] = ismember(lP_order,lP_list);
 index = index';
 index(index==0)=[];
-PRCC = PRCC([index;k],:,:);
+PRCC = PRCC([k;index],:,:);
 stat_p = stat_p(index,:,:,:);
-lP_list = lP_list([index;k]);
-
-%% Plotting POIs vs. QOIs: check monotonic relationships
-for itime = 1:Size_timepts
-    figure_setups;
-    for j = 1:k
-        for iQOI = 1:Size_QOI
-            subplot(Size_QOI,k,(iQOI-1)*k+j)
-            plot(X(:,j),Y(:,itime,iQOI),'.')
-            xlabel(lP_list{j},'fontsize',14)
-            ylabel(lQ{iQOI},'fontsize',14)
-            set(gca,'fontsize',14)
-            xlim([pmin(j) pmax(j)])
-        end
-    end
-    sgtitle(['Check monotonic relationships (rows = QOIs, columns = POIs)'])
-end
+lP_list = lP_list([k;index]);
+%%
+% divide into groups of POIs
+[~,index0] = ismember({'rD','rA','betaD','betaA',},lP_list); index0 = index0'; % humans
+[~,index1] = ismember({'muM','betaM','sigma',},lP_list); index1 = index1'; % mosquitoes
+[~,index2] = ismember({'dac','uc','psir2','psis2','rhos2','rhor2','phir2','phis2',...
+    'cS','cE','cA','cD','cU','m'},lP_list); index2 = index2'; % immunity
 
 %% PRCC plot
+close all
 X = categorical(lP_list);
 X = reordercats(X,lP_list);
 palpha = 0.05; % alpha for t-test
@@ -152,23 +139,27 @@ Size_QOI_plot = length(QOI_plot);
 %[~,Isort] = sort(temp_sort,'descend');
 
 for iQOI = [1 5] % 1:Size_QOI_plot
-    figure_setups;
+    figure_setups_33;
     hold on;
-    b = bar(X,PRCC(:,1,QOI_plot(iQOI))); % need to reorder PRCC also
-    ylim([-1.1 1.1])
-    xtips = b.XEndPoints;
-    ytips = b.YEndPoints;
-    ytips(PRCC(:,1,QOI_plot(iQOI))<0) = ytips(PRCC(:,1,QOI_plot(iQOI))<0)-0.25;
-    labels = cell(1, length(lP_list_name));
-    labels(stat_p(:,1,QOI_plot(iQOI))<palpha) = {'*'};
-    text(xtips,ytips,labels,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom','fontsize',35)
+    b1 = barh(X(index0),PRCC(index0,1,QOI_plot(iQOI)),'FaceColor',[0.6350 0.0780 0.1840],'DisplayName','Human');
+    b2 = barh(X(index1),PRCC(index1,1,QOI_plot(iQOI)),'FaceColor',[0 0.4470 0.7410],'DisplayName','Mosquito');
+    b3 = barh(X(index2),PRCC(index2,1,QOI_plot(iQOI)),'FaceColor',[0.9290 0.6940 0.1250],'DisplayName','Immunity');
+    b0 = barh(X(1),PRCC(1,1,QOI_plot(iQOI)),'FaceColor','k');
+    yticklabels(lP_list_name);
+    xlim([-1 1])
+    % mark p-values
+    xtips = [b1.YEndPoints,b2.YEndPoints,b3.YEndPoints,b0.YEndPoints]';
+    ytips = [b1.XEndPoints,b2.XEndPoints,b3.XEndPoints,b0.XEndPoints]';
+    xtips(xtips<0) = xtips(xtips<0)-0.075;
+    xtips(xtips>0) = xtips(xtips>0)+0.035;
+    labels = cell(length(lP_list_name),1);
+    
+    p = [1;stat_p(:,1,QOI_plot(iQOI))];
+    labels(p([index0',index1',index2'])<palpha) = {'$\ast$'};
+    text(xtips,ytips,labels,'VerticalAlignment','middle')
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
-    ax = gca;
-    ax.XAxis.FontSize = 26;
-    xticklabels(lP_list_name);
-    xtickangle(90)
     grid off
+    legend([b1,b2,b3],'Location','se');
     ax=gca;
     % read out the position of the axis in the unit "characters"
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');

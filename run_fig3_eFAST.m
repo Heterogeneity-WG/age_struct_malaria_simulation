@@ -9,7 +9,7 @@
 % CV[POI,timepoints,QOI]
 
 close all
-clearvars
+clear all
 clc
 format long
 global P
@@ -24,7 +24,7 @@ flag_save = 1; % flag for saving the results or not (Note: it will overwrite pre
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 20; % time/age step size in days, default = 20 for SA (=5 for individual simulation);
+dt = 1; % time/age step size in days, default = 20 for SA (=5 for individual simulation);
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -37,15 +37,13 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % code will calculate results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-09-24','EE-death-02-10','EE-death-10+',...
-    'EE-DA','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
+lQ = {'EE-death-02-10','EE-death-10+','EE-DA-02-10','EE-DA-10+'};
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 lP_list = {'cS','cE','cA','cD','cU','phis2','phir2','rhos2','rhor2','psis2','psir2','dac','uc','m',...
     'rA','rD','muM','sigma','betaM','betaD', 'betaA'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
-%Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
 Malaria_parameters_transform_SA;
 Malaria_parameters_transform_SA_once; % This should work with/without seasonality now
 pmin = NaN(length(lP_list),1); pmax = pmin; pmean = pmin;
@@ -135,21 +133,25 @@ palpha = 0.05; % alpha for t-test
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi
 
 %% Sorting
-if Size_timepts==1
-    lP_order = {'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-        'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-        'm','phir2','phis2','cU','v0'};
-else % ordering for time-series SA plots
-    lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
-        'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
-end
+lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+    'm','phir2','phis2','cU','v0','w','etas'});
+
 [~,index] = ismember(lP_order,lP_list); index = index';
 index(index==0)=[];
-s_struct.Si = s_struct.Si([index;k],:,:); s_struct.p_Si = s_struct.p_Si(index,:,:,:); s_struct.rangeSi = s_struct.rangeSi([index;k],:,:,:);
-s_struct.Sti = s_struct.Sti([index;k],:,:); s_struct.p_Sti = s_struct.p_Sti(index,:,:,:); s_struct.rangeSti = s_struct.rangeSti([index;k],:,:,:);
-lP_list = lP_list([index;k]);
+s_struct.Si = s_struct.Si([k;index],:,:); s_struct.p_Si = s_struct.p_Si(index,:,:,:); s_struct.rangeSi = s_struct.rangeSi([k;index],:,:,:);
+s_struct.Sti = s_struct.Sti([k;index],:,:); s_struct.p_Sti = s_struct.p_Sti(index,:,:,:); s_struct.rangeSti = s_struct.rangeSti([k;index],:,:,:);
+lP_list = lP_list([k;index]);
+%%
+% divide into groups of POIs
+[~,index0] = ismember({'rD','rA','betaD','betaA',},lP_list); index0 = index0'; % humans
+[~,index1] = ismember({'muM','betaM','sigma',},lP_list); index1 = index1'; % mosquitoes
+[~,index2] = ismember({'dac','uc','psir2','psis2','rhos2','rhor2','phir2','phis2',...
+    'cS','cE','cA','cD','cU','m'},lP_list); index2 = index2'; % immunity
+
 
 %% eFAST plot
+close all
 X = categorical(lP_list);
 X = reordercats(X,lP_list);
 palpha = 0.05; % alpha for t-test
@@ -157,56 +159,50 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQ = [3 4 7 8] % 1:Size_QOI_plot
-    figure_setups; 
+for iQ = 1:Size_QOI_plot
+    figure_setups_33; 
     hold on
-    model_series = [s_struct.Si(:,1,iQ)';s_struct.Sti(:,1,iQ)']';
-    b = bar(X,model_series,'FaceColor','flat');
-    b(1).FaceColor = 0.75*[1 1 1]; % light gray
-    b(1).EdgeColor = 0.75*[1 1 1];
-    b(2).FaceColor = [0.2 0.2 0.2]; % dark gray
-    b(2).EdgeColor = [0.2 0.2 0.2];
-    % mark p-values for Si
-    xtips1 = b(1).XEndPoints;
-    ytips1 = b(1).YData;
-    labels1 = cell(1, length(lP_list));
-    labels1(s_struct.p_Si(:,1,1,iQ)<palpha) = {'*'};
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center','VerticalAlignment','bottom')
+    model_series = s_struct.Sti(:,1,iQ);
+    b1 = barh(X(index0),model_series(index0),'FaceColor',[0.6350 0.0780 0.1840],'DisplayName','Human');
+    b2 = barh(X(index1),model_series(index1),'FaceColor',[0 0.4470 0.7410],'DisplayName','Mosquito');
+    b3 = barh(X(index2),model_series(index2),'FaceColor',[0.9290 0.6940 0.1250],'DisplayName','Immunity');
+    b0 = barh(X(1),model_series(1),'FaceColor','k');
+    yticklabels(lP_list_name)
+    xlim([0 0.6])
     % mark p-values for Sti
-    xtips2 = b(2).XEndPoints;
-    ytips2 = b(2).YData;
-    labels2 = cell(1, length(lP_list));
-    labels2(s_struct.p_Sti(:,1,1,iQ)<palpha) = {'*'};
-    text(xtips2,ytips2,labels2,'HorizontalAlignment','center','VerticalAlignment','bottom')
-    title(['QOI = ',lQ_title{iQ}])
-    ax = gca;
-    ax.XAxis.FontSize = 26;
-    xticklabels(lP_list_name)
-    xtickangle(90)
-    ylim([0 0.5])
+    xtips = [b1.YEndPoints,b2.YEndPoints,b3.YEndPoints,b0.YEndPoints];
+    ytips = [b1.XEndPoints,b2.XEndPoints,b3.XEndPoints,b0.XEndPoints];
+    xtips = xtips+0.015;
+    labels = cell(1, length(lP_list));
+    p = [1;s_struct.p_Sti(:,1,1,iQ)]; % add the dummy p-value at index = 1;
+    labels(p([index0',index1',index2'])<palpha) = {'$\ast$'};
+    text(xtips,ytips,labels,'VerticalAlignment','middle')
+    title(['QOI = ',lQ_title{iQ}])    
     grid off
-    legend('First Order','Total Order')
+    legend([b1,b2,b3],'Location','e');
     temp = k+0.5;
-    plot([0.5 temp],[0.1, 0.1],':','Linewidth',1.5,'Color', 0.4*[1 1 1]);
-    ax=gca;
+    plot([0.1, 0.1],[0.5 temp],':','Linewidth',1.5,'Color', 0.4*[1 1 1]);
+    ax=gca;    
     % read out the position of the axis in the unit "characters"
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an 'a)' right at the top left of the axes
-    if iQ == 3
+    if iQ == 1
+        text(ax,-12,temp_ax(end)+3,'(A)','Units','characters');
+        save_string = strcat('fig3_eFAST_','A','.svg');
+    elseif iQ == 2
         text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
         save_string = strcat('fig3_eFAST_','C','.svg');
+    elseif iQ == 3
+        text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
+        save_string = strcat('fig3_eFAST_','B','.svg');
     elseif iQ == 4
-        text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
-        save_string = strcat('fig3_eFAST_','E','.svg');
-    elseif iQ == 7
         text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
         save_string = strcat('fig3_eFAST_','D','.svg');
-    elseif iQ == 8
-        text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
-        save_string = strcat('fig3_eFAST_','F','.svg');
     end
     saveas(gcf,save_string);
     if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
+    
 end
+
 
 
