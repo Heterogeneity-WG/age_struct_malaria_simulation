@@ -1,150 +1,196 @@
-%% generate plots for review 1 comment 4
-close all;
-clear all;
-clc;
-format long;
+%% generate SA results for reviewer 2 comment
+
+close all
+clearvars
+clc
+format long
 global P
 
+% Directory for outputting SA results (sample, data matrices, plots)
+% if data is available, the script will load results in the folder;
+% otherwise, it will generate new results (could time and storage consuming)
+direc = 'Data_SA/Results_local_SA_vac/SA_6POI_PRCC/';
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
+
 % numerical config
-tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
-dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
+tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
+age_max = 100*365; % max ages in days
+P.age_max = age_max;
+dt = 5; % time/age step size in days, default = 5;
+da = dt;
+t = (0:dt:tfinal)';
+nt = length(t);
+a = (0:da:age_max)';
+na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
+% SA setting
+
+% code will calculate PRCC results for all the quantities below but only
+% plotting a subset of this list. To modify the plotting, turn on
+% "Size_QOI_plot" in the for loop of last section
+lQ = {'EE-death','EE-death-05-17','EE-death-09-24','EE-death-02-10','EE-death-10+',...
+    'EE-DA','EE-DA-05-17','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
+Size_QOI = length(lQ); % length of the QOI.
+time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
+% lP_list = {'v0','w','etas'};
+lP_list = {'v0','w','etas','muM','betaM'};
+% lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','betaD','betaA','v0','w','etas'};
+% lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
+lP_list{end+1} = 'dummy'; % add dummy to the POIs
 Malaria_parameters_baseline;
-Malaria_parameters_transform;
-Malaria_parameters_transform_vac;
+Malaria_parameters_transform_SA;
+Malaria_parameters_transform_SA_once;
+pmin = NaN(length(lP_list),1); 
+pmax = pmin; 
+pmean = pmin;
+for iP = 1:length(lP_list)
+    pmin(iP,1) = P.([lP_list{iP},'_lower']);
+    pmax(iP,1) = P.([lP_list{iP},'_upper']);
+    pmean(iP,1) = P.([lP_list{iP}]);
+    if strcmp(lP_list{iP},'w')
+        % POI = w wanning rate, sample the 1/w = average period instead.
+        pmin(iP,1) = 1/P.([lP_list{iP},'_upper']);
+        pmax(iP,1) = 1/P.([lP_list{iP},'_lower']);
+        pmean(iP,1) = 1/P.([lP_list{iP}]);
+        index_w = iP; % index for the POI = w
+    end
+end
+% PRCC config
+NS = 1000; % number of samples, min = k+1, 100~1000
+k = length(lP_list); % # of POIs
+% Pre-allocation
+Size_timepts = length(time_points); % # of time points to check QOI value;
+Y = NaN(NS,Size_timepts,Size_QOI);  % For each model evaluation, the QOI has dimension [Size_timepts, Size_QOI]
 
-[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
-PH = SH+EH+DH+AH;
-NH = trapz(PH)*P.da;
-Ctot_pp = Ctot./PH;
-var_list = [0.01:0.01:1].^2;
-EIR_plot = [1 10 50 80 100];
-betaM_plot = NaN(size(EIR_plot));
-%% 
-xx = P.a/365;
-EIR_list = zeros(1,length(var_list));
-EH_plot = zeros(na,length(EIR_plot));
-AH_plot = zeros(na,length(EIR_plot));
-DH_plot = zeros(na,length(EIR_plot));
-NewEH_plot = zeros(na,length(EIR_plot));
-NewEHDH_plot = zeros(na,length(EIR_plot));
-for jj = 1:length(var_list)
-    P.betaM = var_list(jj);
-    Malaria_parameters_transform;
-    [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
-    PH = SH+EH+DH+AH;
-    NM = SM+EM+IM;
-    [bH,~] = biting_rate(PH,NM);
-    EIR = bH.*IM./NM*365; % EIR matrix
-    EIR_tot = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
-    EIR_list(1,jj) = EIR_tot; % aEIR
+%% Generate parameter samples, stored in matrix X
+if ~exist([direc,'PRCC_sample_',num2str(NS),'_',num2str(k),'.mat'],'file')
+    disp('generate parameter samples...')
+    LHS_raw = lhsdesign(NS,k); % uniform random draw with LHS sampling in [0,1]
+    X = parameterdist(LHS_raw,pmax,pmin,pmean,1,'triangular'); % 'unif' 'triangular'
+    if flag_save; save([direc,'PRCC_sample_',num2str(NS),'_',num2str(k),'.mat'],'X'); end
+    if flag_save; save([direc,'parameters_P_baseline.mat'],'P'); end
+else
+    disp('load parameter samples...')
+    load([direc,'PRCC_sample_',num2str(NS),'_',num2str(k),'.mat'],'X')
 end
 
-for iEIR = 1:length(EIR_plot)
-    EIR_target = EIR_plot(iEIR);
-    [~,ind] = min(abs(EIR_target-EIR_list));
-    betaM_plot(iEIR) = var_list(ind);
+%% model evaluations
+tic
+if exist([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'file')
+    disp('load model evaluation results ...')
+    load([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y')
+else
+    for run_num = 1:NS % Loop through each parameter sample
+        if mod(run_num,NS/10)==0; disp([num2str(run_num/NS*100,3),' %']); end % display progress
+        Malaria_parameters_baseline; % reset parameters to baseline
+        for iP = 1:length(lP_list) % update parameter with sampled values
+            P.(lP_list{iP}) = X(run_num,iP);
+        end
+        if ismember('w',lP_list)
+            % POI = w wanning rate: X stores the sampled value 1/w = period, model uses w = rate.
+            P.(lP_list{index_w}) = 1/X(run_num,index_w);
+        end
+        Malaria_parameters_transform_SA; % update dependent parameters
+        Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
+        Y(run_num,:,:) = Q_val;
+    end
+    % Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
+    if flag_save; save([direc,'PRCC_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y'); end
+end
+toc
+
+%% PRCC on output matrix Y
+PRCC = NaN(k,Size_timepts,Size_QOI); stat_p = PRCC;
+for itime = 1:Size_timepts
+    for iQOI = 1:Size_QOI
+        [rho,p] = partialcorr([X Y(:,itime,iQOI)],'type','Spearman');
+        PRCC(:,itime,iQOI) = rho(1:end-1,end); % correlations between parameters and QOI
+        stat_p(:,itime,iQOI) = p(1:end-1,end); % associated p-value
+    end
 end
 
-for ibetaM = 1:length(betaM_plot)
-    P.betaM = betaM_plot(ibetaM);
-    P.v0 = 0; Malaria_parameters_transform_vac;
-    [SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0] = age_structured_Malaria_IC_vac('EE_reset');
-    tfinal = 365*10;
-    [t,SH, EH, DH, AH, VH, UH, SM, EM, IM, Cm, Cac, Cv, Ctot, MH] = age_structured_Malaria_vac(da,na,0,tfinal,...
-    SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0, MH0);
-    PH = SH+EH+DH+AH+VH+UH;
-    NM = SM+IM+EM;
-    [bH,~] = biting_rate(PH(:,end),NM(:,end));
-    lamH = FOI_H(bH,IM(:,end),NM(:,end));
-    EH_plot(:,ibetaM) = EH(:,end)./PH(:,end);
-    AH_plot(:,ibetaM) = AH(:,end)./PH(:,end);
-    DH_plot(:,ibetaM) = DH(:,end)./PH(:,end);    
-    NewEH_plot(:,ibetaM) = lamH.*SH(:,end); % SH -> EH
+%% Sorting
+lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+    'm','phir2','phis2','cU','v0','w','etas'});
 
-    rho = sigmoid_prob(Ctot(:,end)./PH(:,end), 'rho');
-    NewEHDH_plot(:,ibetaM) = rho.*P.h.*EH(:,end); % EH -> DH
+[~,index] = ismember(lP_order,lP_list);
+index = index';
+index(index==0)=[];
+PRCC = PRCC([k;index],:,:);
+stat_p = stat_p(index,:,:,:);
+lP_list = lP_list([k;index]);
 
-end
-
-% baseline
-P.betaM = 0.35;
-Malaria_parameters_transform;
-[SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
-PH = SH+EH+DH+AH;
-NM = SM+EM+IM;
-[bH,~] = biting_rate(PH(:,end),NM(:,end));
-lamH = FOI_H(bH,IM(:,end),NM(:,end));
-EIR = bH.*IM./NM*365; % EIR matrix
-EIR_baseline = trapz(EIR.*PH)/trapz(PH); % EIR sum over age, at final time
-DH_plot_baseline = DH(:,end)./PH(:,end); 
-AH_plot_baseline = AH(:,end)./PH(:,end); 
-EH_plot_baseline = EH(:,end)./PH(:,end); 
-NewEH_plot_baseline = lamH.*SH(:,end);
-rho = sigmoid_prob(Ctot(:,end)./PH(:,end), 'rho');
-NewEHDH_plot_baseline = rho.*P.h.*EH(:,end); % EH -> DH
 %%
-% DH/PH
-figure_setups_32;
-hold on
-plot(xx,DH_plot,'LineWidth',5)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$D_H/P_H$')
-strs = "EIR = " + string(EIR_plot);
-legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-%% (AH + DH)/PH
-figure_setups_32;
-hold on
-plot(xx,AH_plot+DH_plot)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$(A_H+D_H)/P_H$')
-strs = "EIR = " + string(EIR_plot);
-legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline+AH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-%% (EH + AH + DH)/PH
-figure_setups_32;
-hold on
-plot(xx,AH_plot+DH_plot+EH_plot)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$(E_H+A_H+D_H)/P_H$')
-strs = "EIR = " + string(EIR_plot);
-legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-%% New infection: SH -> EH  
-figure_setups_32;
-hold on
-plot(xx,NewEH_plot)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Rate')
-title('New infections: $S_H \rightarrow E_H~(\Lambda_H S_H)$')
-strs = "EIR = " + string(EIR_plot);
-legend(strs)
-legend('AutoUpdate','on')
-plot(xx,NewEH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-%% Incidence: EH -> DH 
-figure_setups_32;
-hold on
-plot(xx,NewEHDH_plot)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Rate')
-title('New uncomplicated incidence (?): $E_H \rightarrow D_H~(\rho h  E_H)$')
-strs = "EIR = " + string(EIR_plot);
-legend(strs)
-legend('AutoUpdate','on')
-plot(xx,NewEHDH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
+% divide into groups of POIs
+[~,index0] = ismember({'rD','rA','betaD','betaA',},lP_list); index0 = index0'; % humans
+[~,index1] = ismember({'muM','betaM','sigma',},lP_list); index1 = index1'; % mosquitoes
+[~,index2] = ismember({'dac','uc','psir2','psis2','rhos2','rhor2','phir2','phis2',...
+    'cS','cE','cA','cD','cU','m'},lP_list); index2 = index2'; % immunity
+[~,index3] = ismember({'v0','w','etas'},lP_list); index3 = index3'; % vacc
+index0(index0==0)=[];
+index1(index1==0)=[];
+index2(index2==0)=[];
+index3(index3==0)=[];
+%% PRCC plot
+close all
+X = categorical(lP_list);
+X = reordercats(X,lP_list);
+palpha = 0.05; % alpha for t-test
+QOI_plot = 1:length(lQ);
+Size_QOI_plot = length(QOI_plot);
+[lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
+for iQOI = [2 7] % 1:Size_QOI_plot
+    figure_setups_33; 
+    h = gcf;
+    h.Position = [100, 55, 900, 400];
+    hold on
+    b1 = barh(X(index0),PRCC(index0,1,QOI_plot(iQOI)),'FaceColor',[0.6350 0.0780 0.1840],'DisplayName','Human');
+    b2 = barh(X(index1),PRCC(index1,1,QOI_plot(iQOI)),'FaceColor',[0 0.4470 0.7410],'DisplayName','Mosquito');
+    b3 = barh(X(index2),PRCC(index2,1,QOI_plot(iQOI)),'FaceColor',[0.9290 0.6940 0.1250],'DisplayName','Immunity');
+    b4 = barh(X(index3),PRCC(index3,1,QOI_plot(iQOI)),'FaceColor',[0.4940 0.1840 0.5560],'DisplayName','Vaccination');
+    b0 = barh(X(1),PRCC(1,1,QOI_plot(iQOI)),'FaceColor','k');
+    yticklabels(lP_list_name);
+    xlim([-1.1 1.1])
+    % mark p-values
+    xtips = [b1.YEndPoints,b2.YEndPoints,b3.YEndPoints,b4.YEndPoints,b0.YEndPoints]';
+    ytips = [b1.XEndPoints,b2.XEndPoints,b3.XEndPoints,b4.XEndPoints,b0.XEndPoints]';
+    xtips(xtips<0) = xtips(xtips<0)-0.075;
+    xtips(xtips>0) = xtips(xtips>0)+0.035;
+    labels = cell(length(lP_list_name),1);
+    p = [1;stat_p(:,1,QOI_plot(iQOI))];
+    labels(p([index0',index1',index2',index3'])<palpha) = {'$\ast$'};
+    text(xtips,ytips,labels,'VerticalAlignment','middle')
+    title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
+    grid off
+    legend([b1,b2,b3,b4],'Location','se');
+    ax=gca;
+    % read out the position of the axis in the unit "characters"
+    set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+    % this sets an 'a)' right at the top left of the axes
+    temp = 'review41';
+    if k==4
+        if iQOI == 2
+            text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
+            save_string = strcat('fig_',temp,'_A','.svg');
+        else
+            text(ax,-12,temp_ax(end)+2,'(B)','Units','characters');
+            save_string = strcat('fig_',temp,'_B','.svg');
+        end
+    end
+    if k==6
+        if iQOI == 2
+            text(ax,-12,temp_ax(end)+2,'(C)','Units','characters');
+            save_string = strcat('fig_',temp,'_C','.svg');
+        else
+            text(ax,-12,temp_ax(end)+2,'(D)','Units','characters');
+            save_string = strcat('fig_',temp,'_D','.svg');
+        end
+    end
+    saveas(gcf,save_string);
+    if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
+end
 
 

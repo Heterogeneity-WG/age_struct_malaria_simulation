@@ -70,3 +70,30 @@ p(2).FaceColor = colour_mat2;
 xlabel('Time (years)')
 ylabel('Frac. of incidence rates')
 legend({'$E_H \rightarrow D_H$','$A_H \rightarrow D_H$'},'Location','e')
+%% compare contribution to DH, two routes, by age
+% EH to DH 
+rho = sigmoid_prob(Ctot./PH, 'rho');
+temp = rho.*P.h.*EH; % EH -> DH
+EHDH2 = temp(:,end);
+psi = sigmoid_prob(Ctot./PH, 'psi');
+NM = SM+EM+IM;
+[bH,~] = biting_rate(PH,NM);
+lamH = FOI_H(bH,IM,NM);
+temp2 = psi.*lamH.*AH; % AH -> DH
+AHDH2 = temp2(:,end);
+figure_setups;
+p=area(P.a/365,[EHDH2./(EHDH2+AHDH2),AHDH2./(EHDH2+AHDH2)]);
+p(1).FaceColor = colour_mat3;
+p(2).FaceColor = colour_mat2;
+xlabel('Age (years)')
+xlim([0 30])
+ylabel('Frac. of incidence rates')
+legend({'$E_H \rightarrow D_H$','$A_H \rightarrow D_H$'},'Location','e')
+%% plot DH/PH vs age at tfinal
+figure_setups;
+plot(P.a/365, DH(:,end)./PH(:,end))
+xlim([0 30])
+ylim([0 0.2])
+xlabel('Age (years)')
+ylabel('Proportion')
+title('DH/PH')

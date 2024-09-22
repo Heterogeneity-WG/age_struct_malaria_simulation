@@ -1,6 +1,6 @@
-%% generate plots for review 1 comment 1
+2%% generate plots for review 1 comment 2 (not sure)
 %% vac = constant, fixed number
-% close all
+close all
 clear all
 % clc
 format long
@@ -46,29 +46,15 @@ EIR_tot = trapz(EIR.*PH,1)*P.da./NH;
 EIR_final = EIR_tot(end);
 FOI_AH = bM.*trapz(P.betaA*AH)*da./NH; 
 FOI_DH = bM.*trapz(P.betaD*DH)*da./NH; 
-%% plot1 age vs. AH DH prevalences
-figure_setups;
-colour_mat2 = [0.8500 0.3250 0.0980];
-colour_mat3 = [0.9290 0.6940 0.1250];
-p = area(a/365,[AH(:,end)./(DH(:,end)+AH(:,end)),DH(:,end)./(DH(:,end)+AH(:,end))]);
-p(1).FaceColor = colour_mat3;
-p(2).FaceColor = colour_mat2;
-legend({'$A_H/(A_H+D_H)$','$D_H/(A_H+D_H)$'},'Location','se')
-title('Prevalence');
-xlabel('Age (years)');
-ylabel('Proportion')
-grid on
-axis([0 P.age_max/365 0 1]);
-xlim([0 30])
-%% plot2 age vs. AH DH FOIs
-figure_setups;
-colour_mat3 = [0.9290 0.6940 0.1250]; % EH
-colour_mat2 = [0.8500 0.3250 0.0980]; % AH
-colour_mat7 = [0.6350 0.0780 0.1840]; % DH
-p = area(t/365,[FOI_AH'./(FOI_AH'+FOI_DH'),FOI_DH'./(FOI_AH'+FOI_DH')]);
-p(1).FaceColor = colour_mat3;
-p(2).FaceColor = colour_mat2;
-legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
-title('FOIs');
-xlabel('Time (years)');
-ylabel('Proportion')
+%%
+rho = sigmoid_prob(Ctot(:,end)./PH(:,end), 'rho');
+figure_setups; hold on
+plot(P.a/365,1./(P.h*rho),'DisplayName','$E\to D$')
+xlabel('age')
+ylabel('days') % 1/(E->D rate)
+
+psi = sigmoid_prob(Ctot(:,end)./PH(:,end), 'psi');
+lamH = bH(:,end).*P.betaM.*IM(end)./NM(end); 
+plot(P.a/365,1./(psi.*lamH),'DisplayName','$A\to D$')
+legend
+xlim([5 10])
