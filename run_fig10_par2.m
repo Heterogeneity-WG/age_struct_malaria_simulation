@@ -86,68 +86,62 @@ rho = sigmoid_prob(Ctot(:,end)./PH(:,end), 'rho');
 NewEHDH_plot_baseline = rho.*P.h.*EH(:,end); % EH -> DH
 %%
 % DH/PH
-figure_setups_34;
+figure_setups; 
 hold on
-plot(xx,DH_plot,'LineWidth',5)
-xlim([0 30])
+plot(xx,DH_plot)
 xlabel('Age (years)');
 ylabel('Proportion')
 title('$D_H/P_H$')
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_DH.eps','epsc');
-%% (AH + DH)/PH
-% % figure_setups_34;
-% hold on
-% plot(xx,AH_plot+DH_plot)
-% xlim([0 30])
-% xlabel('Age (years)');
-% ylabel('Proportion')
-% title('$(A_H+D_H)/P_H$')
-% strs = "EIR = " + string(EIR_plot);
-% legend(strs)
-% legend('AutoUpdate','on','location','e')
-% plot(xx,DH_plot_baseline+AH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
+legend('AutoUpdate','on','location','ne')
+plot(xx,DH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+xlim([0 30])
+ylim([0, 0.45])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
+saveas(gcf,'plot_baseline_DH.svg');
 %% (EH + AH + DH)/PH
-figure_setups_34;
+figure_setups;
 hold on
 plot(xx,AH_plot+DH_plot+EH_plot)
 xlim([0 30])
+ylim([0 1.05])
 xlabel('Age (years)');
 ylabel('Proportion')
 title('$(E_H+A_H+D_H)/P_H$')
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
 legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_DH_AH_EH.eps','epsc');
-%% New infection: SH -> EH  
-% figure_setups_34;
-% hold on
-% plot(xx,NewEH_plot)
-% xlim([0 30])
-% xlabel('Age (years)');
-% ylabel('Rate')
-% title('New infections: $S_H \rightarrow E_H~(\Lambda_H S_H)$')
-% strs = "EIR = " + string(EIR_plot);
-% legend(strs)
-% legend('AutoUpdate','on')
-% plot(xx,NewEH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
+plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
+saveas(gcf,'plot_baseline_DH_AH_EH.svg');
 %% Incidence: EH -> DH 
-figure_setups_34;
+figure_setups;
 hold on
 plot(xx,NewEHDH_plot)
 xlim([0 30])
+ylim([0,4.5])
 xlabel('Age (years)');
 ylabel('Rate')
-title('New uncomplicated incidence: $E_H \rightarrow D_H$')
+title('$E_H \rightarrow D_H$')
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
 legend('AutoUpdate','on')
-plot(xx,NewEHDH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_new_EHDH.eps','epsc');
+plot(xx,NewEHDH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+% this sets an 'a)' right at the top left of the axes
+text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
+saveas(gcf,'plot_baseline_new_EHDH.svg');
 
 
 

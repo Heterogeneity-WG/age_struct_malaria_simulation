@@ -94,7 +94,7 @@ save_string = strcat('fig8_','B','.svg');
 saveas(gcf,save_string);
 %% plotting heatmap (age, EIR, rho)
 figure_setups; hold on; grid off
-set(gcf,'Position',[353   307   552   446])
+% set(gcf,'Position',[353   307   552   446])
 zz_rho = sigmoid_prob(zz, 'rho');
 imagesc(xx,yy,zz_rho')
 xlabel('Age (years)')

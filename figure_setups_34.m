@@ -8,8 +8,8 @@ global colour_r1 colour_r2 colour_r3 colour_r4
 global colour_blue colour_red colour_yellow
 global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
 
-set(0,'defaultLineLineWidth',5,'defaultTextFontSize',20,'defaultTextFontname','CMU Serif Italic',...
-    'defaultAxesFontSize',20,'defaultLineMarkerSize',10)
+set(0,'defaultLineLineWidth',5,'defaultTextFontSize',30,'defaultTextFontname','CMU Serif Italic',...
+    'defaultAxesFontSize',30,'defaultLineMarkerSize',10)
 
 set(0,'defaultAxesColorOrder',lines(5))
 set(0,'defaultLegendInterpreter','latex');

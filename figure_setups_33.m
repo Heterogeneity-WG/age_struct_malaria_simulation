@@ -1,6 +1,6 @@
 function fig = figure_setups_33()
 
-fig = figure('Position', [100, 55, 900, 700]);
+fig = figure('Position', [100, 55, 900, 900]);
 % axes("Position",[0.2 0.2 0.6 0.7]);
 
 global skip_pt
@@ -9,7 +9,8 @@ global colour_blue colour_red colour_yellow
 global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
 
 set(0,'defaultLineLineWidth',5,'defaultTextFontSize',25,'defaultTextFontname','CMU Serif Italic',...
-    'defaultAxesFontSize',23,'defaultLineMarkerSize',10)
+    'defaultAxesFontSize',25,'defaultLineMarkerSize',10)
+
 set(0,'defaultAxesColorOrder',lines(5))
 set(0,'defaultLegendInterpreter','latex');
 set(0,'defaultAxesTickLabelInterpreter','latex')
