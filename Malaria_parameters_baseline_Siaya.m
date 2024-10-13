@@ -8,5 +8,5 @@ P.ss_k2 = 3.66;
 P.ss_u1 = 0.003;
 P.ss_u2 = 0.456;
 
-P.ss_S0 = 2.6; % magnitude of seasonlity profile, aim for 3.15 (3.09 calibrated) incidence rate
+P.ss_S0 = 1.9; % magnitude of seasonlity profile, aim for 3.15 (3.09 calibrated) incidence rate
 P.ss_t0 = 100; % time shift to incoporate delay 

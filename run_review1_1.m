@@ -22,9 +22,7 @@ P.na = na;
 P.da = da;
 
 Malaria_parameters_baseline;
-P.betaD = 0.085;
-P.betaA = 0.085;
-Malaria_parameters_baseline_Siaya; % SA based on Nanoro climate profile
+% Malaria_parameters_baseline_Siaya; % SA based on Nanoro climate profile
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
@@ -46,8 +44,12 @@ NM = SM+IM+EM;
 EIR = bH.*IM./NM*365; % EIR(age, time) matrix
 EIR_tot = trapz(EIR.*PH,1)*P.da./NH;
 EIR_final = EIR_tot(end);
+P.zeta = P.zeta_fun(a);
 FOI_AH = bM.*trapz(P.betaA*AH)*da./NH; 
 FOI_DH = bM.*trapz(P.betaD*DH)*da./NH; 
+FOI_AHw = bM.*trapz(P.betaA*P.zeta.*AH)*da./NH; 
+FOI_DHw = bM.*trapz(P.betaD*P.zeta.*DH)*da./NH; 
+
 %% plot1 age vs. AH DH prevalences
 figure_setups;
 colour_mat2 = [0.8500 0.3250 0.0980];
@@ -62,7 +64,7 @@ ylabel('Proportion')
 grid on
 axis([0 P.age_max/365 0 1]);
 xlim([0 30])
-%% plot2 age vs. AH DH FOIs
+%% plot2 time vs. AH DH FOIs
 figure_setups;
 colour_mat3 = [0.9290 0.6940 0.1250]; % EH
 colour_mat2 = [0.8500 0.3250 0.0980]; % AH
@@ -71,6 +73,58 @@ p = area(t/365,[FOI_AH'./(FOI_AH'+FOI_DH'),FOI_DH'./(FOI_AH'+FOI_DH')]);
 p(1).FaceColor = colour_mat3;
 p(2).FaceColor = colour_mat2;
 legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
-title('FOIs');
+title('FOIs (onward inf.)');
 xlabel('Time (years)');
 ylabel('Proportion')
+ylim([0 1])
+%% plot3 weighted by surface area: age vs. AH DH FOIs
+% figure_setups;
+% yyaxis left
+% plot(a/365, P.zeta);
+% xlabel('Age (years)');
+% ylabel('weight')
+% yyaxis right
+% plot(a/365, DH(:,end),'-', a/365, AH(:,end),':');
+% title('weight based on body surface area')
+% xlim([0 30])
+% legend('weight','DH','AH')
+% figure_setups;
+% colour_mat3 = [0.9290 0.6940 0.1250]; 
+% colour_mat2 = [0.8500 0.3250 0.0980]; 
+% colour_mat7 = [0.6350 0.0780 0.1840]; 
+% p = area(t/365,[FOI_AHw'./(FOI_AHw'+FOI_DHw'),FOI_DHw'./(FOI_AHw'+FOI_DHw')]);
+% p(1).FaceColor = colour_mat3;
+% p(2).FaceColor = colour_mat2;
+% legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
+% title('weighted FOIs (onward inf.)');
+% xlabel('Time (years)');
+% ylabel('Proportion')
+% ylim([0 1])
+%% plot2 time vs. AH DH FOIs
+figure_setups;
+FOI_AH_age = bM(:,end).*P.betaA*AH(:,end)./NH(end); 
+FOI_DH_age = bM(:,end).*P.betaD*DH(:,end)./NH(end); 
+FOI_AH_agew = FOI_AH_age.*P.zeta;
+FOI_DH_agew = FOI_DH_age.*P.zeta;
+p = area(a/365,[FOI_AH_agew./(FOI_AH_agew+FOI_DH_agew), FOI_DH_agew./(FOI_AH_agew+FOI_DH_agew)]);
+p(1).FaceColor = colour_mat3;
+p(2).FaceColor = colour_mat2;
+legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
+title('FOIs (onward inf.) by age, weighted');
+xlabel('Age (years)');
+ylabel('Proportion')
+xlim([0 30])
+ylim([0 1])
+%%
+figure_setups;
+FOI_AH_age = bM(:,end).*P.betaA*AH(:,end)./NH(end); 
+FOI_DH_age = bM(:,end).*P.betaD*DH(:,end)./NH(end); 
+p = area(a/365,[FOI_AH_age./(FOI_AH_age+FOI_DH_age), FOI_DH_age./(FOI_AH_age+FOI_DH_age)]);
+p(1).FaceColor = colour_mat3;
+p(2).FaceColor = colour_mat2;
+legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
+title('FOIs (onward inf.) by age, unweighted');
+xlabel('Age (years)');
+ylabel('Proportion')
+xlim([0 30])
+ylim([0 1])

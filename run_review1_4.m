@@ -19,7 +19,7 @@ PH = SH+EH+DH+AH;
 NH = trapz(PH)*P.da;
 Ctot_pp = Ctot./PH;
 var_list = [0.01:0.01:1].^2;
-EIR_plot = [1 10 50 80 100];
+EIR_plot = [1 10 50 80 120];
 betaM_plot = NaN(size(EIR_plot));
 %% 
 xx = P.a/365;

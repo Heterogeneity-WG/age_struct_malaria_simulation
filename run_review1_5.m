@@ -1,5 +1,5 @@
 %% generate plots for review 1 comment 5
-% close all
+close all
 clear all
 % clc
 format long
@@ -23,7 +23,7 @@ P.da = da;
 Malaria_parameters_baseline;
 % force psi = 0 all the time
 % P.psif0 = 0;  P.psif1 = 0; 
-Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
+% Malaria_parameters_baseline_Nanoro; % SA based on Nanoro climate profile
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
@@ -54,6 +54,7 @@ p(3).FaceColor = colour_mat7;
 xlabel('Time (years)')
 ylabel('Prop. of infected pop')
 legend({'$E_H$ prop','$A_H$ prop','$D_H$ prop'},'Location','e')
+ylim([0 1])
 %% compare contribution to DH, two routes
 % EH to DH 
 rho = sigmoid_prob(Ctot./PH, 'rho');
@@ -70,6 +71,7 @@ p(2).FaceColor = colour_mat2;
 xlabel('Time (years)')
 ylabel('Frac. of incidence rates')
 legend({'$E_H \rightarrow D_H$','$A_H \rightarrow D_H$'},'Location','e')
+ylim([0 1])
 %% compare contribution to DH, two routes, by age
 % EH to DH 
 rho = sigmoid_prob(Ctot./PH, 'rho');

@@ -3,6 +3,7 @@ Results/*
 *.tex
 *.svg
 *.pdf
+*.eps
 Auxiliary/R0_calculation_checks.nb
 .DS_Store
 *.asv

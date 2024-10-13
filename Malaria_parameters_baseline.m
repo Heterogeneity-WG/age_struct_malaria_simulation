@@ -46,8 +46,8 @@ P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immun
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
-x_fit = [2.541054908661499   2.521263428837834   3.160535717325357...
-    1.870698094604934   2.390238620104622   2.282195667153324];
+rx_fit = [0.435743286917414   3.634433009823941   3.302671238570623   1.642690043366513   3.193441885051782   1.005588772216620];
+
 P.phis2 = x_fit(1);
 P.phir2 = x_fit(2); 
 P.rhos2 = x_fit(3);
@@ -61,7 +61,7 @@ P.phif1 = 1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
 P.psif0 = 0.01; 
-P.psif1 = 1; 
+P.psif1 = 1/2; 
 
 % fixed high immunity scenario
 % P.phif0 = 0.908066527085272; % value at zero
@@ -89,8 +89,8 @@ P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
 P.betaM = 0.35; P.betaM_lower = 0.23; P.betaM_upper = 0.74; % infectivity of mosquitoes P.betaM = 0.25;
-P.betaD = 0.35; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
-P.betaA = 0.03; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
+P.betaD = 0.2; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
+P.betaA = 0.1; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
 
 P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes
