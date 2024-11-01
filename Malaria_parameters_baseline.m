@@ -20,11 +20,12 @@ P.v0 = 0;
 % P.v0 = 1.2*10^5/365; 
 P.v0_lower = 0; P.v0_upper = 1.2*10^5*2.1/365; % vaccination rate 
 P.v0s = P.v0; P.v0c = P.v0;
+P.vb0 = 0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (P.z = 0) and blood-stage (P.z = 1)
 P.dv = 5*365; % averaged period of vaccine-boosted immunity (Cv)
-P.etas = 0.82; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
-P.etab = 0.82; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the blood-stage immunity (Cv) for children 
-P.w = 1/(0.41*365); P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  
+P.etas = 0.71; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
+P.etab = 0.71; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the boosted
+P.w = 1/(0.54*365); % P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  
 %%
 P.rD = 1/31; P.rD_lower = 1/48; P.rD_upper = 1/15; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
@@ -46,7 +47,7 @@ P.m = 1; P.m_lower = P.m*0.65; P.m_upper = P.m*2.1; % fraction of new-born immun
 P.uc = 10; P.uc_lower = P.uc*0.65; P.uc_upper = P.uc*2.1; % Duration in which immunity is not boosted
 %% progression probabilities parameters, sigmoid parameters
 % fitted values using Tfinal = 10 years
-rx_fit = [0.435743286917414   3.634433009823941   3.302671238570623   1.642690043366513   3.193441885051782   1.005588772216620];
+x_fit = [0.435743286917414   3.634433009823941   3.302671238570623   1.642690043366513   3.193441885051782   1.005588772216620];
 
 P.phis2 = x_fit(1);
 P.phir2 = x_fit(2); 
