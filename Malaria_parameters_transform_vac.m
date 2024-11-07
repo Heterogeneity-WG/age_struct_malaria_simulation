@@ -19,7 +19,8 @@ vc = pdf(pd,P.a)*P.v0c;
 P.vc = vc; % for vaccine efficacy calculation only
 
 % booster dose: 18 months after 3rd dose [26, 38] months old
-pd_booster = @(age) (age>26*30).*(age<38*30); % age range for the completion of 3rd dose
-P.vb = pd_booster(P.a)*P.vb0; % indicator of age * fraction vb0
-
+pd_booster = @(age) (age>38*30).*(age<39*30); % age range for the completion of 3rd dose
+P.vb = pd_booster(P.a)*P.vb0; % constant, not per capita
+% pd_booster = makedist("Triangular","a",26*30,"b",27*30,"c",38*30);
+% P.vb = pdf(pd_booster,P.a)*P.vb0; 
 end

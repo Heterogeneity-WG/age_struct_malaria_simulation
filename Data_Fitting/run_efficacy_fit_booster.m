@@ -31,11 +31,13 @@ Malaria_parameters_transform_vac;
 %% fitting
 % larger bounds
 lb = [0.1, 1/(5*365)]; % P.etab; P.wb
-ub = [5, 1/(0.1*365)]; 
+ub = [1, 1/(0.1*365)]; 
 
-x0 = [0.392, 1/(0.95*365)]; % estimates from Penny et al, Table 3 (half-life = 7.9 month, same as primary doses)
+% x0 = [0.392, 1/(0.95*365)]; % estimates from Penny et al, Table 3 (half-life = 7.9 month, same as primary doses)
 % x0 = (lb+ub)/2;
-options = optimset('Display','iter','TolX',10^-8,'MaxIter',80);
+x0 = [0.99, 1/(4.99*365)]; 
+
+options = optimset('Display','iter','TolX',10^-8,'MaxIter',0);
 [x,fval] = fmincon(@(x) fun_efficacy_booster(x,Data,SH0, EH0, DH0, AH0, VH0, UH0, SM0, EM0, IM0, Cm0, Cac0, Cv0, Ctot0),x0,[],[], [], [], lb, ub, [], options);
 %%
 figure_setups; hold on
@@ -44,7 +46,7 @@ figure_setups; hold on
 scatter(xdata/365,ydata,100,'filled','DisplayName','data')
 plot(xdata/365,yrun0,'*-','LineWidth',3,'DisplayName','initial - Penny estimate')
 plot(t/365,eff,'-','LineWidth',3,'DisplayName','fitted')
-axis([0 3 -0.2 1])
+% axis([0 3 -0.2 1])
 ylabel('Efficacy against clinical malaria')
 xlabel('Time since vaccination (years)')
 legend

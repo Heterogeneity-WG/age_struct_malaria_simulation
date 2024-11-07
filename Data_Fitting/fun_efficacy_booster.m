@@ -12,7 +12,7 @@ na = P.na;
 %% simulation using three-group model - vaccine on
 tfinal_vacc = 2*365; total_vacc = 2000;
 P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
-P.vb0 = 1; % vaccinate all the eligible people
+P.vb0 = P.v0s; % vaccinate all the eligible people
 Malaria_parameters_transform_vac;
 t = (0:dt:tfinal_vacc)';
 temp0 = zeros(size(SH0));
