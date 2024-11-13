@@ -107,6 +107,9 @@ for n = 1:nt-1
     %% rest group
     SHr(2:end,n+1) = (SHr(1:end-1,n)+dt*(P.phir(1:end-1)*P.rD.*DHr(1:end-1,n)+P.rA*AHr(1:end-1,n))-(P.vc(2:end)+P.vs(2:end))*dt)...
         ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
+    if min(SHr(2:end,n+1))<0
+        keyboard
+    end
     EHr(2:end,n+1) = (EHr(1:end-1,n)+dt*lamH(1:end-1).*SHr(2:end,n+1))...
         ./(1+(P.h+P.muH(2:end))*dt);
     temp2 = (1-P.rhor(1:end-1))*P.h.*EHr(2:end,n+1)+(1-P.phir(1:end-1)).*P.rD.*DHr(1:end-1,n);
@@ -117,8 +120,13 @@ for n = 1:nt-1
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));  
     
     %% vaccinated group
-    SHv(2:end,n+1) = (SHv(1:end-1,n)+dt*(P.phiv(1:end-1)*P.rD.*DHv(1:end-1,n)+P.rA*AHv(1:end-1,n)-P.vb(2:end)))...
+    % the maximum vb to avoid SHV<0
+    vb_temp = max(min(P.vb(2:end), SHv(1:end-1,n)/dt+(P.phiv(1:end-1)*P.rD.*DHv(1:end-1,n)+P.rA*AHv(1:end-1,n))-10^-5),0);
+    SHv(2:end,n+1) = (SHv(1:end-1,n)+dt*(P.phiv(1:end-1)*P.rD.*DHv(1:end-1,n)+P.rA*AHv(1:end-1,n)-vb_temp))...
         ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
+    if min(SHv(2:end,n+1))<0
+        keyboard
+    end
     VHv(2:end,n+1) = (VHv(1:end-1,n)+dt*P.etas*P.vs(2:end))./(1+(P.muH(2:end)+P.w)*dt);
     temp1 = (1-P.etas)*P.vs(2:end)+P.w*VHv(2:end,n+1);
     UHv(2:end,n+1) = (UHv(1:end-1,n)+dt*temp1)./(1+(lamH(1:end-1)+P.muH(2:end))*dt);
@@ -133,8 +141,8 @@ for n = 1:nt-1
     %% boosted group
     SHb(2:end,n+1) = (SHb(1:end-1,n)+dt*(P.phib(1:end-1)*P.rD.*DHb(1:end-1,n)+P.rA*AHb(1:end-1,n)))...
         ./(1+(lamH(1:end-1)+P.muH(2:end))*dt); 
-    VHb(2:end,n+1) = (VHb(1:end-1,n)+dt*P.etab*P.vb(2:end))./(1+(P.muH(2:end)+P.wb)*dt);
-    temp1 = (1-P.etab)*P.vb(2:end)+P.wb*VHb(2:end,n+1);
+    VHb(2:end,n+1) = (VHb(1:end-1,n)+dt*P.etab*vb_temp)./(1+(P.muH(2:end)+P.wb)*dt);
+    temp1 = (1-P.etab)*vb_temp+P.wb*VHb(2:end,n+1);
     UHb(2:end,n+1) = (UHb(1:end-1,n)+dt*temp1)./(1+(lamH(1:end-1)+P.muH(2:end))*dt);
     EHb(2:end,n+1) = (EHb(1:end-1,n)+dt*lamH(1:end-1).*(SHb(2:end,n+1)+UHb(2:end,n+1)))...
         ./(1+(P.h+P.muH(2:end))*dt);
@@ -165,12 +173,12 @@ for n = 1:nt-1
     
     % mosquito time evolution
     P.gM = P.gM_fun(t(n+1)); % incorporate seasonlity
-    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DHr(:,n)+DHc(:,n)+DHv(:,n), AHr(:,n)+AHc(:,n)+AHv(:,n), PHp1, NHp1, NM(n));
+    [SM(1,n+1),EM(1,n+1),IM(1,n+1)] = mosquito_ODE(SM(1,n), EM(1,n), IM(1,n), DHr(:,n)+DHc(:,n)+DHv(:,n)+DHb(:,n), AHr(:,n)+AHc(:,n)+AHv(:,n)+AHb(:,n), PHp1, NHp1, NM(n));
     NM(n+1) = SM(1,n+1)+EM(1,n+1)+IM(1,n+1);
     
     % immunity gained at age = 0 
-    Cacn = Cacr(:,n)+Cacv(:,n)+Cacc(:,n);
-    Cvn = Cvr(:,n)+Cvv(:,n)+Cvc(:,n);
+    Cacn = Cacr(:,n)+Cacv(:,n)+Cacc(:,n)+Cacb(:,n);
+    Cvn = Cvr(:,n)+Cvv(:,n)+Cvc(:,n)+Cvb(:,n);
     Cmr(1,n+1) = P.m*trapz(P.gH.*(P.c1*Cacn+P.c3*Cvn))*da;
     Cacr(1,n+1) = 0;
     Cvr(1,n+1) = 0;
@@ -194,7 +202,7 @@ for n = 1:nt-1
     Ctotr(:,n+1) = P.c1*Cacr(:,n+1)+P.c2*Cmr(:,n+1)+P.c3*Cvr(:,n+1); 
     % vacc group
     Bvnp1 = f(lamHp1(2:end)).*(P.cS*SHv(2:end,n+1) + P.cE*EHv(2:end,n+1) + P.cA*AHv(2:end,n+1) + P.cD*DHv(2:end,n+1) + P.cU*UHv(2:end,n+1));
-    Dvnp1 = P.muH(2:end) + P.muD(2:end).*DHv(2:end,n+1)./PHvp1(2:end)+P.vb(2:end)./PHvp1(2:end);
+    Dvnp1 = P.muH(2:end) + P.muD(2:end).*DHv(2:end,n+1)./PHvp1(2:end)+vb_temp./PHvp1(2:end);
     temp1 = P.vs(2:end).*Cacr(2:end,n+1)./PHrp1(2:end);
     Cacv(2:end,n+1) = (Cacv(1:end-1,n)+dt*(Bvnp1+temp1))./(1+dt*(1/P.dac+Dvnp1));
     temp2 = P.vs(2:end).*Cmr(2:end,n+1)./PHrp1(2:end);
@@ -204,10 +212,10 @@ for n = 1:nt-1
     Ctotv(:,n+1) = P.c1*Cacv(:,n+1)+P.c2*Cmv(:,n+1)+P.c3*Cvv(:,n+1); 
     % boost
     Bbnp1 = f(lamHp1(2:end)).*(P.cS*SHb(2:end,n+1) + P.cE*EHb(2:end,n+1) + P.cA*AHb(2:end,n+1) + P.cD*DHb(2:end,n+1) + P.cU*UHb(2:end,n+1));
-    temp1 = P.vb(2:end).*Cacv(2:end,n+1)./PHvp1(2:end);
+    temp1 = vb_temp.*Cacv(2:end,n+1)./PHvp1(2:end);
     Dbnp1 = P.muH(2:end) + P.muD(2:end).*DHb(2:end,n+1)./PHbp1(2:end);
     Cacb(2:end,n+1) = (Cacb(1:end-1,n)+dt*(Bbnp1+temp1))./(1+dt*(1/P.dac+Dbnp1));
-    temp2 = P.vb(2:end).*Cmv(2:end,n+1)./PHvp1(2:end);
+    temp2 = vb_temp.*Cmv(2:end,n+1)./PHvp1(2:end);
     Cmb(2:end,n+1) = (Cmb(1:end-1,n)+temp2*dt)./(1+dt*(1/P.dm+Dbnp1));
     Cvb(2:end,n+1) = 0;
     Cmb(PHbp1==0,n+1) = 0; Cacb(PHbp1==0,n+1) = 0; Cvb(PHbp1==0,n+1) = 0;
