@@ -8,6 +8,7 @@ plot(t/365,EIR(floor(end/100),:));
 plot(t/365,trapz(PH.*EIR,1)*P.da./pop);
 legend('EIR age 100', 'EIR age 10','EIR age 1','Average EIR (pop. weighted)');
 xlabel('Time (years)');
+xlim([0 3]);
 title('aEIR dynamics');
 
 %%

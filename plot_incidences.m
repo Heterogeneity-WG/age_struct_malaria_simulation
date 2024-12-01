@@ -65,8 +65,8 @@ subfigure_strings1 = ["(N/A)","(A)","(B)"];
 % xticks([0 1 2 3]);
 
 figure_setups_3;
-ax = imagesc(t/365,a/365,DH./(AH+DH));
-clim([0 0.6]);
+ax = imagesc(t/365,a/365,DH./(EH+AH+DH));
+clim([0 0.45]);
 %colorbar;
 xlim([0 3]);
 ylim([0 20]);
@@ -115,7 +115,7 @@ plot(t/365,temp_plot_20to21,':','Color',[0.8500, 0.3250, 0.0980]);
 hold off;
 
 xlabel('Time (years)');
-ylim([0 0.6]);
+ylim([0 0.7]);
 xlim([0 3]);
 yticks([0 0.2 0.4 0.6 0.8 1]);
 xticks([0 1 2 3]);
