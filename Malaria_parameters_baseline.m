@@ -23,9 +23,10 @@ P.v0s = P.v0; P.v0c = P.v0;
 P.vb0 = 0;
 P.z = 0; P.z_lower = 0; P.z_upper = 1; % switch between sterilizing (P.z = 0) and blood-stage (P.z = 1)
 P.dv = 5*365; % averaged period of vaccine-boosted immunity (Cv)
-P.etas = 0.71; P.etas_lower = 0.53; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
-P.etab = 0.71; P.etab_lower = 0.53; P.etab_upper = 1; % Vaccine efficacy for the boosted
-P.w = 1/(0.54*365); % P.w_lower = 1/(0.63*365); P.w_upper = 1/(0.2*365); % Waning rate for the sterlizing immunity (VH) for children  
+P.etas = 0.72; P.etas_lower = 0.47; P.etas_upper = 1; % Vaccine efficacy for the sterlizing immunity (VH) for children P.etas = 0.73
+P.etab = 0.8; P.etab_lower = 0.52; P.etab_upper = 1; % Vaccine efficacy for the boosted
+P.w = 1/(0.53*365); P.w_lower = 1/(0.82*365); P.w_upper = 1/(0.25*365); % Waning rate for the sterlizing immunity (VH) for children  
+P.wb = 1/(2.1*365); P.wb_lower = 1/(3.23*365); P.wb_upper = 1/(1*365); % Waning rate for the sterlizing immunity (VH) for children  
 %%
 P.rD = 1/31; P.rD_lower = 1/48; P.rD_upper = 1/15; % recovery rate for DH (syptomatic, e.g. fever) P.rD_upper = 1/7;
 P.rA = 1/85; P.rA_lower = 1/130; P.rA_upper = 1/40; % recovery rate for AH (clearance of parasite) 
@@ -90,8 +91,8 @@ P.psir2_lower = P.psir2*0.65; P.psir2_upper = P.psir2*2.1;
 P.bh = 5; % tolerated biting rate per human
 P.bm = 0.6; % desired biting rate per mosquito
 P.betaM = 0.35; P.betaM_lower = 0.23; P.betaM_upper = 0.74; % infectivity of mosquitoes P.betaM = 0.25;
-P.betaD = 0.2; P.betaD_lower = 0.23; P.betaD_upper = 0.74; % infectivity of DH   P.betaD = 0.35;
-P.betaA = 0.1; P.betaA_lower = 0.02; P.betaA_upper = 0.06; % infectivity of AH    P.betaA = 0.03;
+P.betaD = 0.2; P.betaD_lower = 0.13; P.betaD_upper = 0.42; % infectivity of DH   P.betaD = 0.35;
+P.betaA = 0.1; P.betaA_lower = 0.065; P.betaA_upper = 0.21; % infectivity of AH    P.betaA = 0.03;
 
 P.muM = 1/14; P.muM_lower = 1/21.5; P.muM_upper = 1/6.7; % natural mortality rate of mosquitoes
 P.sigma = 1/10; P.sigma_lower = 1/15.4; P.sigma_upper = 1/4.8; % incubation rate for mosquitoes
@@ -117,6 +118,7 @@ P.b2D = 1.0282;
 P.b3D = 0.00012962;
 P.b4D = 0.064575;
 P.c0D = 0.181055030942671;
+
 
 %% fertility rate parameters
 % use IHME data fit

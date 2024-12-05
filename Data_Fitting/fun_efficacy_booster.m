@@ -2,17 +2,28 @@ function [err, xdata,ydata,yrun, t,eff] = fun_efficacy_booster(x,Data,SH0, EH0, 
 
 global P 
 
-P.etab = x(1);
-P.wb = x(2);
+% fit primary
+% P.etas = x(1); P.w = x(2); P.etab = 0; P.wb = 0; P.vb0 = 0; % booster dose off
+
+% fit booster
+P.etab = x(1); P.wb = x(2); P.vb0 = 2000;
+
+% fit both
+% P.etas = x(1); P.w = x(2);
+% P.etab = x(3); P.wb = x(4); P.vb0 = 2000;
+
+% fit booster w/ age-dep waning  P.etab; P.wb0; P.wbs; P.wbr
+% P.etab = x(1); P.wb0 = x(2); P.wbs = x(3); P.wbr = x(4); P.vb0 = 2000;
+
+Malaria_parameters_transform;
 
 dt = P.dt;
 da = P.da;
 na = P.na;
 
-%% simulation using three-group model - vaccine on
+%% simulation using three-group model - vaccine on (primary doses on, booster on (age-based))
 tfinal_vacc = 2*365; total_vacc = 2000;
-P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
-P.vb0 = P.v0s; % vaccinate all the eligible people
+P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % primary doses on
 Malaria_parameters_transform_vac;
 t = (0:dt:tfinal_vacc)';
 temp0 = zeros(size(SH0));
@@ -24,9 +35,10 @@ temp0 = zeros(size(SH0));
     temp0, temp0, temp0, temp0, temp0, temp0, temp0,...%control
     SM0, EM0, IM0);
 
-%% simulation using three-group model - vaccine off the primary dose (keep vacc booster)
-tfinal_conti = 5*365; total_vacc = 0;
-P.v0s = total_vacc/tfinal_vacc; P.v0c = P.v0s; % define constant vaccination rate
+%% simulation using three-group model - primary dose off, booster vac on
+tfinal_conti = 5*365;
+P.v0s = 0; P.v0c = P.v0s; % primary dose off
+P.vb0 = 0;
 Malaria_parameters_transform_vac;
 t2 = (tfinal_vacc:dt:tfinal_vacc+tfinal_conti)';
 [~,SHr2, EHr2, DHr2, AHr2, Cmr2, Cacr2, Ctotr2, SHv2, EHv2, DHv2, AHv2, VHv2, UHv2, Cmv2, Cacv2, Ctotv2, ...
@@ -98,5 +110,4 @@ eff(isnan(eff))=[];
 yrun = interp1(t,eff,xdata,'pchip'); 
 
 err = norm(ydata-yrun);
-
 end

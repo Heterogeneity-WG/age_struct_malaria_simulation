@@ -3,6 +3,12 @@ global P
 
 a = P.a;
 
+%% wanning for booster (not used)
+% 1/(1.5*365) = slowest waning - longest protection
+% P.wb0 = fastest waning - shortest protection
+% P.wb = tanh((P.a-P.wbs)/P.wbr)*(P.wb0-1/(1.5*365))/2+(P.wb0+1/(1.5*365))/2;
+% P.wb = P.wb0*ones(size(P.a)); % constant wanning
+
 %% age-dependent biting
 
 P.zeta_fun = @(a) 1-0.85*exp(-a/8/365); %ones(size(a));
