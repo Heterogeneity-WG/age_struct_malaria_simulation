@@ -1,9 +1,11 @@
-%% generate plots for review 1 comment 4
+%% generate plots Figure 10, and for review 1 comment 4
 close all;
 clear all;
 clc;
 format long;
 global P
+
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
@@ -19,7 +21,7 @@ PH = SH+EH+DH+AH;
 NH = trapz(PH)*P.da;
 Ctot_pp = Ctot./PH;
 var_list = [0.01:0.01:1].^2;
-EIR_plot = [1 10 50 80 100];
+EIR_plot = [30 80 100];
 betaM_plot = NaN(size(EIR_plot));
 %% 
 xx = P.a/365;
@@ -69,7 +71,7 @@ for ibetaM = 1:length(betaM_plot)
 end
 
 % baseline
-P.betaM = 0.35;
+Malaria_parameters_baseline;
 Malaria_parameters_transform;
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
 PH = SH+EH+DH+AH;
@@ -89,59 +91,68 @@ NewEHDH_plot_baseline = rho.*P.h.*EH(:,end); % EH -> DH
 figure_setups; 
 hold on
 plot(xx,DH_plot)
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$D_H/P_H$')
+xlabel('Age (years)','fontsize',45);
+ylabel('Proportion','fontsize',45);
+title('$D_H/P_H$','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on','location','ne')
+legend('AutoUpdate','on','location','ne','fontsize',45);
 plot(xx,DH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
 xlim([0 30])
-ylim([0, 0.45])
+ylim([0, 0.32])
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
 % this sets an 'a)' right at the top left of the axes
-text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
-saveas(gcf,'plot_baseline_DH.svg');
+text(ax,-12,temp_ax(end)+3,'(D)','Units','characters','fontsize',45);
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
+if flag_save; saveas(gcf,'fig10_D.svg'); end
 %% (EH + AH + DH)/PH
 figure_setups;
 hold on
 plot(xx,AH_plot+DH_plot+EH_plot)
 xlim([0 30])
 ylim([0 1.05])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$(E_H+A_H+D_H)/P_H$')
+xlabel('Age (years)','fontsize',45);
+ylabel('Proportion','fontsize',45);
+title('Total infection','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on','location','e')
+legend('AutoUpdate','on','location','se','fontsize',45);
 plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
 % this sets an 'a)' right at the top left of the axes
-text(ax,-12,temp_ax(end)+3,'(E)','Units','characters');
-saveas(gcf,'plot_baseline_DH_AH_EH.svg');
+text(ax,-12,temp_ax(end)+3,'(E)','Units','characters','fontsize',45);
+if flag_save; saveas(gcf,'fig10_E.svg'); end
 %% Incidence: EH -> DH 
 figure_setups;
 hold on
 plot(xx,NewEHDH_plot)
 xlim([0 30])
 ylim([0,4.5])
-xlabel('Age (years)');
-ylabel('Rate')
-title('$E_H \rightarrow D_H$')
+xlabel('Age (years)','fontsize',45);
+ylabel('Rate','fontsize',45);
+title('$E_H \rightarrow D_H$','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on')
+legend('AutoUpdate','on','location','ne','fontsize',45);
 plot(xx,NewEHDH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
 % this sets an 'a)' right at the top left of the axes
-text(ax,-12,temp_ax(end)+3,'(F)','Units','characters');
-saveas(gcf,'plot_baseline_new_EHDH.svg');
+text(ax,-12,temp_ax(end)+3,'(F)','Units','characters','fontsize',45);
+if flag_save; saveas(gcf,'fig10_F.svg'); end
 
 
 

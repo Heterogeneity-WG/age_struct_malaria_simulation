@@ -7,13 +7,17 @@ global colour_r1 colour_r2 colour_r3 colour_r4
 global colour_blue colour_red colour_yellow
 global colour_mat1 colour_mat2 colour_mat3 colour_mat4 colour_mat5 colour_mat6 colour_mat7
 
-set(0,'defaultLineLineWidth',8,'defaultTextFontSize',40,'defaultTextFontname','CMU Serif','defaultAxesFontSize',40,'defaultLineMarkerSize',15)
+set(0,'defaultLineLineWidth',8,'defaultTextFontSize',30,'defaultTextFontname','CMU Serif','defaultAxesFontSize',30,'defaultLineMarkerSize',15)
 
 set(0,'defaultAxesColorOrder',lines(5),'DefaultAxesLineStyleOrder','-|--|:|-.')
 set(0,'defaultLegendInterpreter','latex');
 set(0,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaulttextinterpreter','latex');  
 set(0,'defaultLegendAutoUpdate','off');
+
+% remove transparency in the grid lines, which may cause pixelated eps output
+set(0,'DefaultAxesGridAlpha',1);
+set(0,'DefaultAxesGridColor',[224, 224, 224]/255);
 
 grid on
 

@@ -63,7 +63,7 @@ P.phif1 = 1;
 P.rhof0 = 0.01; 
 P.rhof1 = 1; 
 P.psif0 = 0.01; 
-P.psif1 = 1/2; 
+P.psif1 = 1/2; % <----- capped at 0.5!
 
 % fixed high immunity scenario
 % P.phif0 = 0.908066527085272; % value at zero
