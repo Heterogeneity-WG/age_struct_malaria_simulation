@@ -36,6 +36,7 @@ for iq = 1:length(lQ)
     if strcmp(lQ{iq}, 'EE-death');  lQ_title{iq} = 'malaria death'; end
     if strcmp(lQ{iq}, 'EE-EIR');  lQ_title{iq} = 'EIR'; end
     if strcmp(lQ{iq}, 'EE-death-rate');  lQ_title{iq} = 'malaria death incidence'; end
+    if strcmp(lQ{iq}, 'EE-death-00-02');  lQ_title{iq} = 'malaria death (under 2y)'; end
     if strcmp(lQ{iq}, 'EE-death-05-17');  lQ_title{iq} = 'malaria death ($5 \sim 17$m)'; end
     if strcmp(lQ{iq}, 'EE-death-09-24');  lQ_title{iq} = 'malaria death ($9\sim 24$m)'; end
     if strcmp(lQ{iq}, 'EE-death-02-10');  lQ_title{iq} = 'malaria death ($2\sim 10$y)'; end
@@ -45,6 +46,7 @@ for iq = 1:length(lQ)
     if strcmp(lQ{iq}, 'EE-DA');  lQ_title{iq} = 'malaria prevalence'; end
     if strcmp(lQ{iq}, 'EE-DA-05-17');  lQ_title{iq} = 'malaria prevalence ($5\sim 17$m)'; end
     if strcmp(lQ{iq}, 'EE-DA-09-24');  lQ_title{iq} = 'malaria prevalence ($9\sim 24$m)'; end
+    if strcmp(lQ{iq}, 'EE-DA-00-02');  lQ_title{iq} = 'malaria prevalence (under 2y)'; end
     if strcmp(lQ{iq}, 'EE-DA-02-10');  lQ_title{iq} = 'malaria prevalence ($2\sim 10$y)'; end
     if strcmp(lQ{iq}, 'EE-DA-10+');  lQ_title{iq} = 'malaria prevalence (10y+)'; end
 end

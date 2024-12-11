@@ -9,7 +9,7 @@ global P
 % Directory for outputting SA results (sample, data matrices, plots)
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
-direc = 'Data_SA/Results_local_SA_vac/SA_6POI_PRCC/';
+direc = 'Data_SA/Results_local_SA_vac/SA_4POI_PRCC/';
 flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
@@ -29,12 +29,11 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % code will calculate PRCC results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-05-17','EE-death-09-24','EE-death-02-10','EE-death-10+',...
-    'EE-DA','EE-DA-05-17','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
+lQ = {'EE-death','EE-death-00-02','EE-DA','EE-DA-00-02'}; %'EE-death-02-10','EE-death-10+','EE-DA-02-10','EE-DA-10+'
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
-% lP_list = {'v0','w','etas'};
-lP_list = {'v0','w','etas','muM','betaM'};
+lP_list = {'v0','w','etas'};
+% lP_list = {'v0','w','etas','muM','betaM'};
 % lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','betaD','betaA','v0','w','etas'};
 % lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
 lP_list{end+1} = 'dummy'; % add dummy to the POIs
@@ -92,7 +91,7 @@ else
             P.(lP_list{index_w}) = 1/X(run_num,index_w);
         end
         Malaria_parameters_transform_SA; % update dependent parameters
-        Q_val = QOI_value_SA(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
+        Q_val = QOI_value_SA_A2(lQ,time_points,run_num,'PRCC',direc); % calculate QOI values
         Y(run_num,:,:) = Q_val;
     end
     % Y(NS,Size_timepts,Size_QOI,length(pmin),NR)
@@ -142,7 +141,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQOI = [2 7] % 1:Size_QOI_plot
+for iQOI = [2 4] %1:Size_QOI_plot
     figure_setups_33; 
     h = gcf;
     h.Position = [100, 55, 900, 400];
@@ -163,7 +162,7 @@ for iQOI = [2 7] % 1:Size_QOI_plot
     p = [1;stat_p(:,1,QOI_plot(iQOI))];
     labels(p([index0',index1',index2',index3'])<palpha) = {'$\ast$'};
     text(xtips,ytips,labels,'VerticalAlignment','middle')
-    title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
+    title(['QOI = ', lQ_title{QOI_plot(iQOI)}],'fontsize',30);
     grid off
     legend([b1,b2,b3,b4],'Location','se');
     ax=gca;
@@ -173,23 +172,26 @@ for iQOI = [2 7] % 1:Size_QOI_plot
     temp = 'review41';
     if k==4
         if iQOI == 2
-            text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
+            text(ax,-15,temp_ax(end)+2,'(A)','Units','characters','fontsize',30);
             save_string = strcat('fig_',temp,'_A','.svg');
         else
-            text(ax,-12,temp_ax(end)+2,'(B)','Units','characters');
+            text(ax,-15,temp_ax(end)+2,'(B)','Units','characters','fontsize',30);
             save_string = strcat('fig_',temp,'_B','.svg');
         end
     end
-    if k==6
-        if iQOI == 2
-            text(ax,-12,temp_ax(end)+2,'(C)','Units','characters');
-            save_string = strcat('fig_',temp,'_C','.svg');
-        else
-            text(ax,-12,temp_ax(end)+2,'(D)','Units','characters');
-            save_string = strcat('fig_',temp,'_D','.svg');
-        end
-    end
+    % if k==6
+    %     if iQOI == 2
+    %         text(ax,-12,temp_ax(end)+2,'(C)','Units','characters');
+    %         save_string = strcat('fig_',temp,'_C','.svg');
+    %     else
+    %         text(ax,-12,temp_ax(end)+2,'(D)','Units','characters');
+    %         save_string = strcat('fig_',temp,'_D','.svg');
+    %     end
+    % end
     saveas(gcf,save_string);
+    set(gca,'fontsize', 30) 
+    ax.GridAlpha = 1;  % Make grid lines transparent..
+    ax.GridColor = [224, 224, 224]/255; % change grid color
     if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
 end
 
