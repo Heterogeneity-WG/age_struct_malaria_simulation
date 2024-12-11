@@ -22,12 +22,9 @@ P.a = a;
 P.na = na;
 P.da = da;
 
-% old parameter values
-Malaria_parameters_baseline_backup;
-Malaria_parameters_baseline_Nanoro_backup; % SA based on Nanoro climate profile
 % current parameter values
-% Malaria_parameters_baseline;
-% Malaria_parameters_baseline_Nanoro;
+Malaria_parameters_baseline;
+Malaria_parameters_baseline_Nanoro;
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
@@ -104,11 +101,11 @@ p = area(t/365,[FOI_AHw'./(FOI_AHw'+FOI_DHw'),FOI_DHw'./(FOI_AHw'+FOI_DHw')]);
 p(1).FaceColor = colour_mat3;
 p(2).FaceColor = colour_mat2;
 legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
-title('Weighted FOIs in time, old');
+title('Weighted FOIs in time, updated');
 xlabel('Time (years)');
 ylabel('Proportion')
 ylim([0 1])
-if flag_save; saveas(gcf,'Fig_R1_A.eps','epsc'); end
+if flag_save; saveas(gcf,'Fig_R1_A2.eps','epsc'); end
 
 %% age vs. AH DH FOIs, weighted by surface area
 figure_setups;
@@ -120,10 +117,10 @@ p = area(a/365,[FOI_AH_agew./(FOI_AH_agew+FOI_DH_agew), FOI_DH_agew./(FOI_AH_age
 p(1).FaceColor = colour_mat3;
 p(2).FaceColor = colour_mat2;
 legend({'FOI $A_H$','FOI $D_H$'},'Location','se')
-title('Weighted FOIs by age, old');
+title('Weighted FOIs by age, updated');
 xlabel('Age (years)');
 ylabel('Proportion')
 xlim([0 30])
 ylim([0 1])
-if flag_save; saveas(gcf,'Fig_R1_B.eps','epsc'); end
+if flag_save; saveas(gcf,'Fig_R1_B2.eps','epsc'); end
 
