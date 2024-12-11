@@ -1,9 +1,11 @@
-%% generate plots for review 1 comment 4
+%% generate plots Figure 10, and for review 1 comment 4
 close all;
 clear all;
 clc;
 format long;
 global P
+
+flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
 tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
@@ -19,7 +21,7 @@ PH = SH+EH+DH+AH;
 NH = trapz(PH)*P.da;
 Ctot_pp = Ctot./PH;
 var_list = [0.01:0.01:1].^2;
-EIR_plot = [1 10 50 80 120];
+EIR_plot = [30 80 100];
 betaM_plot = NaN(size(EIR_plot));
 %% 
 xx = P.a/365;
@@ -69,7 +71,7 @@ for ibetaM = 1:length(betaM_plot)
 end
 
 % baseline
-P.betaM = 0.35;
+Malaria_parameters_baseline;
 Malaria_parameters_transform;
 [SH, EH, DH, AH, ~, ~, SM, EM, IM, ~, ~, ~, Ctot, ~] = age_structured_Malaria_IC_vac('EE_reset');
 PH = SH+EH+DH+AH;
@@ -86,68 +88,65 @@ rho = sigmoid_prob(Ctot(:,end)./PH(:,end), 'rho');
 NewEHDH_plot_baseline = rho.*P.h.*EH(:,end); % EH -> DH
 %%
 % DH/PH
-figure_setups_34;
+figure_setups; 
 hold on
-plot(xx,DH_plot,'LineWidth',5)
-xlim([0 30])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$D_H/P_H$')
+plot(xx,DH_plot)
+xlabel('Age (years)','fontsize',45);
+ylabel('Proportion','fontsize',45);
+title('$D_H/P_H$','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_DH.eps','epsc');
-%% (AH + DH)/PH
-% % figure_setups_34;
-% hold on
-% plot(xx,AH_plot+DH_plot)
-% xlim([0 30])
-% xlabel('Age (years)');
-% ylabel('Proportion')
-% title('$(A_H+D_H)/P_H$')
-% strs = "EIR = " + string(EIR_plot);
-% legend(strs)
-% legend('AutoUpdate','on','location','e')
-% plot(xx,DH_plot_baseline+AH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
+legend('AutoUpdate','on','location','ne','fontsize',45);
+plot(xx,DH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+xlim([0 30])
+ylim([0, 0.32])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
+if flag_save; saveas(gcf,'fig_R2_A.eps','epsc'); end
 %% (EH + AH + DH)/PH
-figure_setups_34;
+figure_setups;
 hold on
 plot(xx,AH_plot+DH_plot+EH_plot)
 xlim([0 30])
-xlabel('Age (years)');
-ylabel('Proportion')
-title('$(E_H+A_H+D_H)/P_H$')
+ylim([0 1.05])
+xlabel('Age (years)','fontsize',45);
+ylabel('Proportion','fontsize',45);
+title('Total infection','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on','location','e')
-plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_DH_AH_EH.eps','epsc');
-%% New infection: SH -> EH  
-% figure_setups_34;
-% hold on
-% plot(xx,NewEH_plot)
-% xlim([0 30])
-% xlabel('Age (years)');
-% ylabel('Rate')
-% title('New infections: $S_H \rightarrow E_H~(\Lambda_H S_H)$')
-% strs = "EIR = " + string(EIR_plot);
-% legend(strs)
-% legend('AutoUpdate','on')
-% plot(xx,NewEH_plot_baseline,'m','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
+legend('AutoUpdate','on','location','se','fontsize',45);
+plot(xx,DH_plot_baseline+AH_plot_baseline+EH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
+if flag_save; saveas(gcf,'fig_R2_B.eps','epsc'); end
 %% Incidence: EH -> DH 
-figure_setups_34;
+figure_setups;
 hold on
 plot(xx,NewEHDH_plot)
 xlim([0 30])
-xlabel('Age (years)');
-ylabel('Rate')
-title('New uncomplicated incidence: $E_H \rightarrow D_H$')
+ylim([0,4.5])
+xlabel('Age (years)','fontsize',45);
+ylabel('Rate','fontsize',45);
+title('$E_H \rightarrow D_H$','fontsize',45);
 strs = "EIR = " + string(EIR_plot);
 legend(strs)
-legend('AutoUpdate','on')
-plot(xx,NewEHDH_plot_baseline,'m:','LineWidth',5,'DisplayName',['EIR = ',num2str(EIR_baseline,3),'(baseline)'])
-saveas(gcf,'plot_baseline_new_EHDH.eps','epsc');
+legend('AutoUpdate','on','location','ne','fontsize',45);
+plot(xx,NewEHDH_plot_baseline,'m:','DisplayName',['EIR = ',num2str(EIR_baseline,3)])
+ax=gca;
+% read out the position of the axis in the unit "characters"
+set(ax,'Units','characters'); temp_ax=get(ax,'Position');
+set(gca,'fontsize', 45) 
+ax.GridAlpha = 1;  % Make grid lines transparent..
+ax.GridColor = [224, 224, 224]/255; % change grid color
+if flag_save; saveas(gcf,'fig_R2_C.eps','epsc'); end
 
 
 
