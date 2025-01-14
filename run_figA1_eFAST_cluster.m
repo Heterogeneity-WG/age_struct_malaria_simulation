@@ -18,7 +18,7 @@ global P
 % Directory for outputting SA results (sample, data matrices, plots)
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
-direc = 'Data_SA/Results_local_SA_vac/SA_17POI_eFAST/dt1/';
+direc = 'Data_SA/Results_local_SA_vac/SA_17POI_eFAST/';
 flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
@@ -38,7 +38,7 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % code will calculate results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-05-17','EE-DA','EE-DA-05-17'};
+lQ = {'EE-death','EE-death-00-02','EE-DA','EE-DA-00-02'};
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};

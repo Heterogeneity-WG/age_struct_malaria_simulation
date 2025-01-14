@@ -3,7 +3,7 @@ global P
 flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 % numerical config
 tfinal = 10*365; age_max = 100*365; P.age_max = age_max;
-dt = 20; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
+dt = 1; da = dt; t = (0:dt:tfinal)'; nt = length(t); a = (0:da:age_max)'; na = length(a);
 P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 
 Malaria_parameters_baseline;

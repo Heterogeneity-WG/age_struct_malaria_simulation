@@ -22,24 +22,14 @@ for immunity_feedback = 2:3 % select the immune feedback scenario
     Malaria_parameters_baseline_Nanoro;
     Malaria_parameters_transform;
     Malaria_parameters_transform_vac;
-    % sigmoid static values calculated with disease induced mortality, no
-    % balancing and over a 5 year time horizon (see plot_sigmoids.m for averages)
-    if immunity_feedback == 1
-        % immunity values from betaM = 0.0196, fixed low immunity scenario
-        P.phif0 = 0.270581008833871; % value at zero
-        P.phif1 = 0.270581008833871; % value at L (function saturates to this value)
-        P.rhof0 = 0.932188361414638; % value at zero
-        P.rhof1 = 0.932188361414638; % value at L (function saturates to this value)
-        P.psif0 = 0.749277341090716; % value at zero
-        P.psif1 = 0.749277341090716; % value at L (function saturates to this value)
-    elseif immunity_feedback == 3
+    if immunity_feedback == 3
         % immunity values from betaM = 0.75 (saturated), fixed high immunity scenario
-        P.phif0 = 0.908066527085272; % value at zero
-        P.phif1 = 0.908066527085272; % value at L (function saturates to this value)
-        P.rhof0 = 0.090858132882051; % value at zero
-        P.rhof1 = 0.090858132882051; % value at L (function saturates to this value
-        P.psif0 = 0.082503847123926; % value at zero
-        P.psif1 = 0.082503847123926; % value at L (function saturates to this value)
+        P.phif0 = 0.933537142114493; %
+        P.phif1 = 0.933537142114493; % value at 10 (function saturates to this value)
+        P.rhof0 = 0.026507917359328; % 
+        P.rhof1 = 0.026507917359328; % value at 10 (function saturates to this value
+        P.psif0 = 0.010562439147910; % 
+        P.psif1 = 0.010562439147910; % value at 10 (function saturates to this value)
     elseif immunity_feedback == 2
         % don't change the sigmoids at all, dynamic immunity in force
     end

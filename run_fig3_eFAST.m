@@ -24,7 +24,7 @@ flag_save = 1; % flag for saving the results or not (Note: it will overwrite pre
 tfinal = 3*365; % time for integration beyond EE (e.g. vaccination)
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 1; % time/age step size in days, default = 20 for SA (=5 for individual simulation);
+dt = 1; % time/age step size in days
 da = dt;
 t = (0:dt:tfinal)';
 nt = length(t);
@@ -133,9 +133,9 @@ palpha = 0.05; % alpha for t-test
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi
 
 %% Sorting
-lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-    'm','phir2','phis2','cU','v0','w','etas'});
+lP_order = flip({'rD','muM','dac','betaM','uc','rhos2','cS','cA','psis2',...
+    'betaA','m','rA','sigma','cE','psir2','rhor2','betaD','cD',...
+    'phir2','phis2','cU','v0','w','etas'});
 
 [~,index] = ismember(lP_order,lP_list); index = index';
 index(index==0)=[];

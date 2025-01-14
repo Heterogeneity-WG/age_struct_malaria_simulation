@@ -30,8 +30,7 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % code will calculate PRCC results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-05-17','EE-death-09-24','EE-death-02-10','EE-death-10+',...
-    'EE-DA','EE-DA-05-17','EE-DA-09-24','EE-DA-02-10','EE-DA-10+'};
+lQ = {'EE-death-00-02','EE-DA-00-02'};
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 lP_list = {'rA','rD','cS','cA','cU','psis2','psir2','dac','uc','muM','betaM','betaD','betaA','v0','w','etas'};
@@ -109,9 +108,13 @@ for itime = 1:Size_timepts
 end
 
 %% Sorting
-lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-    'm','phir2','phis2','cU','v0','w','etas'});
+% lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
+%     'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
+%     'm','phir2','phis2','cU','v0','w','etas'});
+
+lP_order = flip({'rD','muM','dac','betaM','uc','rhos2','cS','cA','psis2',...
+    'betaA','m','rA','sigma','cE','psir2','rhor2','betaD','cD',...
+    'phir2','phis2','cU','v0','w','etas'});
 
 [~,index] = ismember(lP_order,lP_list);
 index = index';
@@ -139,7 +142,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQOI = [2 7] % 1:Size_QOI_plot
+for iQOI = [1 2] % 1:Size_QOI_plot
     figure_setups_33; 
     hold on
     b1 = barh(X(index0),PRCC(index0,1,QOI_plot(iQOI)),'FaceColor',[0.6350 0.0780 0.1840],'DisplayName','Human');
@@ -165,7 +168,7 @@ for iQOI = [2 7] % 1:Size_QOI_plot
     % read out the position of the axis in the unit "characters"
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an 'a)' right at the top left of the axes
-    if iQOI == 2
+    if iQOI == 1
         text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
         save_string = strcat('fig4_','A','.svg');
     else
