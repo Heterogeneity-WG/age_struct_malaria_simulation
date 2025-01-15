@@ -113,7 +113,7 @@ else
                     P.(lP_list{index_w}) = 1/X(run_num,index_w);
                 end
                 Malaria_parameters_transform_SA; % update dependent parameters
-                Q_val = QOI_value_SA(lQ,time_points,ind,'eFAST',direc); % calculate QOI values
+                Q_val = QOI_value_SA_3(lQ,time_points,ind,'eFAST',direc); % calculate QOI values
                 Y(run_num,:,:,i,L) = Q_val;
             end
         end
@@ -199,9 +199,7 @@ for iQ = 1:Size_QOI_plot
         text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
         save_string = strcat('fig3_eFAST_','D','.svg');
     end
-    saveas(gcf,save_string);
-    if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
-    
+    if flag_save; saveas(gcf,save_string);end    
 end
 
 

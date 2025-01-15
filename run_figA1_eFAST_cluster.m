@@ -134,14 +134,10 @@ palpha = 0.05; % alpha for t-test
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi
 
 %% Sorting
-if Size_timepts==1
-    lP_order = {'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-        'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-        'm','phir2','phis2','cU','v0','w','etas'};
-else % ordering for time-series SA plots
-    lP_order = {'muM','cS','betaM','psir2','uc','cA','dac','rhos2', 'psis2',...
-        'cE','betaD','m','cD','betaA','rD','rhor2','sigma','phis2','rA','cU','phir2','v0','w','etas'};
-end
+lP_order = flip({'rD','muM','dac','betaM','uc','rhos2','cS','cA','psis2',...
+    'betaA','m','rA','sigma','cE','psir2','rhor2','betaD','cD',...
+    'phir2','phis2','cU','v0','w','etas'});
+
 [~,index] = ismember(lP_order,lP_list); index = index';
 index(index==0)=[];
 s_struct.Si = s_struct.Si([index;k],:,:); s_struct.p_Si = s_struct.p_Si(index,:,:,:); s_struct.rangeSi = s_struct.rangeSi([index;k],:,:,:);
@@ -202,8 +198,8 @@ for iQ = 1:Size_QOI_plot
         text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
         save_string = strcat('figA1_','B','.svg');
     end
-    saveas(gcf,save_string);
-    if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
+    if flag_save; saveas(gcf,save_string); end
+    % if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
 end
 
 

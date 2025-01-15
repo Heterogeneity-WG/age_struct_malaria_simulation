@@ -39,7 +39,7 @@ P.a = a; P.na = na; P.nt = nt; P.dt = dt; P.da = da; P.t = t; P.tfinal = tfinal;
 % NOTE: code will calculate results for all the quantities below but only
 % plotting a subset of this list. To modify the plotting, turn on
 % "Size_QOI_plot" in the for loop of last section
-lQ = {'EE-death','EE-death-05-17','EE-DA','EE-DA-05-17'};
+lQ = {'EE-death','EE-death-00-02','EE-DA','EE-DA-00-02'};
 Size_QOI = length(lQ); % length of the QOI.
 time_points = length(t); % default # time_points = at tfinal, unless if wants to check QOI at particular time points
 % NOTE: code will calculate results for all the parameters below but only
@@ -85,7 +85,7 @@ load([direc,'eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],
 %% check any NaN runs in Ymat
 load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y');
 total = NS*NR*k;
-(total-sum(isnan(Y(:)))/length(lQ))/total % fraction of files that are interrupted
+sum(isnan(Y(:)))/length(lQ)/total % fraction of files that are interrupted
 keyboard
 for i=1:k % Loop over POIs, including dummy
     for L=1:NR  % Loop over the NR search curves

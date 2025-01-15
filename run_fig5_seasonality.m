@@ -51,18 +51,38 @@ EIR_tot = trapz(EIR.*PH,1)*P.da./NH;
 EIR_final = EIR_tot(end);
 
 %% plotting
-plot_seasonality;
+% seasonlity plots
+figure_setups_4;
 yyaxis left
+hold on 
+plot(t/365,EIR_tot,'DisplayName','EIR');
+death_rate_tot = trapz(P.muD.*DH,1)*da;
+plot(t/365,death_rate_tot,'DisplayName','death incidence rate'); 
+ylim([0 140])
 ylabel('EIR/death rate')
+
 yyaxis right
+hold on
+seasonal_profile = P.ss_S;
+% plot(t/365, NM,'DisplayName','NM')
+% plot(t/365, IM,'DisplayName','IM')
+% plot(t/365, seasonal_profile(t),'DisplayName','seasonal profile')
+infected_tot = trapz(AH+DH,1)*P.da./NH;
+infected_AH =  trapz(AH,1)*P.da./NH;
+infected_DH =  trapz(DH,1)*P.da./NH;
+plot(t/365,infected_tot,'DisplayName','$A_H+D_H$ prop.')
+plot(t/365,infected_AH,'DisplayName','$A_H$ prop.')
+plot(t/365,infected_DH,'DisplayName','$D_H$ prop.')
+xlabel('years')
+xticks([0:3])
 ylabel('Proportion')
-legend('FontSize',30)
+ylim([0 0.8])
+
+legend('Location','se')
 ax=gca;
 % read out the position of the axis in the unit "characters"
 set(ax,'Units','characters'); temp_ax=get(ax,'Position');
 % this sets an '(A)' right at the top left of the axes
 text(ax,-12,temp_ax(end)+2,'(A)','Units','characters');
-if flag_save; saveas(gcf,[direc,'SA_seasonal_curves_A.eps'],'epsc'); end
-
-
-
+% if flag_save; saveas(gcf,[direc,'SA_seasonal_curves_A.eps'],'epsc'); end
+if flag_save; saveas(gcf,[direc,'SA_seasonal_curves_A.svg']); end

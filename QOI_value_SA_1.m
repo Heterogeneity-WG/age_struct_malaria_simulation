@@ -15,7 +15,7 @@ end
 
 flag_run = 0;
 
-ind0517m = age_range_ind(a,5/12,17/12);
+ind0002y = age_range_ind(a,0,2);
 
 if flag_EE
     if ~exist([direc, lmethod,'_',num2str(run_num),'.mat'],'file')
@@ -50,14 +50,14 @@ if flag_EE
         % NM = SM+EM+IM;
         % PH = SH+EH+DH+AH+VH+UH;
         death_tot = trapz(MH,1)*da;
-        death_5_17 = trapz(MH(ind0517m,:),1)*da;
+        death_00_02 = trapz(MH(ind0002y,:),1)*da;
         DA_tot = trapz(DH+AH,1)*da;
-        DA_5_17 = trapz(DH(ind0517m,:)+AH(ind0517m,:),1)*da;
-        save([direc,lmethod,'_',num2str(run_num),'.mat'],'death_tot','death_5_17','DA_tot','DA_5_17');
+        DA_00_02 = trapz(DH(ind0002y,:)+AH(ind0002y,:),1)*da;
+        save([direc,lmethod,'_',num2str(run_num),'.mat'],'death_tot','death_00_02','DA_tot','DA_00_02');
     else % if file already exists
         if ~isempty(who('-file', [direc,lmethod,'_',num2str(run_num),'.mat'], 'death_tot'))
             % load quantities - already integrated over age dimension
-            load([direc,lmethod,'_',num2str(run_num),'.mat'],'death_tot','death_5_17','DA_tot','DA_5_17');
+            load([direc,lmethod,'_',num2str(run_num),'.mat'],'death_tot','death_00_02','DA_tot','DA_00_02');
         else
             % file started but interrupted
             Q_val = NaN;
@@ -72,12 +72,12 @@ for iQ = 1:length(lQ)
     switch lQ{iQ}
         case 'EE-DA'
             Q_val(:,iQ) = DA_tot;
-        case 'EE-DA-05-17'
-            Q_val(:,iQ) = DA_5_17;    
+        case 'EE-DA-00-02'
+            Q_val(:,iQ) = DA_00_02;    
         case 'EE-death' % Cumulative disease-induced mortality, diagnostic eqn MH
             Q_val(:,iQ) = death_tot;
-        case 'EE-death-05-17' % Cumulative disease-induced mortality, diagnostic eqn MH
-            Q_val(:,iQ) = death_5_17;
+        case 'EE-death-00-02' % Cumulative disease-induced mortality, diagnostic eqn MH
+            Q_val(:,iQ) = death_00_02;
         otherwise
             keyboard
     end

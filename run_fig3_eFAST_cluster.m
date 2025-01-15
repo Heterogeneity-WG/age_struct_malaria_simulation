@@ -181,7 +181,7 @@ for iQ = 1:Size_QOI_plot
     text(xtips,ytips,labels,'VerticalAlignment','middle')
     title(['QOI = ',lQ_title{iQ}])
     grid off
-    legend([b1,b2,b3],'Location','e');
+    legend([b1,b2,b3],'Position',[0.69,0.58,0.18,0.13]);
     temp = k+0.5;
     plot([0.1, 0.1],[0.5 temp],':','Linewidth',1.5,'Color', 0.4*[1 1 1]);
     ax=gca;
@@ -189,20 +189,20 @@ for iQ = 1:Size_QOI_plot
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an 'a)' right at the top left of the axes
     if iQ == 1
-        text(ax,-12,temp_ax(end)+3,'(A)','Units','characters');
+        text(ax,-6,temp_ax(end)+2,'(A)','Units','characters');
         save_string = strcat('fig3_eFAST_','A','.svg');
     elseif iQ == 2
-        text(ax,-12,temp_ax(end)+3,'(C)','Units','characters');
+        text(ax,-6,temp_ax(end)+2,'(C)','Units','characters');
         save_string = strcat('fig3_eFAST_','C','.svg');
     elseif iQ == 3
-        text(ax,-12,temp_ax(end)+3,'(B)','Units','characters');
+        text(ax,-6,temp_ax(end)+2,'(B)','Units','characters');
         save_string = strcat('fig3_eFAST_','B','.svg');
     elseif iQ == 4
-        text(ax,-12,temp_ax(end)+3,'(D)','Units','characters');
+        text(ax,-6,temp_ax(end)+2,'(D)','Units','characters');
         save_string = strcat('fig3_eFAST_','D','.svg');
     end
-    saveas(gcf,save_string);
-    if flag_save; saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
+    if flag_save; saveas(gcf,save_string); end
+    %saveas(gcf,[direc,'eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQ},'.eps'],'epsc'); end
 
 end
 
