@@ -130,16 +130,16 @@ end
 toc
 
 %% eFAST on output matrix Y
-% load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y'); 
+% load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y');
 var = 1:length(lQ); % index of QOIs to analyze (among Size_QOI) (default = 1)
 palpha = 0.05; % alpha for t-test
 [Si,Sti,rangeSi,rangeSti] = efast_sd(Y,OMi,MI,time_points,var);
 [CVsi, CVsti] = CVmethod(Si, rangeSi,Sti,rangeSti,var); % Coeff. of Variance;
 % SI[POI,timepoints,QOI]
 s_struct = efast_ttest(Si,rangeSi,Sti,rangeSti,time_points,lP_list,var,lQ,palpha); % T-test on Si and STi
-% save([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct'); 
+% save([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct');
 %% Sorting
-% load([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct'); 
+% load([direc,'eFAST_result_Sstruct_',num2str(NS),'_',num2str(k),'.mat'],'s_struct');
 if Size_timepts==1
     lP_order = {'dac','rD','cS','psir2','uc','muM','cA','rhos2','betaM','rA','psis2',...
         'cE','betaD','m','cD','betaA','rhor2','sigma','phis2','cU','phir2','v0','w','etas'};
@@ -169,7 +169,7 @@ for iQOI = 1:Size_QOI_plot
     title(['QOI = ', lQ_title{QOI_plot(iQOI)}])
     ylim([0 1.1])
     POI_index = [1 3 7 15 19]; % or full set -> 1:length(lP_list)
-    for iPOI = 1:length(POI_index) 
+    for iPOI = 1:length(POI_index)
         Sti_vec = s_struct.Sti(POI_index(iPOI),:,QOI_plot(iQOI))';
         time_pts = t(time_points)/365;
         Sti_fun = csape(time_pts,Sti_vec,'not-a-knot');
@@ -190,7 +190,7 @@ for iQOI = 1:Size_QOI_plot
     set(ax,'Units','characters'); temp_ax=get(ax,'Position');
     % this sets an '(A)' right at the top left of the axes
     str_temp = subfigure_strings(iQOI);
-    text(ax,-12,temp_ax(end)+2,str_temp,'Units','characters');   
+    text(ax,-12,temp_ax(end)+2,str_temp,'Units','characters');
     if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'.eps'],'epsc'); end
     % if flag_save; saveas(gcf,[direc,'/eFAST_result_',num2str(NS),'_',num2str(k),'_',lQ{iQOI},'_all.eps'],'epsc'); end
 end

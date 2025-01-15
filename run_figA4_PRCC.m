@@ -1,4 +1,4 @@
-%% Figure A3 (supplement for Figure 5, selected PRCC curves)
+%% Figure A4 (supplement for Figure 6, selected PRCC curves)
 % global SA time series at quasi-endmic state using using PRCC
 % 'Data_SA/Results_local_SA_time/SA_22POI_PRCC/'
 
@@ -111,7 +111,7 @@ for itime = 1:Size_timepts
         PRCC(:,itime,iQOI) = rho(1:end-1,end); % correlations between parameters and QOI
         stat_p(:,itime,iQOI) = p(1:end-1,end); % associated p-value
     end
-    itime
+    %itime
 end
 save([direc,'PRCC_result_PRCCstats_',num2str(NS),'_',num2str(k),'.mat'],'PRCC','stat_p');
 
