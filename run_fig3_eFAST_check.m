@@ -87,7 +87,7 @@ load([direc,'eFAST_samples_',num2str(NS),'_',num2str(k),'_',num2str(NR),'.mat'],
 %% check any NaN runs in Ymat
 load([direc,'eFAST_result_Ymat_',num2str(NS),'_',num2str(k),'.mat'],'Y');
 total = NS*NR*k;
-(total-sum(isnan(Y(:)))/length(lQ))/total % fraction of files that are interrupted
+(sum(isnan(Y(:)))/length(lQ))/total % fraction of files that are interrupted
 keyboard
 for i=1:k % Loop over POIs, including dummy
     for L=1:NR  % Loop over the NR search curves

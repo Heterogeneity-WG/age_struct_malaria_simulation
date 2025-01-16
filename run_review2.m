@@ -1,4 +1,4 @@
-%% generate SA results for reviewer 2 comment
+%% generate SA results for reviewer 2 comment (now figure A2)
 
 close all
 clearvars
@@ -9,7 +9,7 @@ global P
 % Directory for outputting SA results (sample, data matrices, plots)
 % if data is available, the script will load results in the folder;
 % otherwise, it will generate new results (could time and storage consuming)
-direc = 'Data_SA/Results_local_SA_vac/SA_4POI_PRCC/';
+direc = 'Data_SA/Results_local_SA_vac/SA_4POI_PRCC/old/';
 flag_save = 1; % flag for saving the results or not (Note: it will overwrite previous results in the folder)
 
 % numerical config
@@ -110,9 +110,9 @@ for itime = 1:Size_timepts
 end
 
 %% Sorting
-lP_order = flip({'rD','dac','uc','psir2','muM','cS','cA','betaM',...
-    'psis2','rA','cE','rhos2','betaD','sigma','rhor2','betaA','cD',...
-    'm','phir2','phis2','cU','v0','w','etas'});
+lP_order = flip({'rD','muM','dac','betaM','uc','rhos2','cS','cA','psis2',...
+    'betaA','m','rA','sigma','cE','psir2','rhor2','betaD','cD',...
+    'phir2','phis2','cU','v0','w','etas'});
 
 [~,index] = ismember(lP_order,lP_list);
 index = index';
@@ -141,7 +141,7 @@ QOI_plot = 1:length(lQ);
 Size_QOI_plot = length(QOI_plot);
 [lP_list_name,lQ,lQ_title] = SA_output_formatting(lP_list,lQ,1);
 
-for iQOI = [2 4] %1:Size_QOI_plot
+for iQOI = [2 4]
     figure_setups_33; 
     h = gcf;
     h.Position = [100, 55, 900, 400];
@@ -188,11 +188,11 @@ for iQOI = [2 4] %1:Size_QOI_plot
     %         save_string = strcat('fig_',temp,'_D','.svg');
     %     end
     % end
-    saveas(gcf,save_string);
     set(gca,'fontsize', 30) 
     ax.GridAlpha = 1;  % Make grid lines transparent..
     ax.GridColor = [224, 224, 224]/255; % change grid color
-    if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
+    if flag_save; saveas(gcf,save_string); end
+    % if flag_save; saveas(gcf,[direc,'PRCC_result_',num2str(NS),'_',num2str(k),'_',lQ{QOI_plot(iQOI)},'.eps'],'epsc'); end
 end
 
 

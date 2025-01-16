@@ -15,7 +15,7 @@ end
 
 flag_run = 0;
 
-ind0210y = age_range_ind(a,2,10);
+% ind0210y = age_range_ind(a,2,10);
 ind0002y = age_range_ind(a,0,2);
 
 if flag_EE
