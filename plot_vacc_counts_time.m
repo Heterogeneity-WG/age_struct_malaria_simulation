@@ -15,7 +15,7 @@ title('cumu. vaccinated')
 yyaxis right
 plot(t/365,cumsum(trapz(vacc_sterile,1)*P.da)*dt/NN_target)
 ylabel('fraction (target pop)')
-axis([0 max(t)/365 0 1]);
+xlim([0 max(t)/365]);
 subplot(1,2,2)
 vacc_fun = P.v;
 plot(P.a/30,vacc_fun)

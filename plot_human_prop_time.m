@@ -23,7 +23,7 @@ xlabel('years');
 ylabel('proportion')
 grid on
 % axis([0 max(t)/365 0 1.1]);
-axis([0 max(t)/365 0 0.6]);
+axis([0 max(t)/365 0 0.8]);
 %% plotting different age groups 
 % figure_setups;
 % 
