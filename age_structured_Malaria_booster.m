@@ -1,9 +1,10 @@
-function [t, SH, EH, DH, AH, VH, UH, Cm, Cac, Ctot, SH2, EH2, DH2, AH2, VH2, UH2, Cm2, Cac2, Ctot2, SM, EM, IM, vb_temp] = ...
-    age_structured_Malaria_booster(da, na, t0, tfinal, SH0, EH0, DH0, AH0, VH0, UH0, Cm0, Cac0, Ctot0, ...
+function [t, SH, EH, DH, AH, VH, UH, Cm, Cac, Ctot, SH2, EH2, DH2, AH2, VH2, UH2, ...
+    Cm2, Cac2, Ctot2, SM, EM, IM, vb_temp] = ...
+    age_structured_Malaria_booster(da, na, t0, tfinal, ...
+    SH0, EH0, DH0, AH0, VH0, UH0, Cm0, Cac0, Ctot0, ...
     SH20, EH20, DH20, AH20, VH20, UH20, Cm20, Cac20, Ctot20, SM0, EM0, IM0)
 % SH - never receive any vac; VH - primary dose
 % SH2 - vaccinated; VH2 - booster dose
-
 global P
 
 dt = da;
@@ -26,10 +27,11 @@ Cm(:,1) = Cm0; Cac(:,1) = Cac0; Cv(:,1) = 0; Ctot(:,1) = Ctot0;
 % SH2 - vaccinated; VH2 - booster dose
 SH2 = NaN(na,nt); EH2 = NaN(na,nt); DH2 = NaN(na,nt); AH2 = NaN(na,nt); VH2 = NaN(na,nt); UH2 = NaN(na,nt);
 Cm2 = NaN(na,nt); Cac2 = NaN(na,nt); Cv2 = NaN(na,nt); Ctot2 = NaN(na,nt);
+vb_temp = NaN(na,nt);
 SH2(:,1) = SH20; EH2(:,1) = EH20; DH2(:,1) = DH20; AH2(:,1) = AH20; VH2(:,1) = VH20; UH2(:,1) = UH20; 
 Cm2(:,1) = Cm20; Cac2(:,1) = Cac20; Cv2(:,1) = 0; Ctot2(:,1) = Ctot20;
+vb_temp(:,1) = zeros(size(SH20));
 
-vb_temp = NaN(na,nt);
 PH = SH0+EH0+DH0+AH0+VH0+UH0;
 PH2 = SH20+EH20+DH20+AH20+VH20+UH20;
 
@@ -38,11 +40,12 @@ P.phi = sigmoid_prob(Ctot(:,1)./PH, 'phi'); % prob. of DH -> RH
 P.rho = sigmoid_prob(Ctot(:,1)./PH, 'rho'); % prob. of severely infected, EH -> DH
 P.psi = sigmoid_prob(Ctot(:,1)./PH, 'psi'); % prob. AH -> DH
 if PH == 0; keyboard; end
+P.phi(PH==0) = 0; P.rho(PH==0) = 0; P.psi(PH==0) = 0;
 
 P.phi2 = sigmoid_prob(Ctot2(:,1)./PH2, 'phi'); % prob. of DH -> RH
 P.rho2 = sigmoid_prob(Ctot2(:,1)./PH2, 'rho'); % prob. of severely infected, EH -> DH
 P.psi2 = sigmoid_prob(Ctot2(:,1)./PH2, 'psi'); % prob. AH -> DH
-P.phi2(PH2==0) = P.phi(PH2==0); P.rho2(PH2==0) = P.rho(PH2==0); P.psi2(PH2==0) = P.psi(PH2==0);
+P.phi2(PH2==0) = 0; P.rho2(PH2==0) = 0; P.psi2(PH2==0) = 0;
 
 %% time evolution
 for n = 1:nt-1
@@ -69,7 +72,8 @@ for n = 1:nt-1
     AH2(1,n+1) = 0;
     VH2(1,n+1) = 0;
     UH2(1,n+1) = 0;
-    
+    vb_temp(1,n+1) = 0;
+
     %% primary group
     SH(2:end,n+1) = (SH(1:end-1,n)+dt*(P.phi(1:end-1)*P.rD.*DH(1:end-1,n)+P.rA*AH(1:end-1,n)-P.v(1:end-1)))...
         ./(1+(lamH(1:end-1)+P.muH(2:end))*dt);
@@ -111,6 +115,7 @@ for n = 1:nt-1
     AH2(2:end,n+1) = ((1-dt*P.rA)*AH2(1:end-1,n)+dt*temp2)...
         ./(1+dt*(P.psi2(1:end-1).*lamH(1:end-1)+P.muH(2:end)));
     temp3 = P.rho2(1:end-1)*P.h.*EH2(2:end,n+1)+P.psi2(1:end-1).*lamH(1:end-1).*AH2(2:end,n+1);
+    
     DH2(2:end,n+1) = ((1-dt*P.rD)*DH2(1:end-1,n)+dt*temp3)...
         ./(1+dt*(P.muH(2:end)+P.muD(2:end)));   
 

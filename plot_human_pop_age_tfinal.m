@@ -63,7 +63,11 @@ for iplot = 1:12:length(t)
     % axis([0 P.age_max/365 0 1.1]);
     xlim([0 5])
 %     saveas(gcf,['Results/seasonality_',num2str(t(iplot)/30),'.png'])
-    pause
+    if iplot==1
+        pause
+    else
+        pause(0.1)
+    end
 end  
 %% Age proportions in time - movie
 figure_setups;
@@ -104,6 +108,10 @@ for iplot = 1:12:length(t)
     grid on
     axis([0 P.age_max/365 0 1.1]);
     xlim([0 5])
-%     saveas(gcf,['Results/seasonality_',num2str(t(iplot)/30),'.png'])
-    pause
+    % saveas(gcf,['Results/seasonality_',num2str(t(iplot)/30),'.png'])
+    if iplot==1
+        pause
+    else
+        pause(0.1)
+    end
 end  
