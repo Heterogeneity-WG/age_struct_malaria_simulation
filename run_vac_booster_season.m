@@ -9,7 +9,7 @@ tic
 %% numerical config
 age_max = 100*365; % max ages in days
 P.age_max = age_max;
-dt = 5; % time/age step size in days, default = 5;
+dt = 0.5; % time/age step size in days, default = 5;
 da = dt;
 a = (0:da:age_max)';
 na = length(a);
@@ -26,14 +26,11 @@ Malaria_parameters_baseline_Nanoro; % choose seasonality profile here
 Malaria_parameters_transform;
 Malaria_parameters_transform_vac;
 
-t0_list= (0:3:12)';
+t0_list= (0:0.5:12)';
 nyear = 5; % implement vaccination strategy for nyear
 vac_period = 6; % seasonal vacc implementation period (months)
-vac_param_annual = 1.2*10^4; % annual vacc number % target population total = 2.56*10^5;
+vac_param_annual = 1.2*10^4; % annual vacc number 
 booster_param_annual = 1.2*10^4;
-% pick 1.2*10^4 baseline acc count to avoid negative SH
-
-% NB "low vacc" = 1.2*10^4, "high vacc" = 6*10^4"
 
 % allocation
 cases_py_target = NaN(length(t0_list),nyear);
@@ -288,8 +285,8 @@ temp1 = psiv.*lamH.*AHv + psib.*lamH.*AHb; % AH -> DH
 temp2 = rhov.*P.h.*EHv + rhob.*P.h.*EHb;% EH -> DH, number of new (symptomatic) cases - rate
 
 if strcmp(lage,'target')
-    [~,ind1] = min(abs(P.a-26*30)); 
-    [~,ind2] = min(abs(P.a-28*30));
+    [~,ind1] = min(abs(P.a-2*365));
+    [~,ind2] = min(abs(P.a-10*365));
 elseif strcmp(lage, 'full')
     ind1 = 1;
     ind2 = length(P.a);
@@ -304,6 +301,6 @@ pop = trapz(PH(ind1:ind2,:),1)*P.da;
 cases_pp_py = cases_py/mean(pop);
 
 DH = DHv+DHb;
-death_py = trapz(trapz(P.muD.*DH,1))*P.dt*P.da; 
+death_py = trapz(trapz(P.muD(ind1:ind2).*DH(ind1:ind2,:),1)*P.da)*P.dt/(t(end)-t(1))*365; % total deaths in cohort this year
 
 end
